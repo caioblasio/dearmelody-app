@@ -1,0 +1,89 @@
+import { WandSparkles, Music2 } from 'lucide-react'
+
+import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
+
+const moodOptions = ['Melancholic', 'Ethereal', 'Uplifting', 'Cinematic']
+const tags = ['Acoustic', 'Ethereal', 'Slow Tempo']
+
+export function NewEntryPage() {
+  return (
+    <div className="grid gap-6 lg:grid-cols-[1.4fr_1fr]">
+      <Card className="space-y-6 p-5 sm:p-7">
+        <div className="flex items-center justify-between">
+          <span className="text-xs font-semibold uppercase tracking-[0.2em] text-on-surface-variant">
+            October 24, 2023
+          </span>
+          <span className="rounded-full bg-primary-container px-3 py-1 text-xs font-medium text-on-primary-container">
+            New Entry
+          </span>
+        </div>
+
+        <div className="space-y-2">
+          <h1 className="font-serif text-3xl font-semibold text-on-surface sm:text-4xl">
+            How was your day?
+          </h1>
+          <p className="text-on-surface-variant">
+            Capture your feelings and let Melody AI turn it into your daily soundtrack.
+          </p>
+        </div>
+
+        <label className="block space-y-2">
+          <div className="relative rounded-lg bg-[#fffaf2] px-4 py-2">
+            <div className="pointer-events-none absolute bottom-2 left-8 top-2 w-px bg-red-300/70" />
+            <textarea
+              rows={9}
+              placeholder="Today felt like a slow rainy afternoon with a hopeful ending..."
+              className="relative w-full resize-none bg-transparent pl-8 pr-0 text-base leading-8 text-on-surface outline-none placeholder:text-on-surface-variant/70 [background-image:linear-gradient(to_bottom,transparent_31px,theme(colors.outline-variant)_32px)] [background-size:100%_32px] focus-visible:ring-0"
+            />
+          </div>
+        </label>
+
+        <div className="space-y-3">
+          <p className="text-sm font-medium text-on-surface">Current Resonance</p>
+          <div className="flex flex-wrap gap-2">
+            {moodOptions.map((mood) => (
+              <span
+                key={mood}
+                className="rounded-full border border-outline-variant bg-surface-container px-3 py-1 text-sm text-on-surface-variant"
+              >
+                {mood}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        <Button size="lg" className="w-full gap-2 sm:w-auto">
+          <WandSparkles className="h-4 w-4" />
+          Generate My Song
+        </Button>
+      </Card>
+
+      <Card className="space-y-5 p-5 sm:p-7">
+        <div className="flex items-center gap-2 text-sm font-medium text-on-surface-variant">
+          <Music2 className="h-4 w-4" />
+          Inspiration
+        </div>
+
+        <div className="space-y-2">
+          <h2 className="font-serif text-2xl text-on-surface">Atmospheric Indie Folk</h2>
+          <p className="text-sm text-on-surface-variant">
+            AI will interpret your mood into a musical entry with warm textures and reflective
+            melodies.
+          </p>
+        </div>
+
+        <div className="flex flex-wrap gap-2">
+          {tags.map((tag) => (
+            <span
+              key={tag}
+              className="rounded-full bg-secondary-container px-3 py-1 text-xs font-semibold uppercase tracking-wide text-on-secondary-container"
+            >
+              {tag}
+            </span>
+          ))}
+        </div>
+      </Card>
+    </div>
+  )
+}
