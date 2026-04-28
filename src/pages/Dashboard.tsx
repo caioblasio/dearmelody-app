@@ -5,7 +5,7 @@ export function DashboardPage() {
 
   return (
     <section className="flex items-center justify-center py-10">
-      <div className="w-full max-w-2xl rounded-xl border border-outline-variant bg-surface-container-lowest p-10 text-center shadow-sm">
+      <div className="w-full max-w-4xl rounded-xl border border-outline-variant bg-surface-container-lowest p-10 text-center shadow-sm">
         <h1 className="font-serif text-3xl font-bold text-on-surface">Authenticated</h1>
         <p className="mt-3 text-on-surface-variant">
           {user.name}. You are now inside your Song Diary dashboard.

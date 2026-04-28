@@ -9,8 +9,10 @@ export function AppHeader() {
     <header className="border-b border-outline-variant bg-surface-container-lowest/80 backdrop-blur-md">
       <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-4 sm:px-6">
         <div className="flex items-center gap-8">
-          <span className="font-serif text-xl font-bold italic text-primary">Song Diary</span>
           <nav className="hidden items-center gap-6 text-sm text-on-surface-variant md:flex">
+            <a className="font-serif text-xl font-bold italic text-primary" href="/">
+              Song Diary
+            </a>
             <a className="transition-colors hover:text-primary" href="/new-entry">
               New Entry
             </a>
