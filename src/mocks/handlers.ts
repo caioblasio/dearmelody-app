@@ -63,4 +63,15 @@ export const handlers = [
       avatar: '/avatar.png',
     })
   }),
+  http.post('/api/create_song', async ({ request }) => {
+    const body = (await request.json()) as { reflection: string; resonance: string }
+    await delay(1500)
+    return HttpResponse.json({
+      id: 'song-' + Date.now(),
+      title: `${body.resonance} Melody`,
+      url: 'https://example.com/songs/mock-song.mp3',
+      duration: 180,
+      mood: body.resonance,
+    })
+  }),
 ]

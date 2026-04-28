@@ -5,6 +5,7 @@ import { z } from 'zod'
 
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
+import { useCreateSong } from '@/api/song/use-create-song'
 
 const moodOptions = ['Melancholic', 'Ethereal', 'Uplifting', 'Cinematic']
 const tags = ['Acoustic', 'Ethereal', 'Slow Tempo']
@@ -34,10 +35,13 @@ export function NewEntryPage() {
   })
 
   const selectedResonance = watch('resonance')
+  const { mutate: createSong, isPending } = useCreateSong()
 
   const onSubmit = handleSubmit(async (values) => {
-    // Placeholder until the generation API is wired in.
-    await Promise.resolve(values)
+    createSong({
+      reflection: values.reflection,
+      resonance: values.resonance,
+    })
   })
 
   return (
@@ -45,7 +49,11 @@ export function NewEntryPage() {
       <Card className="space-y-6 p-5 sm:p-7">
         <div className="flex items-center justify-between">
           <span className="text-xs font-semibold uppercase tracking-[0.2em] text-on-surface-variant">
-            October 24, 2023
+            {new Date().toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+            })}
           </span>
           <span className="rounded-full bg-primary-container px-3 py-1 text-xs font-medium text-on-primary-container">
             New Entry
@@ -111,9 +119,14 @@ export function NewEntryPage() {
             )}
           </div>
 
-          <Button type="submit" size="lg" className="w-full gap-2 sm:w-auto" disabled={isSubmitting}>
+          <Button
+            type="submit"
+            size="lg"
+            className="w-full gap-2 sm:w-auto"
+            disabled={isSubmitting || isPending}
+          >
             <WandSparkles className="h-4 w-4" />
-            {isSubmitting ? 'Generating...' : 'Generate My Song'}
+            {isPending ? 'Generating...' : 'Generate My Song'}
           </Button>
         </form>
       </Card>

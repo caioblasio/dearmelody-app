@@ -9,7 +9,7 @@ import './index.css'
 const queryClient = new QueryClient()
 
 async function enableMocking() {
-  if (!import.meta.env.DEV) {
+  if (!import.meta.env.VITE_ENABLE_MOCKS) {
     return
   }
 
