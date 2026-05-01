@@ -1,11 +1,11 @@
 import { apiRequest } from '@/lib/api-request'
 
-export type CreateSongPayload = {
+export type NewEntryPayload = {
   reflection: string
   resonance: string
 }
 
-export type CreateSongResponse = {
+export type NewEntryResponse = {
   id: string
   title: string
   url: string
@@ -13,9 +13,9 @@ export type CreateSongResponse = {
   mood: string
 }
 
-export async function createSong(payload: CreateSongPayload): Promise<CreateSongResponse> {
+export async function createNewEntry(payload: NewEntryPayload): Promise<NewEntryResponse> {
   try {
-    return await apiRequest<CreateSongResponse>('/api/create_song', {
+    return await apiRequest<NewEntryResponse>('/api/diary/new-entry', {
       method: 'POST',
       body: payload,
     })

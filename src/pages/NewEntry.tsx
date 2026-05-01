@@ -3,9 +3,9 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
+import { useNewEntry } from '@/api/diary/use-new-entry'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
-import { useCreateSong } from '@/api/song/use-create-song'
 
 const moodOptions = ['Melancholic', 'Ethereal', 'Uplifting', 'Cinematic']
 const tags = ['Acoustic', 'Ethereal', 'Slow Tempo']
@@ -35,10 +35,10 @@ export function NewEntryPage() {
   })
 
   const selectedResonance = watch('resonance')
-  const { mutate: createSong, isPending } = useCreateSong()
+  const { mutate: createNewEntry, isPending } = useNewEntry()
 
   const onSubmit = handleSubmit(async (values) => {
-    createSong({
+    createNewEntry({
       reflection: values.reflection,
       resonance: values.resonance,
     })

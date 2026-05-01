@@ -3,6 +3,7 @@ import { createBrowserRouter } from 'react-router-dom'
 import { AppLayout } from '@/components/AppLayout'
 import { DashboardPage } from '@/pages/Dashboard'
 import { LoginPage } from '@/pages/Login'
+import { MyMelodiesPage } from '@/pages/MyMelodies'
 import { NewEntryPage } from '@/pages/NewEntry'
 import { ProtectedRoute } from './protected-route'
 import { PublicRoute } from './public-route'
@@ -32,6 +33,11 @@ export const router = createBrowserRouter([
             path: '/new-entry',
             element: <NewEntryPage />,
             handle: { title: 'newEntry.title' },
+          },
+          {
+            path: '/past-melodies',
+            element: <MyMelodiesPage />,
+            handle: { title: 'pastMelodies.title' },
           },
         ],
       },

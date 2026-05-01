@@ -1,6 +1,8 @@
 import { Settings } from 'lucide-react'
+import { NavLink } from 'react-router-dom'
 
 import { useUserInfo } from '@/api/user/use-user-info'
+import { cn } from '@/lib/utils'
 
 export function AppHeader() {
   const { data: user } = useUserInfo()
@@ -10,18 +12,31 @@ export function AppHeader() {
       <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-4 sm:px-6">
         <div className="flex items-center gap-8">
           <nav className="hidden items-center gap-6 text-sm text-on-surface-variant md:flex">
-            <a className="font-serif text-xl font-bold italic text-primary" href="/">
+            <NavLink className="font-serif text-xl font-bold italic text-primary" to="/" end>
               Song Diary
-            </a>
-            <a className="transition-colors hover:text-primary" href="/new-entry">
+            </NavLink>
+            <NavLink
+              className={({ isActive }) =>
+                cn(
+                  'border-b-2 border-transparent pb-0.5 transition-colors hover:text-primary',
+                  isActive ? 'border-primary font-semibold text-primary' : ''
+                )
+              }
+              to="/new-entry"
+            >
               New Entry
-            </a>
-            <a className="transition-colors hover:text-primary" href="#">
-              Your Melody
-            </a>
-            <a className="transition-colors hover:text-primary" href="#">
+            </NavLink>
+            <NavLink
+              className={({ isActive }) =>
+                cn(
+                  'border-b-2 border-transparent pb-0.5 transition-colors hover:text-primary',
+                  isActive ? 'border-primary font-semibold text-primary' : ''
+                )
+              }
+              to="/past-melodies"
+            >
               Past Melodies
-            </a>
+            </NavLink>
           </nav>
         </div>
 

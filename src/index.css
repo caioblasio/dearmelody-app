@@ -48,6 +48,60 @@
   --spacing-6xl: 128rem;
 }
 
+@layer utilities {
+  /* Tear-style bottom edge from Stitch “Past Melodies – Song Diary” */
+  .deckled-edge {
+    clip-path: polygon(
+      0% 0%,
+      100% 0%,
+      100% 98%,
+      98% 100%,
+      95% 98%,
+      92% 100%,
+      89% 98%,
+      86% 100%,
+      83% 98%,
+      80% 100%,
+      77% 98%,
+      74% 100%,
+      71% 98%,
+      68% 100%,
+      65% 98%,
+      62% 100%,
+      59% 98%,
+      56% 100%,
+      53% 98%,
+      50% 100%,
+      47% 98%,
+      44% 100%,
+      41% 98%,
+      38% 100%,
+      35% 98%,
+      32% 100%,
+      29% 98%,
+      26% 100%,
+      23% 98%,
+      20% 100%,
+      17% 98%,
+      14% 100%,
+      11% 98%,
+      8% 100%,
+      5% 98%,
+      2% 100%,
+      0% 98%
+    );
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 @layer base {
   body {
     @apply min-h-screen bg-white font-sans text-on-surface;

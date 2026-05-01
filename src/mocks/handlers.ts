@@ -1,5 +1,7 @@
 import { delay, http, HttpResponse } from 'msw'
 
+import { PAST_MELODIES_MOCK } from '@/lib/past-melodies-mock'
+
 type LoginRequestBody = {
   email: string
   password: string
@@ -63,15 +65,21 @@ export const handlers = [
       avatar: '/avatar.png',
     })
   }),
-  http.post('/api/create_song', async ({ request }) => {
+  http.post('/api/diary/new-entry', async ({ request }) => {
     const body = (await request.json()) as { reflection: string; resonance: string }
     await delay(1500)
     return HttpResponse.json({
-      id: 'song-' + Date.now(),
+      id: 'entry-' + Date.now(),
       title: `${body.resonance} Melody`,
       url: 'https://example.com/songs/mock-song.mp3',
       duration: 180,
       mood: body.resonance,
+    })
+  }),
+  http.get('/api/diary', async () => {
+    await delay(400)
+    return HttpResponse.json({
+      entries: PAST_MELODIES_MOCK,
     })
   }),
 ]
