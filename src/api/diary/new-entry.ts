@@ -14,12 +14,8 @@ export type NewEntryResponse = {
 }
 
 export async function createNewEntry(payload: NewEntryPayload): Promise<NewEntryResponse> {
-  try {
-    return await apiRequest<NewEntryResponse>('/api/diary/new-entry', {
-      method: 'POST',
-      body: payload,
-    })
-  } catch (error) {
-    throw error
-  }
+  return apiRequest<NewEntryResponse>('/api/diary/new-entry', {
+    method: 'POST',
+    body: payload,
+  })
 }

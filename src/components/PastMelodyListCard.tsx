@@ -1,4 +1,5 @@
 import { Play } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 import type { PastMelodyEntry } from '@/lib/past-melodies-mock'
 import { cn } from '@/lib/utils'
@@ -20,6 +21,7 @@ type PastMelodyListCardProps = {
 }
 
 export function PastMelodyListCard({ entry }: PastMelodyListCardProps) {
+  const { t } = useTranslation()
   const dateCaps = entry.dateLabel.toUpperCase()
   const pillBg = listToneClass[entry.listMoodTone]
   const pillText = listToneTextClass[entry.listMoodTone]
@@ -58,7 +60,7 @@ export function PastMelodyListCard({ entry }: PastMelodyListCardProps) {
         </div>
         <button
           type="button"
-          aria-label={`Play ${entry.trackTitle}`}
+          aria-label={t('pastMelodies.playTrack', { title: entry.trackTitle })}
           className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary text-on-primary shadow-md transition-transform active:scale-95"
         >
           <Play className="size-5 fill-current" aria-hidden />

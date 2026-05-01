@@ -1,25 +1,39 @@
-import { WandSparkles, Music2 } from 'lucide-react'
+import { useMemo } from 'react'
+import { Music2, WandSparkles } from 'lucide-react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
+import type { TFunction } from 'i18next'
 import { z } from 'zod'
 
 import { useNewEntry } from '@/api/diary/use-new-entry'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 
-const moodOptions = ['Melancholic', 'Ethereal', 'Uplifting', 'Cinematic']
-const tags = ['Acoustic', 'Ethereal', 'Slow Tempo']
-const entrySchema = z.object({
-  reflection: z
-    .string()
-    .min(10, 'Write at least a few lines about your day.')
-    .max(2000, 'Keep it under 2000 characters.'),
-  resonance: z.enum(moodOptions),
-})
+const NEW_ENTRY_TAG_IDS = ['acoustic', 'ethereal', 'slowTempo'] as const
 
-type EntryFormValues = z.infer<typeof entrySchema>
+const NEW_ENTRY_RESONANCE_IDS = ['melancholic', 'ethereal', 'uplifting', 'cinematic'] as const
+type EntryResonanceId = (typeof NEW_ENTRY_RESONANCE_IDS)[number]
+
+function createEntrySchema(t: TFunction) {
+  return z.object({
+    reflection: z
+      .string()
+      .min(10, t('newEntry.validation.reflectionMin'))
+      .max(2000, t('newEntry.validation.reflectionMax')),
+    resonance: z.enum(NEW_ENTRY_RESONANCE_IDS),
+  })
+}
+
+type EntryFormValues = {
+  reflection: string
+  resonance: EntryResonanceId
+}
 
 export function NewEntryPage() {
+  const { t, i18n } = useTranslation()
+  const entrySchema = useMemo(() => createEntrySchema(t), [t])
+
   const {
     register,
     setValue,
@@ -30,12 +44,18 @@ export function NewEntryPage() {
     resolver: zodResolver(entrySchema),
     defaultValues: {
       reflection: '',
-      resonance: moodOptions[0],
+      resonance: NEW_ENTRY_RESONANCE_IDS[0],
     },
   })
 
   const selectedResonance = watch('resonance')
   const { mutate: createNewEntry, isPending } = useNewEntry()
+
+  const dateLabel = new Date().toLocaleDateString(i18n.language, {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  })
 
   const onSubmit = handleSubmit(async (values) => {
     createNewEntry({
@@ -49,24 +69,18 @@ export function NewEntryPage() {
       <Card className="space-y-6 p-5 sm:p-7">
         <div className="flex items-center justify-between">
           <span className="text-xs font-semibold uppercase tracking-[0.2em] text-on-surface-variant">
-            {new Date().toLocaleDateString('en-US', {
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric',
-            })}
+            {dateLabel}
           </span>
           <span className="rounded-full bg-primary-container px-3 py-1 text-xs font-medium text-on-primary-container">
-            New Entry
+            {t('newEntry.badge')}
           </span>
         </div>
 
         <div className="space-y-2">
           <h1 className="font-serif text-3xl font-semibold text-on-surface sm:text-4xl">
-            How was your day?
+            {t('newEntry.heading')}
           </h1>
-          <p className="text-on-surface-variant">
-            Capture your feelings and let Melody AI turn it into your daily soundtrack.
-          </p>
+          <p className="text-on-surface-variant">{t('newEntry.subheading')}</p>
         </div>
 
         <form className="space-y-6" onSubmit={onSubmit}>
@@ -75,7 +89,7 @@ export function NewEntryPage() {
               <div className="pointer-events-none absolute bottom-2 left-8 top-2 w-px bg-red-300/70" />
               <textarea
                 rows={9}
-                placeholder="Today felt like a slow rainy afternoon with a hopeful ending..."
+                placeholder={t('newEntry.textareaPlaceholder')}
                 className="relative w-full resize-none bg-transparent pl-8 pr-0 text-base leading-8 text-on-surface outline-none placeholder:text-on-surface-variant/70 [background-image:linear-gradient(to_bottom,transparent_31px,theme(colors.outline-variant)_32px)] [background-size:100%_32px] focus-visible:ring-0"
                 aria-invalid={Boolean(errors.reflection)}
                 aria-describedby={errors.reflection ? 'reflection-error' : undefined}
@@ -90,14 +104,14 @@ export function NewEntryPage() {
           </label>
 
           <div className="space-y-3">
-            <p className="text-sm font-medium text-on-surface">Current Resonance</p>
+            <p className="text-sm font-medium text-on-surface">{t('newEntry.resonanceLabel')}</p>
             <div className="flex flex-wrap gap-2">
-              {moodOptions.map((mood) => {
-                const isSelected = selectedResonance === mood
+              {NEW_ENTRY_RESONANCE_IDS.map((id) => {
+                const isSelected = selectedResonance === id
 
                 return (
                   <button
-                    key={mood}
+                    key={id}
                     type="button"
                     className={`rounded-full border px-3 py-1 text-sm transition-colors ${
                       isSelected
@@ -105,9 +119,9 @@ export function NewEntryPage() {
                         : 'border-outline-variant bg-surface-container text-on-surface-variant hover:border-primary/50'
                     }`}
                     aria-pressed={isSelected}
-                    onClick={() => setValue('resonance', mood, { shouldValidate: true })}
+                    onClick={() => setValue('resonance', id, { shouldValidate: true })}
                   >
-                    {mood}
+                    {t(`newEntry.resonance.${id}`)}
                   </button>
                 )
               })}
@@ -126,7 +140,7 @@ export function NewEntryPage() {
             disabled={isSubmitting || isPending}
           >
             <WandSparkles className="h-4 w-4" />
-            {isPending ? 'Generating...' : 'Generate My Song'}
+            {isPending ? t('newEntry.generating') : t('newEntry.generate')}
           </Button>
         </form>
       </Card>
@@ -134,24 +148,21 @@ export function NewEntryPage() {
       <Card className="space-y-5 p-5 sm:p-7">
         <div className="flex items-center gap-2 text-sm font-medium text-on-surface-variant">
           <Music2 className="h-4 w-4" />
-          Inspiration
+          {t('newEntry.inspiration.label')}
         </div>
 
         <div className="space-y-2">
-          <h2 className="font-serif text-2xl text-on-surface">Atmospheric Indie Folk</h2>
-          <p className="text-sm text-on-surface-variant">
-            AI will interpret your mood into a musical entry with warm textures and reflective
-            melodies.
-          </p>
+          <h2 className="font-serif text-2xl text-on-surface">{t('newEntry.inspiration.title')}</h2>
+          <p className="text-sm text-on-surface-variant">{t('newEntry.inspiration.description')}</p>
         </div>
 
         <div className="flex flex-wrap gap-2">
-          {tags.map((tag) => (
+          {NEW_ENTRY_TAG_IDS.map((id) => (
             <span
-              key={tag}
+              key={id}
               className="rounded-full bg-secondary-container px-3 py-1 text-xs font-semibold uppercase tracking-wide text-on-secondary-container"
             >
-              {tag}
+              {t(`newEntry.tags.${id}`)}
             </span>
           ))}
         </div>

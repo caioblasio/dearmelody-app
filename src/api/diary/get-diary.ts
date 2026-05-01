@@ -6,9 +6,5 @@ export type GetDiaryResponse = {
 }
 
 export async function getDiary(): Promise<GetDiaryResponse> {
-  try {
-    return await apiRequest<GetDiaryResponse>('/api/diary')
-  } catch (error) {
-    throw error
-  }
+  return apiRequest<GetDiaryResponse>('/api/diary')
 }

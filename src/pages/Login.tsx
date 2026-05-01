@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 import { z } from 'zod'
 import { BookOpenText, Eye, EyeOff } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 import { AuthFooter } from '../components/AuthFooter'
 import { AuthHeader } from '../components/AuthHeader'
@@ -16,17 +17,27 @@ import { Label } from '../components/ui/label'
 import { Separator } from '../components/ui/separator'
 import { getLockRemainingMs } from '@/api/auth/login'
 import { useLogin } from '@/api/auth/use-login'
+import type { TFunction } from 'i18next'
 
-const loginSchema = z.object({
-  email: z.email('Please enter a valid email address.'),
-  password: z.string().min(8, 'Password must contain at least 8 characters.'),
-  remember: z.boolean(),
-})
+function createLoginSchema(t: TFunction) {
+  return z.object({
+    email: z.email(t('login.validation.email')),
+    password: z.string().min(8, t('login.validation.passwordMin')),
+    remember: z.boolean(),
+  })
+}
 
-type LoginFormValues = z.infer<typeof loginSchema>
+type LoginFormValues = {
+  email: string
+  password: string
+  remember: boolean
+}
 
 export function LoginPage() {
   const navigate = useNavigate()
+  const { t } = useTranslation()
+  const loginSchema = useMemo(() => createLoginSchema(t), [t])
+
   const [showPassword, setShowPassword] = useState(false)
   const [authError, setAuthError] = useState<string | null>(null)
   const [lockRemainingMs, setLockRemainingMs] = useState(getLockRemainingMs())
@@ -53,14 +64,14 @@ export function LoginPage() {
       navigate('/')
     },
     onLockedOut: (remainingMs) => {
-      setAuthError('Too many attempts. Please wait before trying again.')
+      setAuthError(t('login.errors.lockedOut'))
       setLockRemainingMs(remainingMs)
     },
     onInvalidCredentials: () => {
-      setAuthError('Incorrect email or password.')
+      setAuthError(t('login.errors.invalidCredentials'))
     },
     onError: () => {
-      setAuthError('Something went wrong. Please try again.')
+      setAuthError(t('login.errors.generic'))
     },
   })
 
@@ -85,8 +96,8 @@ export function LoginPage() {
           <Card>
             <div className="mb-lg text-center">
               <BookOpenText className="h-8 w-8 text-primary" />
-              <h1 className="mb-2 text-3xl font-bold text-on-surface">Log in to Melodiary</h1>
-              <p className="italic text-on-surface-variant">Continue your musical journey...</p>
+              <h1 className="mb-2 text-3xl font-bold text-on-surface">{t('login.heading')}</h1>
+              <p className="italic text-on-surface-variant">{t('login.subheading')}</p>
             </div>
 
             {authError && (
@@ -97,11 +108,11 @@ export function LoginPage() {
 
             <form className="space-y-md" onSubmit={onSubmit}>
               <div className="space-y-xs">
-                <Label htmlFor="email">Email Address</Label>
+                <Label htmlFor="email">{t('login.emailLabel')}</Label>
                 <Input
                   id="email"
                   type="email"
-                  placeholder="your@email.com"
+                  placeholder={t('login.emailPlaceholder')}
                   aria-invalid={Boolean(errors.email)}
                   aria-describedby={errors.email ? 'email-error' : undefined}
                   {...register('email')}
@@ -115,16 +126,16 @@ export function LoginPage() {
 
               <div className="space-y-xs">
                 <div className="flex items-center justify-between">
-                  <Label htmlFor="password">Password</Label>
+                  <Label htmlFor="password">{t('login.passwordLabel')}</Label>
                   <a className="text-sm font-medium text-primary hover:underline" href="#">
-                    Forgot Password?
+                    {t('login.forgotPassword')}
                   </a>
                 </div>
                 <div className="relative">
                   <Input
                     id="password"
                     type={showPassword ? 'text' : 'password'}
-                    placeholder="••••••••"
+                    placeholder={t('login.passwordPlaceholder')}
                     className="pr-12"
                     aria-invalid={Boolean(errors.password)}
                     aria-describedby={errors.password ? 'password-error' : undefined}
@@ -136,7 +147,7 @@ export function LoginPage() {
                     size="sm"
                     className="absolute right-2 top-1/2 h-8 w-8 -translate-y-1/2 p-0"
                     onClick={() => setShowPassword((prev) => !prev)}
-                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                    aria-label={showPassword ? t('aria.hidePassword') : t('aria.showPassword')}
                     aria-pressed={showPassword}
                   >
                     {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -156,13 +167,13 @@ export function LoginPage() {
                 disabled={loginMutation.isPending || isLocked}
               >
                 <span className="font-serif text-lg italic">
-                  {loginMutation.isPending ? 'Entering...' : 'Enter Journal'}
+                  {loginMutation.isPending ? t('login.submitPending') : t('login.submitIdle')}
                 </span>
               </Button>
 
               {isLocked && (
                 <p className="text-sm text-error" role="status" aria-live="polite">
-                  Try again in {lockSeconds}s.
+                  {t('login.tryAgainIn', { seconds: lockSeconds })}
                 </p>
               )}
             </form>
@@ -173,7 +184,7 @@ export function LoginPage() {
               </div>
               <div className="relative flex justify-center text-xs uppercase">
                 <span className="bg-surface-container-lowest px-4 font-medium tracking-widest text-outline">
-                  Or Sign In With
+                  {t('login.orSignInWith')}
                 </span>
               </div>
             </div>
@@ -182,9 +193,9 @@ export function LoginPage() {
           </Card>
 
           <p className="mt-md text-center text-on-surface-variant">
-            New to the diary?{' '}
+            {t('login.ctaLead')}{' '}
             <a className="font-bold text-secondary hover:underline" href="#">
-              Start your reflection
+              {t('login.ctaLink')}
             </a>
           </p>
         </div>

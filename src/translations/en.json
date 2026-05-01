@@ -1,0 +1,122 @@
+{
+  "app": {
+    "documentTitle": "Melodiary"
+  },
+  "common": {
+    "loading": "Loading..."
+  },
+  "nav": {
+    "songDiary": "Song Diary",
+    "newEntry": "New Entry",
+    "pastMelodies": "Past Melodies"
+  },
+  "layout": {
+    "footerLead": "Keep journaling your musical memories.",
+    "footerRights": "Melodiary © 2026"
+  },
+  "aria": {
+    "settings": "Settings",
+    "searchMelodies": "Search melodies",
+    "recordMemory": "Record a New Memory",
+    "hidePassword": "Hide password",
+    "showPassword": "Show password"
+  },
+  "authHeader": {
+    "about": "About",
+    "journalingGuide": "Journaling Guide",
+    "signUp": "Sign Up"
+  },
+  "authFooter": {
+    "rights": "© 2026. Curated for your memories.",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfUse": "Terms of Use",
+    "support": "Support"
+  },
+  "social": {
+    "google": "Google"
+  },
+  "login": {
+    "heading": "Log in to Melodiary",
+    "subheading": "Continue your musical journey...",
+    "emailLabel": "Email Address",
+    "passwordLabel": "Password",
+    "emailPlaceholder": "your@email.com",
+    "passwordPlaceholder": "••••••••",
+    "forgotPassword": "Forgot Password?",
+    "submitIdle": "Enter Journal",
+    "submitPending": "Entering...",
+    "orSignInWith": "Or Sign In With",
+    "ctaLead": "New to the diary?",
+    "ctaLink": "Start your reflection",
+    "tryAgainIn": "Try again in {{seconds}}s.",
+    "errors": {
+      "lockedOut": "Too many attempts. Please wait before trying again.",
+      "invalidCredentials": "Incorrect email or password.",
+      "generic": "Something went wrong. Please try again."
+    },
+    "validation": {
+      "email": "Please enter a valid email address.",
+      "passwordMin": "Password must contain at least 8 characters."
+    }
+  },
+  "dashboard": {
+    "title": "Authenticated",
+    "welcome": "{{name}}, you are now inside your Song Diary dashboard."
+  },
+  "newEntry": {
+    "badge": "New Entry",
+    "heading": "How was your day?",
+    "subheading": "Capture your feelings and let Melody AI turn it into your daily soundtrack.",
+    "textareaPlaceholder": "Today felt like a slow rainy afternoon with a hopeful ending...",
+    "resonanceLabel": "Current Resonance",
+    "generate": "Generate My Song",
+    "generating": "Generating...",
+    "validation": {
+      "reflectionMin": "Write at least a few lines about your day.",
+      "reflectionMax": "Keep it under 2000 characters."
+    },
+    "inspiration": {
+      "label": "Inspiration",
+      "title": "Atmospheric Indie Folk",
+      "description": "AI will interpret your mood into a musical entry with warm textures and reflective melodies."
+    },
+    "tags": {
+      "acoustic": "Acoustic",
+      "ethereal": "Ethereal",
+      "slowTempo": "Slow Tempo"
+    },
+    "resonance": {
+      "melancholic": "Melancholic",
+      "ethereal": "Ethereal",
+      "uplifting": "Uplifting",
+      "cinematic": "Cinematic"
+    }
+  },
+  "pastMelodies": {
+    "title": "Past Melodies",
+    "subtitle": "A chronological journey through your musical soul.",
+    "searchPlaceholder": "Search melodies...",
+    "loading": "Loading your melodies...",
+    "error": "Could not load diary entries. Please try again.",
+    "empty": "No melodies match your filters.",
+    "recordMemory": "Record a New Memory",
+    "mixedMood": "Mixed",
+    "weekLabel": "Week of {{start}} - {{end}}, {{year}}",
+    "filters": {
+      "all": "All Time",
+      "thisMonth": "This Month",
+      "favorites": "Favorites",
+      "melancholy": "Melancholy"
+    },
+    "aggregation": {
+      "week": "By Week",
+      "month": "By Month"
+    },
+    "group": {
+      "entryCount_one": "{{count}} melody",
+      "entryCount_other": "{{count}} melodies",
+      "topMood": "Top mood: {{mood}}"
+    },
+    "playTrack": "Play {{title}}"
+  }
+}

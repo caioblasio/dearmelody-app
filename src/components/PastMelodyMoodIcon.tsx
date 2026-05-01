@@ -1,22 +1,14 @@
 import type { MoodIconKind } from '@/lib/past-melodies-mock'
-import { CloudSnow, Leaf, type LucideProps, Smile, Sparkles, Zap } from 'lucide-react'
+import { CloudSnow, Leaf, type LucideIcon, type LucideProps, Smile, Sparkles, Zap } from 'lucide-react'
 
-function iconFor(kind: MoodIconKind) {
-  switch (kind) {
-    case 'melancholy':
-      return CloudSnow
-    case 'electric':
-      return Zap
-    case 'organic':
-      return Leaf
-    case 'dreamy':
-    case 'nostalgic':
-      return Sparkles
-    case 'cozy':
-    case 'serene':
-    default:
-      return Smile
-  }
+const MOOD_ICONS: Record<MoodIconKind, LucideIcon> = {
+  serene: Smile,
+  melancholy: CloudSnow,
+  electric: Zap,
+  organic: Leaf,
+  dreamy: Sparkles,
+  cozy: Smile,
+  nostalgic: Sparkles,
 }
 
 type PastMelodyMoodIconProps = LucideProps & {
@@ -24,6 +16,6 @@ type PastMelodyMoodIconProps = LucideProps & {
 }
 
 export function PastMelodyMoodIcon({ mood, className, ...props }: PastMelodyMoodIconProps) {
-  const Icon = iconFor(mood)
+  const Icon = MOOD_ICONS[mood]
   return <Icon className={className} aria-hidden {...props} />
 }

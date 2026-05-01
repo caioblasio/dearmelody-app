@@ -1,6 +1,8 @@
+import type { TFunction } from 'i18next'
 import { CalendarDays, ChevronDown, Plus, Search } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 
 import { useGetDiary } from '@/api/diary/use-get-diary'
 import { PastMelodyGridCard } from '@/components/PastMelodyGridCard'
@@ -9,20 +11,11 @@ import { Input } from '@/components/ui/input'
 import type { PastMelodyEntry } from '@/lib/past-melodies-mock'
 import { cn } from '@/lib/utils'
 
-type FilterId = 'all' | 'month' | 'favorites' | 'melancholy'
-type AggregationMode = 'week' | 'month'
+const FILTER_IDS = ['all', 'thisMonth', 'favorites', 'melancholy'] as const
+type FilterId = (typeof FILTER_IDS)[number]
 
-const FILTER_CHIPS: { id: FilterId; label: string }[] = [
-  { id: 'all', label: 'All Time' },
-  { id: 'month', label: 'This Month' },
-  { id: 'favorites', label: 'Favorites' },
-  { id: 'melancholy', label: 'Melancholy' },
-]
-
-const AGGREGATION_OPTIONS: { id: AggregationMode; label: string }[] = [
-  { id: 'week', label: 'By Week' },
-  { id: 'month', label: 'By Month' },
-]
+const AGGREGATION_IDS = ['week', 'month'] as const
+type AggregationMode = (typeof AGGREGATION_IDS)[number]
 
 const MOCK_MONTH_FOCUS = '2023-10'
 
@@ -35,12 +28,12 @@ type DiaryGroup = {
 
 function applyFilter(entries: PastMelodyEntry[], filter: FilterId): PastMelodyEntry[] {
   switch (filter) {
-    case 'month':
+    case 'thisMonth':
       return entries.filter((e) => e.monthKey === MOCK_MONTH_FOCUS)
     case 'favorites':
       return entries.filter((e) => e.favorite)
     case 'melancholy':
-      return entries.filter((e) => e.moodLabel.toLowerCase() === 'melancholy')
+      return entries.filter((e) => e.moodIcon === 'melancholy')
     case 'all':
     default:
       return entries
@@ -69,43 +62,54 @@ function startOfWeek(date: Date): Date {
   return d
 }
 
-function formatMonthLabel(date: Date): string {
-  return new Intl.DateTimeFormat('en-US', { month: 'long', year: 'numeric' }).format(date)
+function formatMonthLabel(date: Date, locale: string): string {
+  return new Intl.DateTimeFormat(locale, { month: 'long', year: 'numeric' }).format(date)
 }
 
-function formatWeekLabel(date: Date): string {
+function formatWeekLabel(date: Date, locale: string, t: TFunction): string {
   const start = startOfWeek(date)
   const end = new Date(start)
   end.setDate(start.getDate() + 6)
-  const startLabel = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric' }).format(
+  const startLabel = new Intl.DateTimeFormat(locale, { month: 'short', day: 'numeric' }).format(
     start
   )
-  const endLabel = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric' }).format(end)
-  return `Week of ${startLabel} - ${endLabel}, ${start.getFullYear()}`
+  const endLabel = new Intl.DateTimeFormat(locale, { month: 'short', day: 'numeric' }).format(end)
+
+  return t('pastMelodies.weekLabel', {
+    start: startLabel,
+    end: endLabel,
+    year: start.getFullYear(),
+  })
 }
 
-function getTopMood(entries: PastMelodyEntry[]): string {
+function getTopMood(entries: PastMelodyEntry[], t: TFunction): string {
   const counters = entries.reduce<Record<string, number>>((acc, entry) => {
     acc[entry.moodLabel] = (acc[entry.moodLabel] ?? 0) + 1
     return acc
   }, {})
   const top = Object.entries(counters).sort((a, b) => b[1] - a[1])[0]
-  return top?.[0] ?? 'Mixed'
+  return top?.[0] ?? t('pastMelodies.mixedMood')
 }
 
-function groupDiaryEntries(entries: PastMelodyEntry[], mode: AggregationMode): DiaryGroup[] {
+function groupDiaryEntries(
+  entries: PastMelodyEntry[],
+  mode: AggregationMode,
+  locale: string,
+  t: TFunction
+): DiaryGroup[] {
   const grouped = entries.reduce<Map<string, DiaryGroup>>((acc, entry) => {
     const date = parseEntryDate(entry)
     const key =
       mode === 'month'
         ? `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`
         : startOfWeek(date).toISOString().slice(0, 10)
-    const label = mode === 'month' ? formatMonthLabel(date) : formatWeekLabel(date)
+    const label =
+      mode === 'month' ? formatMonthLabel(date, locale) : formatWeekLabel(date, locale, t)
 
     const existing = acc.get(key)
     if (existing) {
       existing.items.push(entry)
-      existing.moodLabel = getTopMood(existing.items)
+      existing.moodLabel = getTopMood(existing.items, t)
       return acc
     }
 
@@ -126,22 +130,25 @@ function groupDiaryEntries(entries: PastMelodyEntry[], mode: AggregationMode): D
 }
 
 export function MyMelodiesPage() {
+  const { t, i18n } = useTranslation()
+
   const { data, isLoading, isError } = useGetDiary()
   const [search, setSearch] = useState('')
   const [filter, setFilter] = useState<FilterId>('all')
   const [aggregationMode, setAggregationMode] = useState<AggregationMode>('week')
   const [collapsedGroups, setCollapsedGroups] = useState<Record<string, boolean>>({})
 
-  const entries = data?.entries ?? []
+  const entriesList = data?.entries
 
   const filtered = useMemo(() => {
+    const entries = entriesList ?? []
     const afterFilter = applyFilter(entries, filter)
     return afterFilter.filter((e) => matchesSearch(e, search))
-  }, [entries, filter, search])
+  }, [entriesList, filter, search])
 
   const groupedEntries = useMemo(
-    () => groupDiaryEntries(filtered, aggregationMode),
-    [aggregationMode, filtered]
+    () => groupDiaryEntries(filtered, aggregationMode, i18n.language, t),
+    [aggregationMode, filtered, i18n.language, t]
   )
 
   const toggleGroup = (groupKey: string) => {
@@ -152,11 +159,9 @@ export function MyMelodiesPage() {
     <div className="space-y-8 pb-28">
       <header className="space-y-2">
         <h1 className="font-serif text-3xl font-semibold text-primary sm:text-4xl">
-          Past Melodies
+          {t('pastMelodies.title')}
         </h1>
-        <p className="italic text-on-surface-variant">
-          A chronological journey through your musical soul.
-        </p>
+        <p className="italic text-on-surface-variant">{t('pastMelodies.subtitle')}</p>
       </header>
 
       <section className="space-y-4">
@@ -170,20 +175,20 @@ export function MyMelodiesPage() {
               type="search"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search melodies..."
+              placeholder={t('pastMelodies.searchPlaceholder')}
               className="h-12 rounded-xl border-0 bg-surface-container-lowest pl-11 shadow-[0_4px_12px_rgba(107,86,119,0.06)] focus-visible:ring-1 focus-visible:ring-primary-container"
-              aria-label="Search melodies"
+              aria-label={t('aria.searchMelodies')}
             />
           </div>
 
           <div className="inline-flex rounded-full bg-surface-container p-1">
-            {AGGREGATION_OPTIONS.map((option) => {
-              const selected = aggregationMode === option.id
+            {AGGREGATION_IDS.map((id) => {
+              const selected = aggregationMode === id
               return (
                 <button
-                  key={option.id}
+                  key={id}
                   type="button"
-                  onClick={() => setAggregationMode(option.id)}
+                  onClick={() => setAggregationMode(id)}
                   className={cn(
                     'inline-flex items-center gap-1 rounded-full px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.05em] transition-colors',
                     selected
@@ -192,20 +197,20 @@ export function MyMelodiesPage() {
                   )}
                 >
                   <CalendarDays className="size-3.5" aria-hidden />
-                  {option.label}
+                  {t(`pastMelodies.aggregation.${id}`)}
                 </button>
               )
             })}
           </div>
 
           <div className="scrollbar-hide -mx-1 flex gap-2 overflow-x-auto pb-2">
-            {FILTER_CHIPS.map((chip) => {
-              const selected = filter === chip.id
+            {FILTER_IDS.map((id) => {
+              const selected = filter === id
               return (
                 <button
-                  key={chip.id}
+                  key={id}
                   type="button"
-                  onClick={() => setFilter(chip.id)}
+                  onClick={() => setFilter(id)}
                   className={cn(
                     'shrink-0 rounded-full px-4 py-2 text-[12px] font-semibold uppercase tracking-[0.05em] transition-colors',
                     selected
@@ -213,7 +218,7 @@ export function MyMelodiesPage() {
                       : 'bg-surface-container-high text-on-surface-variant hover:bg-surface-container'
                   )}
                 >
-                  {chip.label}
+                  {t(`pastMelodies.filters.${id}`)}
                 </button>
               )
             })}
@@ -222,13 +227,13 @@ export function MyMelodiesPage() {
 
         <div className="hidden items-start gap-4 lg:grid lg:grid-cols-[auto_minmax(260px,1fr)_auto]">
           <div className="inline-flex rounded-full bg-surface-container p-1">
-            {AGGREGATION_OPTIONS.map((option) => {
-              const selected = aggregationMode === option.id
+            {AGGREGATION_IDS.map((id) => {
+              const selected = aggregationMode === id
               return (
                 <button
-                  key={option.id}
+                  key={id}
                   type="button"
-                  onClick={() => setAggregationMode(option.id)}
+                  onClick={() => setAggregationMode(id)}
                   className={cn(
                     'inline-flex items-center gap-1 rounded-full px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.05em] transition-colors',
                     selected
@@ -237,7 +242,7 @@ export function MyMelodiesPage() {
                   )}
                 >
                   <CalendarDays className="size-3.5" aria-hidden />
-                  {option.label}
+                  {t(`pastMelodies.aggregation.${id}`)}
                 </button>
               )
             })}
@@ -252,20 +257,20 @@ export function MyMelodiesPage() {
               type="search"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search melodies..."
+              placeholder={t('pastMelodies.searchPlaceholder')}
               className="h-11 rounded-xl border-0 bg-surface-container-lowest pl-11 shadow-[0_4px_12px_rgba(107,86,119,0.06)] focus-visible:ring-1 focus-visible:ring-primary-container"
-              aria-label="Search melodies"
+              aria-label={t('aria.searchMelodies')}
             />
           </div>
 
           <div className="flex flex-wrap justify-end gap-2">
-            {FILTER_CHIPS.map((chip) => {
-              const selected = filter === chip.id
+            {FILTER_IDS.map((id) => {
+              const selected = filter === id
               return (
                 <button
-                  key={chip.id}
+                  key={id}
                   type="button"
-                  onClick={() => setFilter(chip.id)}
+                  onClick={() => setFilter(id)}
                   className={cn(
                     'rounded-full px-4 py-2 text-[12px] font-semibold uppercase tracking-[0.05em] transition-colors',
                     selected
@@ -273,7 +278,7 @@ export function MyMelodiesPage() {
                       : 'bg-surface-container-high text-on-surface-variant hover:bg-surface-container'
                   )}
                 >
-                  {chip.label}
+                  {t(`pastMelodies.filters.${id}`)}
                 </button>
               )
             })}
@@ -283,20 +288,18 @@ export function MyMelodiesPage() {
 
       {isLoading && (
         <p className="text-sm text-on-surface-variant" role="status" aria-live="polite">
-          Loading your melodies...
+          {t('pastMelodies.loading')}
         </p>
       )}
 
       {isError && (
         <p className="text-sm text-error" role="alert">
-          Could not load diary entries. Please try again.
+          {t('pastMelodies.error')}
         </p>
       )}
 
       {groupedEntries.length === 0 && !isLoading && (
-        <p className="text-center text-sm text-on-surface-variant">
-          No melodies match your filters.
-        </p>
+        <p className="text-center text-sm text-on-surface-variant">{t('pastMelodies.empty')}</p>
       )}
 
       <div className="space-y-5">
@@ -317,8 +320,11 @@ export function MyMelodiesPage() {
                 <div className="space-y-1">
                   <h2 className="font-serif text-xl font-semibold text-primary">{group.label}</h2>
                   <p className="text-sm text-on-surface-variant">
-                    {group.items.length} {group.items.length > 1 ? 'melodies' : 'melody'} - Top
-                    mood: <span className="font-medium text-primary">{group.moodLabel}</span>
+                    <span>{t('pastMelodies.group.entryCount', { count: group.items.length })}</span>{' '}
+                    <span>-</span>{' '}
+                    <span className="font-medium text-primary">
+                      {t('pastMelodies.group.topMood', { mood: group.moodLabel })}
+                    </span>
                   </p>
                 </div>
                 <ChevronDown
@@ -352,26 +358,26 @@ export function MyMelodiesPage() {
 
       <Link
         to="/new-entry"
-        aria-label="Record a New Memory"
+        aria-label={t('aria.recordMemory')}
         className="fixed bottom-0 right-5 z-40 hidden items-center gap-2 overflow-hidden rounded-full bg-primary px-5 py-3 text-sm font-semibold text-on-primary shadow-[0_10px_30px_rgba(107,86,119,0.35)] backdrop-blur-sm transition-transform hover:-translate-y-0.5 hover:scale-[1.02] active:scale-95 lg:inline-flex"
       >
         <span className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-primary/0 via-white/10 to-white/20" />
         <span className="pointer-events-none absolute -right-0.5 -top-0.5 size-2 rounded-full bg-white/80" />
         <span className="pointer-events-none absolute -right-0.5 -top-0.5 size-2 animate-ping rounded-full bg-white/60" />
         <Plus className="size-4" aria-hidden />
-        <span className="relative">Record a New Memory</span>
+        <span className="relative">{t('pastMelodies.recordMemory')}</span>
       </Link>
 
       <Link
         to="/new-entry"
-        aria-label="Record a New Memory"
-        className="fixed bottom-20 left-1/2 z-40 inline-flex -translate-x-1/2 items-center gap-2 overflow-hidden rounded-full bg-primary px-6 py-3 text-sm font-semibold text-on-primary shadow-[0_10px_30px_rgba(107,86,119,0.35)] backdrop-blur-sm transition-transform hover:scale-[1.01] active:scale-95 lg:hidden"
+        aria-label={t('aria.recordMemory')}
+        className="fixed bottom-8 left-1/2 z-40 inline-flex -translate-x-1/2 items-center gap-2 overflow-hidden rounded-full bg-primary px-6 py-3 text-sm font-semibold text-on-primary shadow-[0_10px_30px_rgba(107,86,119,0.35)] backdrop-blur-sm transition-transform hover:scale-[1.01] active:scale-95 lg:hidden"
       >
         <span className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-primary/0 via-white/10 to-white/20" />
         <span className="pointer-events-none absolute -right-0.5 -top-0.5 size-2 rounded-full bg-white/80" />
         <span className="pointer-events-none absolute -right-0.5 -top-0.5 size-2 animate-ping rounded-full bg-white/60" />
         <Plus className="size-4" aria-hidden />
-        <span className="relative">Record a New Memory</span>
+        <span className="relative">{t('pastMelodies.recordMemory')}</span>
       </Link>
     </div>
   )

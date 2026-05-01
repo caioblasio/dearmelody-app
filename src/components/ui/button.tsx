@@ -37,4 +37,5 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 )
 Button.displayName = "Button"
 
+// eslint-disable-next-line react-refresh/only-export-components -- share CVA helpers with variants
 export { Button, buttonVariants }

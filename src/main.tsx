@@ -19,12 +19,16 @@ async function enableMocking() {
   })
 }
 
-void enableMocking().then(() => {
+async function bootstrap() {
+  await import('./i18n/config')
+  await enableMocking()
   createRoot(document.getElementById('root')!).render(
     <StrictMode>
       <QueryClientProvider client={queryClient}>
         <RouterProvider router={router} />
       </QueryClientProvider>
-    </StrictMode>
+    </StrictMode>,
   )
-})
+}
+
+void bootstrap()

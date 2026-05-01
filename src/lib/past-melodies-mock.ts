@@ -2,19 +2,16 @@ export type MoodIconKind = 'serene' | 'melancholy' | 'electric' | 'organic' | 'd
 
 export type PastMelodyEntry = {
   id: string
-  /** Display date, uppercase in designs */
   dateLabel: string
   title: string
   excerpt: string
   moodLabel: string
   moodIcon: MoodIconKind
-  /** Accent for mobile list pills */
   listMoodTone: 'serene' | 'surface' | 'container'
   trackTitle: string
   trackArtist: string
   artSrc: string
   favorite?: boolean
-  /** YYYY-MM for simple “This Month” filter */
   monthKey: string
 }
 
@@ -39,8 +36,7 @@ export const PAST_MELODIES_MOCK: PastMelodyEntry[] = [
     id: '2',
     dateLabel: 'October 22, 2023',
     title: 'Rainy Coffee Musings',
-    excerpt:
-      'The tempo of the rain matched the beat perfectly. I felt a strange sense of clarity...',
+    excerpt: 'The tempo of the rain matched the beat perfectly. I felt a strange sense of clarity...',
     moodLabel: 'Cozy',
     moodIcon: 'cozy',
     listMoodTone: 'surface',
@@ -69,8 +65,7 @@ export const PAST_MELODIES_MOCK: PastMelodyEntry[] = [
     id: '4',
     dateLabel: 'October 19, 2023',
     title: 'Midnight Drive',
-    excerpt:
-      'Thinking about old friends and paths not taken. The road seemed infinite under the moon...',
+    excerpt: 'Thinking about old friends and paths not taken. The road seemed infinite under the moon...',
     moodLabel: 'Nostalgic',
     moodIcon: 'nostalgic',
     listMoodTone: 'container',

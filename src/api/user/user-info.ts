@@ -7,9 +7,5 @@ export type UserInfoResponse = {
 }
 
 export async function fetchUserInfo(): Promise<UserInfoResponse> {
-  try {
-    return await apiRequest<UserInfoResponse>('/api/user_info')
-  } catch (error) {
-    throw error
-  }
+  return apiRequest<UserInfoResponse>('/api/user_info')
 }

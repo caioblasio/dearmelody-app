@@ -1,4 +1,5 @@
 import { PlayCircle } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 import type { PastMelodyEntry } from '@/lib/past-melodies-mock'
 import { cn } from '@/lib/utils'
@@ -11,6 +12,7 @@ type PastMelodyGridCardProps = {
 }
 
 export function PastMelodyGridCard({ entry, className }: PastMelodyGridCardProps) {
+  const { t } = useTranslation()
   const dateCaps = entry.dateLabel.toUpperCase()
 
   return (
@@ -56,7 +58,7 @@ export function PastMelodyGridCard({ entry, className }: PastMelodyGridCardProps
         </div>
         <button
           type="button"
-          aria-label={`Play ${entry.trackTitle}`}
+          aria-label={t('pastMelodies.playTrack', { title: entry.trackTitle })}
           className="mr-2 text-primary transition-opacity hover:opacity-80"
         >
           <PlayCircle className="size-7" aria-hidden />

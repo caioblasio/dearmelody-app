@@ -68,9 +68,11 @@ export const handlers = [
   http.post('/api/diary/new-entry', async ({ request }) => {
     const body = (await request.json()) as { reflection: string; resonance: string }
     await delay(1500)
+    const resonantLabel =
+      body.resonance.slice(0, 1).toUpperCase() + body.resonance.slice(1).toLowerCase()
     return HttpResponse.json({
       id: 'entry-' + Date.now(),
-      title: `${body.resonance} Melody`,
+      title: `${resonantLabel} melody`,
       url: 'https://example.com/songs/mock-song.mp3',
       duration: 180,
       mood: body.resonance,
