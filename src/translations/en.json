@@ -117,6 +117,13 @@
       "entryCount_other": "{{count}} melodies",
       "topMood": "Top mood: {{mood}}"
     },
-    "playTrack": "Play {{title}}"
+    "playTrack": "Play {{title}}",
+    "diary": {
+      "entriesStamp": "{{count}}",
+      "sectionToggle": "Show or hide entries for {{label}}",
+      "soundtrack": "Soundtrack",
+      "favorite": "Saved memory",
+      "groupBy": "Group entries by"
+    }
   }
 }

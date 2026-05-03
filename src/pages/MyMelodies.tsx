@@ -1,21 +1,21 @@
 import type { TFunction } from 'i18next'
-import { CalendarDays, ChevronDown, Plus, Search } from 'lucide-react'
+import { Plus, Search } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
 import { useGetDiary } from '@/api/diary/use-get-diary'
-import { PastMelodyGridCard } from '@/components/PastMelodyGridCard'
-import { PastMelodyListCard } from '@/components/PastMelodyListCard'
+import { DiaryAggregationTabs } from '@/components/diary/DiaryAggregationTabs'
+import type { DiaryAggregationTabId } from '@/components/diary/diary-aggregation-types'
+import { DiaryNotebookShell } from '@/components/diary/DiaryNotebookShell'
+import { DiarySection } from '@/components/diary/DiarySection'
 import { Input } from '@/components/ui/input'
 import type { PastMelodyEntry } from '@/lib/past-melodies-mock'
+import { parsePastMelodyEntryDate } from '@/lib/past-melody-date'
 import { cn } from '@/lib/utils'
 
 const FILTER_IDS = ['all', 'thisMonth', 'favorites', 'melancholy'] as const
 type FilterId = (typeof FILTER_IDS)[number]
-
-const AGGREGATION_IDS = ['week', 'month'] as const
-type AggregationMode = (typeof AGGREGATION_IDS)[number]
 
 const MOCK_MONTH_FOCUS = '2023-10'
 
@@ -24,6 +24,18 @@ type DiaryGroup = {
   label: string
   items: PastMelodyEntry[]
   moodLabel: string
+}
+
+const searchNotebookClass =
+  'h-12 w-full rounded-lg border border-outline-variant/55 bg-white/45 pl-10 pr-3 text-on-surface shadow-none outline-none placeholder:text-on-surface-variant/65 focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/25 lg:h-11 lg:pl-10'
+
+function filterChipClass(selected: boolean) {
+  return cn(
+    'shrink-0 rounded-md border px-3 py-2 text-[11px] font-semibold uppercase tracking-wide transition-colors sm:text-xs',
+    selected
+      ? 'border-primary/75 bg-primary/[0.07] text-primary'
+      : 'border-transparent text-on-surface-variant hover:border-outline-variant/50 hover:bg-white/50',
+  )
 }
 
 function applyFilter(entries: PastMelodyEntry[], filter: FilterId): PastMelodyEntry[] {
@@ -47,11 +59,6 @@ function matchesSearch(entry: PastMelodyEntry, query: string): boolean {
     .join(' ')
     .toLowerCase()
   return blob.includes(q)
-}
-
-function parseEntryDate(entry: PastMelodyEntry): Date {
-  const parsed = new Date(entry.dateLabel)
-  return Number.isNaN(parsed.getTime()) ? new Date() : parsed
 }
 
 function startOfWeek(date: Date): Date {
@@ -93,12 +100,12 @@ function getTopMood(entries: PastMelodyEntry[], t: TFunction): string {
 
 function groupDiaryEntries(
   entries: PastMelodyEntry[],
-  mode: AggregationMode,
+  mode: DiaryAggregationTabId,
   locale: string,
   t: TFunction
 ): DiaryGroup[] {
   const grouped = entries.reduce<Map<string, DiaryGroup>>((acc, entry) => {
-    const date = parseEntryDate(entry)
+    const date = parsePastMelodyEntryDate(entry)
     const key =
       mode === 'month'
         ? `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`
@@ -123,8 +130,8 @@ function groupDiaryEntries(
   }, new Map<string, DiaryGroup>())
 
   return [...grouped.values()].sort((a, b) => {
-    const dateA = parseEntryDate(a.items[0]).getTime()
-    const dateB = parseEntryDate(b.items[0]).getTime()
+    const dateA = parsePastMelodyEntryDate(a.items[0]).getTime()
+    const dateB = parsePastMelodyEntryDate(b.items[0]).getTime()
     return dateB - dateA
   })
 }
@@ -135,7 +142,7 @@ export function MyMelodiesPage() {
   const { data, isLoading, isError } = useGetDiary()
   const [search, setSearch] = useState('')
   const [filter, setFilter] = useState<FilterId>('all')
-  const [aggregationMode, setAggregationMode] = useState<AggregationMode>('week')
+  const [aggregationMode, setAggregationMode] = useState<DiaryAggregationTabId>('week')
   const [collapsedGroups, setCollapsedGroups] = useState<Record<string, boolean>>({})
 
   const entriesList = data?.entries
@@ -164,197 +171,123 @@ export function MyMelodiesPage() {
         <p className="italic text-on-surface-variant">{t('pastMelodies.subtitle')}</p>
       </header>
 
-      <section className="space-y-4">
-        <div className="space-y-4 lg:hidden">
-          <div className="relative">
-            <Search
-              className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-outline"
-              aria-hidden
-            />
-            <Input
-              type="search"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder={t('pastMelodies.searchPlaceholder')}
-              className="h-12 rounded-xl border-0 bg-surface-container-lowest pl-11 shadow-[0_4px_12px_rgba(107,86,119,0.06)] focus-visible:ring-1 focus-visible:ring-primary-container"
-              aria-label={t('aria.searchMelodies')}
-            />
+      <DiaryNotebookShell>
+        <div className="space-y-4 py-4 pr-2 sm:py-5 sm:pr-3 lg:space-y-5 lg:pb-6 lg:pt-5">
+          <div className="space-y-4 lg:hidden">
+            <div className="relative">
+              <Search
+                className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-outline"
+                aria-hidden
+              />
+              <Input
+                type="search"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder={t('pastMelodies.searchPlaceholder')}
+                className={searchNotebookClass}
+                aria-label={t('aria.searchMelodies')}
+              />
+            </div>
+
+            <DiaryAggregationTabs value={aggregationMode} onChange={setAggregationMode} />
+
+            <div className="scrollbar-hide -mx-0.5 flex gap-2 overflow-x-auto pb-0.5">
+              {FILTER_IDS.map((id) => {
+                const selected = filter === id
+                return (
+                  <button
+                    key={id}
+                    type="button"
+                    onClick={() => setFilter(id)}
+                    className={filterChipClass(selected)}
+                  >
+                    {t(`pastMelodies.filters.${id}`)}
+                  </button>
+                )
+              })}
+            </div>
           </div>
 
-          <div className="inline-flex rounded-full bg-surface-container p-1">
-            {AGGREGATION_IDS.map((id) => {
-              const selected = aggregationMode === id
-              return (
-                <button
-                  key={id}
-                  type="button"
-                  onClick={() => setAggregationMode(id)}
-                  className={cn(
-                    'inline-flex items-center gap-1 rounded-full px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.05em] transition-colors',
-                    selected
-                      ? 'bg-primary text-on-primary'
-                      : 'text-on-surface-variant hover:bg-surface-container-high'
-                  )}
-                >
-                  <CalendarDays className="size-3.5" aria-hidden />
-                  {t(`pastMelodies.aggregation.${id}`)}
-                </button>
-              )
-            })}
-          </div>
+          <div className="hidden lg:block">
+            <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-3 border-b border-primary/12 pb-3">
+              <DiaryAggregationTabs
+                value={aggregationMode}
+                onChange={setAggregationMode}
+                className="min-w-0 flex-1 border-b-0 pb-0"
+              />
+              <div className="flex max-w-full flex-wrap justify-end gap-2">
+                {FILTER_IDS.map((id) => {
+                  const selected = filter === id
+                  return (
+                    <button
+                      key={id}
+                      type="button"
+                      onClick={() => setFilter(id)}
+                      className={filterChipClass(selected)}
+                    >
+                      {t(`pastMelodies.filters.${id}`)}
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
 
-          <div className="scrollbar-hide -mx-1 flex gap-2 overflow-x-auto pb-2">
-            {FILTER_IDS.map((id) => {
-              const selected = filter === id
-              return (
-                <button
-                  key={id}
-                  type="button"
-                  onClick={() => setFilter(id)}
-                  className={cn(
-                    'shrink-0 rounded-full px-4 py-2 text-[12px] font-semibold uppercase tracking-[0.05em] transition-colors',
-                    selected
-                      ? 'bg-primary text-on-primary'
-                      : 'bg-surface-container-high text-on-surface-variant hover:bg-surface-container'
-                  )}
-                >
-                  {t(`pastMelodies.filters.${id}`)}
-                </button>
-              )
-            })}
-          </div>
-        </div>
-
-        <div className="hidden items-start gap-4 lg:grid lg:grid-cols-[auto_minmax(260px,1fr)_auto]">
-          <div className="inline-flex rounded-full bg-surface-container p-1">
-            {AGGREGATION_IDS.map((id) => {
-              const selected = aggregationMode === id
-              return (
-                <button
-                  key={id}
-                  type="button"
-                  onClick={() => setAggregationMode(id)}
-                  className={cn(
-                    'inline-flex items-center gap-1 rounded-full px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.05em] transition-colors',
-                    selected
-                      ? 'bg-primary text-on-primary'
-                      : 'text-on-surface-variant hover:bg-surface-container-high'
-                  )}
-                >
-                  <CalendarDays className="size-3.5" aria-hidden />
-                  {t(`pastMelodies.aggregation.${id}`)}
-                </button>
-              )
-            })}
-          </div>
-
-          <div className="relative">
-            <Search
-              className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-outline"
-              aria-hidden
-            />
-            <Input
-              type="search"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder={t('pastMelodies.searchPlaceholder')}
-              className="h-11 rounded-xl border-0 bg-surface-container-lowest pl-11 shadow-[0_4px_12px_rgba(107,86,119,0.06)] focus-visible:ring-1 focus-visible:ring-primary-container"
-              aria-label={t('aria.searchMelodies')}
-            />
-          </div>
-
-          <div className="flex flex-wrap justify-end gap-2">
-            {FILTER_IDS.map((id) => {
-              const selected = filter === id
-              return (
-                <button
-                  key={id}
-                  type="button"
-                  onClick={() => setFilter(id)}
-                  className={cn(
-                    'rounded-full px-4 py-2 text-[12px] font-semibold uppercase tracking-[0.05em] transition-colors',
-                    selected
-                      ? 'bg-primary text-on-primary'
-                      : 'bg-surface-container-high text-on-surface-variant hover:bg-surface-container'
-                  )}
-                >
-                  {t(`pastMelodies.filters.${id}`)}
-                </button>
-              )
-            })}
-          </div>
-        </div>
-      </section>
-
-      {isLoading && (
-        <p className="text-sm text-on-surface-variant" role="status" aria-live="polite">
-          {t('pastMelodies.loading')}
-        </p>
-      )}
-
-      {isError && (
-        <p className="text-sm text-error" role="alert">
-          {t('pastMelodies.error')}
-        </p>
-      )}
-
-      {groupedEntries.length === 0 && !isLoading && (
-        <p className="text-center text-sm text-on-surface-variant">{t('pastMelodies.empty')}</p>
-      )}
-
-      <div className="space-y-5">
-        {groupedEntries.map((group) => {
-          const isCollapsed = collapsedGroups[group.key] ?? false
-
-          return (
-            <section
-              key={group.key}
-              className="rounded-xl border border-outline-variant/60 bg-surface-container-lowest/70"
-            >
-              <button
-                type="button"
-                onClick={() => toggleGroup(group.key)}
-                className="flex w-full items-center justify-between gap-3 px-4 py-4 text-left sm:px-5"
-                aria-expanded={!isCollapsed}
-              >
-                <div className="space-y-1">
-                  <h2 className="font-serif text-xl font-semibold text-primary">{group.label}</h2>
-                  <p className="text-sm text-on-surface-variant">
-                    <span>{t('pastMelodies.group.entryCount', { count: group.items.length })}</span>{' '}
-                    <span>-</span>{' '}
-                    <span className="font-medium text-primary">
-                      {t('pastMelodies.group.topMood', { mood: group.moodLabel })}
-                    </span>
-                  </p>
-                </div>
-                <ChevronDown
-                  className={cn(
-                    'size-5 text-on-surface-variant transition-transform',
-                    isCollapsed && '-rotate-90'
-                  )}
+            <div className="pt-4">
+              <div className="relative">
+                <Search
+                  className="pointer-events-none absolute left-3 top-1/2 z-[1] size-4 -translate-y-1/2 text-outline"
                   aria-hidden
                 />
-              </button>
+                <Input
+                  type="search"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder={t('pastMelodies.searchPlaceholder')}
+                  className={searchNotebookClass}
+                  aria-label={t('aria.searchMelodies')}
+                />
+              </div>
+            </div>
+          </div>
 
-              {!isCollapsed && (
-                <div className="space-y-6 px-4 pb-4 sm:px-5 sm:pb-5">
-                  <div className="space-y-6 lg:hidden">
-                    {group.items.map((entry) => (
-                      <PastMelodyListCard key={entry.id} entry={entry} />
-                    ))}
-                  </div>
+          {isLoading && (
+            <p className="text-sm text-on-surface-variant" role="status" aria-live="polite">
+              {t('pastMelodies.loading')}
+            </p>
+          )}
 
-                  <div className="hidden gap-6 lg:grid lg:grid-cols-3">
-                    {group.items.map((entry) => (
-                      <PastMelodyGridCard key={entry.id} entry={entry} />
-                    ))}
-                  </div>
-                </div>
-              )}
-            </section>
-          )
-        })}
-      </div>
+          {isError && (
+            <p className="text-sm text-error" role="alert">
+              {t('pastMelodies.error')}
+            </p>
+          )}
+
+          {groupedEntries.length === 0 && !isLoading && (
+            <p className="text-center text-sm text-on-surface-variant">{t('pastMelodies.empty')}</p>
+          )}
+
+          {groupedEntries.length > 0 && !isLoading && (
+            <div className="space-y-0 divide-y divide-dashed divide-primary/18 pt-1">
+              {groupedEntries.map((group) => {
+                const isCollapsed = collapsedGroups[group.key] ?? false
+
+                return (
+                  <DiarySection
+                    key={group.key}
+                    groupKey={group.key}
+                    label={group.label}
+                    items={group.items}
+                    moodLabel={group.moodLabel}
+                    locale={i18n.language}
+                    isCollapsed={isCollapsed}
+                    onToggle={() => toggleGroup(group.key)}
+                  />
+                )
+              })}
+            </div>
+          )}
+        </div>
+      </DiaryNotebookShell>
 
       <Link
         to="/new-entry"

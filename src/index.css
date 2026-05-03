@@ -100,6 +100,61 @@
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
   }
+
+  /* Past Melodies — diary journal motion (see prefers-reduced-motion below) */
+  .diary-entry-reveal {
+    animation: diary-entry-reveal 0.48s ease backwards;
+  }
+
+  @keyframes diary-entry-reveal {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .diary-section-panel {
+    grid-template-rows: 1fr;
+    opacity: 1;
+    transition:
+      grid-template-rows 0.34s ease-out,
+      opacity 0.26s ease;
+  }
+
+  .diary-section-panel-collapsed {
+    grid-template-rows: 0fr;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .diary-chevron {
+    transition: transform 0.26s ease;
+  }
+
+  .diary-chevron-collapsed {
+    transform: rotate(-90deg);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .diary-entry-reveal {
+      animation: none;
+      opacity: 1;
+      transform: none;
+    }
+
+    .diary-section-panel,
+    .diary-section-panel-collapsed {
+      transition: none;
+    }
+
+    .diary-chevron {
+      transition: none;
+    }
+  }
 }
 
 @layer base {
