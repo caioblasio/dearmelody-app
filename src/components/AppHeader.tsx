@@ -12,38 +12,39 @@ export function AppHeader() {
 
   return (
     <header className="border-b border-outline-variant bg-surface-container-lowest/80 backdrop-blur-md">
-      <div className={cn(AUTH_SHELL_CLASS, 'flex items-center justify-between py-4')}>
-        <div className="flex items-center gap-8">
-          <nav className="hidden items-center gap-6 text-sm text-on-surface-variant md:flex">
-            <NavLink className="font-serif text-xl font-bold italic text-primary" to="/" end>
-              {t('nav.songDiary')}
-            </NavLink>
-            <NavLink
-              className={({ isActive }) =>
-                cn(
-                  'border-b-2 border-transparent pb-0.5 transition-colors hover:text-primary',
-                  isActive ? 'border-primary font-semibold text-primary' : '',
-                )
-              }
-              to="/new-entry"
-            >
-              {t('nav.newEntry')}
-            </NavLink>
-            <NavLink
-              className={({ isActive }) =>
-                cn(
-                  'border-b-2 border-transparent pb-0.5 transition-colors hover:text-primary',
-                  isActive ? 'border-primary font-semibold text-primary' : '',
-                )
-              }
-              to="/past-melodies"
-            >
-              {t('nav.pastMelodies')}
-            </NavLink>
-          </nav>
+      <div className={cn(AUTH_SHELL_CLASS, 'flex items-center py-4')}>
+        <div className="flex min-w-0 flex-1 items-center justify-start">
+          <NavLink className="font-serif text-xl font-bold italic text-primary" to="/" end>
+            {t('nav.songDiary')}
+          </NavLink>
         </div>
 
-        <div className="flex items-center gap-3">
+        <nav className="hidden flex-none items-center gap-6 text-sm text-on-surface-variant md:flex">
+          <NavLink
+            className={({ isActive }) =>
+              cn(
+                'border-b-2 border-transparent pb-0.5 transition-colors hover:text-primary',
+                isActive ? 'border-primary font-semibold text-primary' : '',
+              )
+            }
+            to="/new-entry"
+          >
+            {t('nav.newEntry')}
+          </NavLink>
+          <NavLink
+            className={({ isActive }) =>
+              cn(
+                'border-b-2 border-transparent pb-0.5 transition-colors hover:text-primary',
+                isActive ? 'border-primary font-semibold text-primary' : '',
+              )
+            }
+            to="/past-melodies"
+          >
+            {t('nav.pastMelodies')}
+          </NavLink>
+        </nav>
+
+        <div className="flex min-w-0 flex-1 items-center justify-end gap-3">
           <button
             type="button"
             aria-label={t('aria.settings')}
