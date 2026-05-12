@@ -132,7 +132,7 @@ export function MyMelodiesPage() {
       <Link
         to="/new-entry"
         aria-label={t('aria.recordMemory')}
-        className="fixed bottom-8 right-5 z-40 inline-flex h-14 w-14 items-center justify-center overflow-hidden rounded-full bg-primary text-on-primary shadow-[0_10px_30px_rgba(107,86,119,0.35)] backdrop-blur-sm transition-transform hover:scale-105 active:scale-95 lg:bottom-0 lg:h-auto lg:w-auto lg:gap-2 lg:px-5 lg:py-3 lg:text-sm lg:font-semibold lg:hover:-translate-y-0.5 lg:hover:scale-[1.02]"
+        className="fixed bottom-8 right-5 z-40 inline-flex h-14 w-14 items-center justify-center overflow-hidden rounded-full bg-primary text-on-primary shadow-[0_10px_30px_rgba(107,86,119,0.35)] backdrop-blur-sm transition-transform hover:scale-105 active:scale-95 lg:h-auto lg:w-auto lg:gap-2 lg:px-5 lg:py-3 lg:text-sm lg:font-semibold lg:hover:-translate-y-0.5 lg:hover:scale-[1.02]"
       >
         <span className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-primary/0 via-white/10 to-white/20" />
         <span className="pointer-events-none absolute -right-0.5 -top-0.5 size-2 rounded-full bg-white/80" />

@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 
 import { PastMelodyMoodIcon } from '@/components/PastMelodyMoodIcon'
 import { useInViewOnce } from '@/hooks/use-in-view-once'
+import { ARCHIVE_CARD_SHELL_LAYOUT } from '@/lib/archive-card-shell'
 import type { PastMelodyEntry } from '@/lib/past-melodies-mock'
 import { parsePastMelodyEntryDate } from '@/lib/past-melody-date'
 import { getArchiveMoodTheme } from '@/lib/past-melody-archive-theme'
@@ -33,8 +34,9 @@ export function PastMelodyArchiveCard({ entry, locale }: PastMelodyArchiveCardPr
     <article
       ref={ref}
       className={cn(
-        'past-melody-archive-card group flex flex-col border shadow-sm transition-[opacity,transform,box-shadow] duration-700 ease-out',
-        'aspect-[3/4] rounded-2xl p-4 lg:aspect-auto lg:rounded-3xl lg:p-8 lg:shadow-md',
+        'past-melody-archive-card group',
+        ARCHIVE_CARD_SHELL_LAYOUT,
+        'border shadow-sm transition-[opacity,transform,box-shadow] duration-700 ease-out lg:shadow-md',
         'hover:shadow-xl motion-reduce:transition-none',
         visible ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0 motion-reduce:translate-y-0 motion-reduce:opacity-100',
         theme.card,
