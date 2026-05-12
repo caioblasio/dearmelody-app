@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { Music2, WandSparkles } from 'lucide-react'
+import { WandSparkles } from 'lucide-react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
@@ -9,8 +9,6 @@ import { z } from 'zod'
 import { useNewEntry } from '@/api/diary/use-new-entry'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
-
-const NEW_ENTRY_TAG_IDS = ['acoustic', 'ethereal', 'slowTempo'] as const
 
 const NEW_ENTRY_RESONANCE_IDS = ['melancholic', 'ethereal', 'uplifting', 'cinematic'] as const
 type EntryResonanceId = (typeof NEW_ENTRY_RESONANCE_IDS)[number]
@@ -65,8 +63,7 @@ export function NewEntryPage() {
   })
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[1.4fr_1fr]">
-      <Card className="space-y-6 p-5 sm:p-7">
+    <Card className="w-full space-y-6 p-5 sm:p-7">
         <div className="flex items-center justify-between">
           <span className="text-xs font-semibold uppercase tracking-[0.2em] text-on-surface-variant">
             {dateLabel}
@@ -144,6 +141,5 @@ export function NewEntryPage() {
           </Button>
         </form>
       </Card>
-    </div>
   )
 }
