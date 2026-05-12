@@ -144,29 +144,6 @@ export function NewEntryPage() {
           </Button>
         </form>
       </Card>
-
-      <Card className="space-y-5 p-5 sm:p-7">
-        <div className="flex items-center gap-2 text-sm font-medium text-on-surface-variant">
-          <Music2 className="h-4 w-4" />
-          {t('newEntry.inspiration.label')}
-        </div>
-
-        <div className="space-y-2">
-          <h2 className="font-serif text-2xl text-on-surface">{t('newEntry.inspiration.title')}</h2>
-          <p className="text-sm text-on-surface-variant">{t('newEntry.inspiration.description')}</p>
-        </div>
-
-        <div className="flex flex-wrap gap-2">
-          {NEW_ENTRY_TAG_IDS.map((id) => (
-            <span
-              key={id}
-              className="rounded-full bg-secondary-container px-3 py-1 text-xs font-semibold uppercase tracking-wide text-on-secondary-container"
-            >
-              {t(`newEntry.tags.${id}`)}
-            </span>
-          ))}
-        </div>
-      </Card>
     </div>
   )
 }
