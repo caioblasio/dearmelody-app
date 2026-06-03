@@ -118,12 +118,37 @@
       "topMood": "Top mood: {{mood}}"
     },
     "playTrack": "Play {{title}}",
+    "openEntry": "Open entry: {{title}}",
     "diary": {
       "entriesStamp": "{{count}}",
       "sectionToggle": "Show or hide entries for {{label}}",
       "soundtrack": "Soundtrack",
       "favorite": "Saved memory",
       "groupBy": "Group entries by"
+    }
+  },
+  "entry": {
+    "documentTitle": "Your melody",
+    "backToArchive": "Past Melodies",
+    "loading": "Loading this melody…",
+    "error": "Could not load this entry. Please try again.",
+    "notFound": "This melody could not be found.",
+    "contextLabel": "Song visualization",
+    "recorded": "Recorded {{date}}",
+    "subtitle": "{{month}} · {{duration}}",
+    "favorite": "Save to favorites",
+    "unfavorite": "Remove from favorites",
+    "share": "Share",
+    "lyricsHeading": "Captured lyrics",
+    "editLyrics": "Edit lyric",
+    "download": "Download",
+    "player": {
+      "shuffle": "Shuffle",
+      "previous": "Previous track",
+      "play": "Play",
+      "pause": "Pause",
+      "next": "Next track",
+      "repeat": "Repeat"
     }
   }
 }

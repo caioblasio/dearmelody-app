@@ -1,6 +1,39 @@
 import { delay, http, HttpResponse } from 'msw'
 
-import { PAST_MELODIES_MOCK } from '@/lib/past-melodies-mock'
+import type { DiaryEntryDetail } from '@/api/diary/diary-entry-detail'
+import { parsePastMelodyEntryDate } from '@/lib/past-melody-date'
+import { PAST_MELODIES_MOCK, type PastMelodyEntry } from '@/lib/past-melodies-mock'
+
+function buildMockLyrics(entry: PastMelodyEntry): string {
+  const sentences = entry.excerpt.split(/(?<=[.!?])\s+/).filter(Boolean)
+  const stanzas = sentences.length > 0 ? sentences : [entry.excerpt]
+  return stanzas.slice(0, 6).join('\n\n')
+}
+
+function pastMelodyToDetail(entry: PastMelodyEntry): DiaryEntryDetail {
+  const d = parsePastMelodyEntryDate(entry)
+  const iso = d.toISOString()
+  return {
+    id: entry.id,
+    title: entry.title,
+    mood: entry.moodIcon,
+    entry: entry.excerpt,
+    createdAt: iso,
+    updatedAt: iso,
+    favorite: entry.favorite,
+    musics: [
+      {
+        id: 1,
+        title: entry.trackTitle,
+        service: 'suno',
+        location: null,
+        imageLocation: entry.artSrc,
+        lyrics: buildMockLyrics(entry),
+        createdAt: iso,
+      },
+    ],
+  }
+}
 
 type LoginRequestBody = {
   email: string
@@ -83,5 +116,14 @@ export const handlers = [
     return HttpResponse.json({
       entries: PAST_MELODIES_MOCK,
     })
+  }),
+  http.get('/api/diary/:id', async ({ params }) => {
+    await delay(350)
+    const id = String(params.id)
+    const entry = PAST_MELODIES_MOCK.find((e) => e.id === id)
+    if (!entry) {
+      return HttpResponse.json({ error: 'Not found' }, { status: 404 })
+    }
+    return HttpResponse.json(pastMelodyToDetail(entry))
   }),
 ]
