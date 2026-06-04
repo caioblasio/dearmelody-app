@@ -6,6 +6,8 @@ All endpoints are prefixed with `/api`. Protected routes require a JWT passed in
 Authorization: Bearer <token>
 ```
 
+The base URL is https://api.dearmelody.app
+
 ---
 
 ## Authentication
@@ -38,6 +40,26 @@ Authenticates a user and returns a JWT token.
 ---
 
 ## Users
+
+### `GET /api/user`
+
+**Auth:** JWT
+
+Returns the authenticated user's profile.
+
+**Response `200 OK`**
+
+```json
+{
+  "id": "<uuid>",
+  "email": "user@example.com",
+  "first_name": "John",
+  "last_name": "Doe",
+  "plan": "free"
+}
+```
+
+---
 
 ### `POST /api/register`
 
@@ -120,8 +142,8 @@ Returns a paginated list of the authenticated user's diary entries. Each item in
     "updatedAt": "2026-05-01T10:00:00+00:00",
     "music": {
       "title": "Song Title",
-      "location": "https://...",
-      "imageLocation": "https://..."
+      "imageLocation": "https://...",
+      "generateStatus": "done"
     }
   }
 ]
@@ -158,9 +180,9 @@ Returns a single diary entry with all its associated music tracks.
       "id": 1,
       "title": "Song Title",
       "service": "suno",
-      "location": "https://...",
       "imageLocation": "https://...",
       "lyrics": "Verse 1 ...",
+      "generateStatus": "done",
       "createdAt": "2026-05-01T10:05:00+00:00"
     }
   ]
@@ -218,3 +240,63 @@ Creates a new diary entry for the authenticated user.
 ```
 
 ---
+
+## Music
+
+### `GET /api/music/{id}`
+
+**Auth:** JWT
+
+Serves the audio file for a music track owned by the authenticated user inline, with Range request support for seeking.
+
+**Path parameters**
+
+| Parameter | Type    | Notes           |
+| --------- | ------- | --------------- |
+| `id`      | integer | Music record ID |
+
+**Response `200 OK`** — binary audio file with `Content-Disposition: inline`.
+
+**Response `404 Not Found`**
+
+```json
+{
+  "error": "Not found"
+}
+```
+
+---
+
+### `GET /api/music/{id}/stream`
+
+**Auth:** JWT
+
+Streams the audio file for a music track owned by the authenticated user as a chunked response. No Range request support — the full file is pushed in 8 KB chunks. Suitable for direct playback in audio players that do not require seeking.
+
+**Path parameters**
+
+| Parameter | Type    | Notes           |
+| --------- | ------- | --------------- |
+| `id`      | integer | Music record ID |
+
+**Response `200 OK`** — chunked audio stream. Includes `Content-Type` (detected from the file) and `Content-Length` headers.
+
+**Response `404 Not Found`**
+
+```json
+{
+  "error": "Not found"
+}
+```
+
+---
+
+## `generateStatus` values
+
+| Value         | Meaning                                         |
+| ------------- | ----------------------------------------------- |
+| `new`         | Record created; generation not yet started      |
+| `generating`  | Lyric and audio generation in progress          |
+| `downloading` | Audio file is being downloaded to local storage |
+| `done`        | Generation complete; `the music` is available   |
+| `failed`      | Generation failed                               |

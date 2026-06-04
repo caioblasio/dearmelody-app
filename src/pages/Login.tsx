@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
@@ -15,7 +15,6 @@ import { Card } from '../components/ui/card'
 import { Input } from '../components/ui/input'
 import { Label } from '../components/ui/label'
 import { Separator } from '../components/ui/separator'
-import { getLockRemainingMs } from '@/api/auth/login'
 import { useLogin } from '@/api/auth/use-login'
 import type { TFunction } from 'i18next'
 
@@ -40,10 +39,6 @@ export function LoginPage() {
 
   const [showPassword, setShowPassword] = useState(false)
   const [authError, setAuthError] = useState<string | null>(null)
-  const [lockRemainingMs, setLockRemainingMs] = useState(getLockRemainingMs())
-
-  const lockSeconds = useMemo(() => Math.ceil(lockRemainingMs / 1000), [lockRemainingMs])
-  const isLocked = lockRemainingMs > 0
 
   const {
     register,
@@ -63,10 +58,6 @@ export function LoginPage() {
       setAuthError(null)
       navigate('/')
     },
-    onLockedOut: (remainingMs) => {
-      setAuthError(t('login.errors.lockedOut'))
-      setLockRemainingMs(remainingMs)
-    },
     onInvalidCredentials: () => {
       setAuthError(t('login.errors.invalidCredentials'))
     },
@@ -74,14 +65,6 @@ export function LoginPage() {
       setAuthError(t('login.errors.generic'))
     },
   })
-
-  useEffect(() => {
-    if (!isLocked) return
-    const timer = window.setInterval(() => {
-      setLockRemainingMs(getLockRemainingMs())
-    }, 1000)
-    return () => window.clearInterval(timer)
-  }, [isLocked])
 
   const onSubmit = handleSubmit((values) => {
     setAuthError(null)
@@ -164,18 +147,12 @@ export function LoginPage() {
                 type="submit"
                 size="lg"
                 className="w-full gap-2 py-4 shadow-md active:scale-[0.98]"
-                disabled={loginMutation.isPending || isLocked}
+                disabled={loginMutation.isPending}
               >
                 <span className="font-serif text-lg italic">
                   {loginMutation.isPending ? t('login.submitPending') : t('login.submitIdle')}
                 </span>
               </Button>
-
-              {isLocked && (
-                <p className="text-sm text-error" role="status" aria-live="polite">
-                  {t('login.tryAgainIn', { seconds: lockSeconds })}
-                </p>
-              )}
             </form>
 
             <div className="relative my-md">

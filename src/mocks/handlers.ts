@@ -35,62 +35,27 @@ function pastMelodyToDetail(entry: PastMelodyEntry): DiaryEntryDetail {
   }
 }
 
-type LoginRequestBody = {
-  email: string
-  password: string
-  remember: boolean
-}
-
-const LOCK_THRESHOLD = 3
-const LOCK_DURATION_MS = 30_000
-const VALID_USER = {
-  email: 'demo@melodiary.app',
-  password: 'Melodiary123!',
-}
-
-let failedAttempts = 0
-let lockedUntil = 0
+// Mock login — matches POST /api/auth (see API-CONTRACT.md).
+// Uncomment and add to `handlers` when working offline without the real API.
+//
+// const MOCK_LOGIN_USER = {
+//   email: 'demo@melodiary.app',
+//   password: 'Melodiary123!',
+// }
+//
+// http.post('/api/auth', async ({ request }) => {
+//   const body = (await request.json()) as { email: string; password: string }
+//   await delay(700)
+//   const isValid =
+//     body.email.toLowerCase() === MOCK_LOGIN_USER.email &&
+//     body.password === MOCK_LOGIN_USER.password
+//   if (!isValid) {
+//     return new HttpResponse(null, { status: 401 })
+//   }
+//   return HttpResponse.json({ token: 'mock-jwt-token' })
+// }),
 
 export const handlers = [
-  http.post('/api/auth/login', async ({ request }) => {
-    const now = Date.now()
-    const remainingMs = lockedUntil - now
-
-    if (remainingMs > 0) {
-      await delay(300)
-      return HttpResponse.json({ code: 'LOCKED_OUT', remainingMs }, { status: 423 })
-    }
-
-    const body = (await request.json()) as LoginRequestBody
-    const isValidUser =
-      body.email.toLowerCase() === VALID_USER.email && body.password === VALID_USER.password
-
-    await delay(700)
-
-    if (!isValidUser) {
-      failedAttempts += 1
-      if (failedAttempts >= LOCK_THRESHOLD) {
-        lockedUntil = Date.now() + LOCK_DURATION_MS
-        return HttpResponse.json(
-          { code: 'LOCKED_OUT', remainingMs: LOCK_DURATION_MS },
-          { status: 423 }
-        )
-      }
-
-      return HttpResponse.json({ code: 'INVALID_CREDENTIALS' }, { status: 401 })
-    }
-
-    failedAttempts = 0
-    lockedUntil = 0
-
-    return HttpResponse.json({
-      token: 'mock-session-token',
-      user: {
-        id: 'user-1',
-        email: body.email,
-      },
-    })
-  }),
   http.get('/api/user_info', async () => {
     return HttpResponse.json({
       name: 'John',

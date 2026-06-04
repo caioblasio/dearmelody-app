@@ -14,10 +14,13 @@ export class ApiError extends Error {
   }
 }
 
+const API_BASE = (import.meta.env.VITE_API_BASE_URL as string | undefined)?.replace(/\/$/, '') ?? ''
+
 export async function apiRequest<TResponse>(url: string, init: ApiRequestInit = {}) {
   const { body, headers, ...rest } = init
+  const resolvedUrl = url.startsWith('http') ? url : `${API_BASE}${url}`
 
-  const response = await fetch(url, {
+  const response = await fetch(resolvedUrl, {
     ...rest,
     headers: {
       "Content-Type": "application/json",
