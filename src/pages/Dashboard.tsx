@@ -6,7 +6,7 @@ export function DashboardPage() {
   const { t } = useTranslation()
   const { data: user } = useUserInfo()
 
-  const name = user?.name ?? ''
+  const name = user?.first_name ?? ''
 
   return (
     <section className="space-y-6">

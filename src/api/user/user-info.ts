@@ -1,11 +1,13 @@
 import { apiRequest } from '@/lib/api-request'
 
 export type UserInfoResponse = {
-  name: string
+  id: string
   email: string
-  avatar: string
+  first_name: string
+  last_name: string
+  plan: string
 }
 
 export async function fetchUserInfo(): Promise<UserInfoResponse> {
-  return apiRequest<UserInfoResponse>('/api/user_info')
+  return apiRequest<UserInfoResponse>('/api/user', { auth: true })
 }

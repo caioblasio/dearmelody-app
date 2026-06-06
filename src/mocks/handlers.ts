@@ -55,14 +55,17 @@ function pastMelodyToDetail(entry: PastMelodyEntry): DiaryEntryDetail {
 //   return HttpResponse.json({ token: 'mock-jwt-token' })
 // }),
 
+// http.get('/api/user', async () => {
+//   return HttpResponse.json({
+//     id: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
+//     email: 'john@test.com',
+//     first_name: 'John',
+//     last_name: 'Doe',
+//     plan: 'free',
+//   })
+// }),
+
 export const handlers = [
-  http.get('/api/user_info', async () => {
-    return HttpResponse.json({
-      name: 'John',
-      email: 'john@test.com',
-      avatar: '/avatar.png',
-    })
-  }),
   http.post('/api/diary/new-entry', async ({ request }) => {
     const body = (await request.json()) as { reflection: string; resonance: string }
     await delay(1500)

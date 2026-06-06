@@ -53,7 +53,7 @@ export function AppHeader() {
             <Settings className="h-4 w-4" />
           </button>
           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary-container font-semibold text-on-primary-container">
-            {user?.name?.[0] ?? 'U'}
+            {user?.first_name?.[0] ?? 'U'}
           </div>
         </div>
       </div>

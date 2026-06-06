@@ -17,5 +17,6 @@ export async function createNewEntry(payload: NewEntryPayload): Promise<NewEntry
   return apiRequest<NewEntryResponse>('/api/diary/new-entry', {
     method: 'POST',
     body: payload,
+    auth: true,
   })
 }

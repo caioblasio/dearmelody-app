@@ -6,5 +6,5 @@ export type GetDiaryResponse = {
 }
 
 export async function getDiary(): Promise<GetDiaryResponse> {
-  return apiRequest<GetDiaryResponse>('/api/diary')
+  return apiRequest<GetDiaryResponse>('/api/diary', { auth: true })
 }
