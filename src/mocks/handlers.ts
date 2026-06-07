@@ -5,6 +5,15 @@ import type { GenerateStatus } from '@/api/diary/generate-status'
 import type { DiaryListItem } from '@/api/diary/diary-list-item'
 import { PAST_MELODIES_MOCK } from '@/mocks/past-melodies-mock'
 
+const MOCK_SAMPLE_AUDIO_URL =
+  'https://interactive-examples.mdn.mozilla.net/media/cc0-audio/tango.mp3'
+
+async function fetchMockSampleAudio(): Promise<ArrayBuffer | null> {
+  const sample = await fetch(MOCK_SAMPLE_AUDIO_URL)
+  if (!sample.ok) return null
+  return sample.arrayBuffer()
+}
+
 function buildMockLyrics(entry: string): string {
   const sentences = entry.split(/(?<=[.!?])\s+/).filter(Boolean)
   const stanzas = sentences.length > 0 ? sentences : [entry]
@@ -97,15 +106,28 @@ export const handlers = [
   }),
   http.get('/api/music/:id/stream', async () => {
     await delay(400)
-    const sample = await fetch('https://interactive-examples.mdn.mozilla.net/media/cc0-audio/tango.mp3')
-    if (!sample.ok) {
+    const buffer = await fetchMockSampleAudio()
+    if (!buffer) {
       return HttpResponse.json({ error: 'Not found' }, { status: 404 })
     }
-    const buffer = await sample.arrayBuffer()
     return HttpResponse.arrayBuffer(buffer, {
       headers: {
         'Content-Type': 'audio/mpeg',
         'Content-Length': String(buffer.byteLength),
+      },
+    })
+  }),
+  http.get('/api/music/:id', async () => {
+    await delay(400)
+    const buffer = await fetchMockSampleAudio()
+    if (!buffer) {
+      return HttpResponse.json({ error: 'Not found' }, { status: 404 })
+    }
+    return HttpResponse.arrayBuffer(buffer, {
+      headers: {
+        'Content-Type': 'audio/mpeg',
+        'Content-Length': String(buffer.byteLength),
+        'Content-Disposition': 'inline',
       },
     })
   }),

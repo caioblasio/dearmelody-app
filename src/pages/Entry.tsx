@@ -1,15 +1,17 @@
-import { AlertCircle, ChevronLeft, Download, Heart, Pencil, Share2, Volume2 } from 'lucide-react'
+import { AlertCircle, ChevronLeft, Download, Heart, Share2, Volume2 } from 'lucide-react'
 import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
 import { getMusicDisplayState, isMusicContentLoading } from '@/api/diary/generate-status'
+import { getMusic } from '@/api/music/get-music'
 import { useGetDiaryEntry } from '@/api/diary/use-get-diary-entry'
 import { AudioPlayer } from '@/components/AudioPlayer'
 import { PastMelodyMoodIcon } from '@/components/PastMelodyMoodIcon'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { ARCHIVE_CARD_SHELL_GEOMETRY, archiveCardShellNeutralClass } from '@/lib/archive-card-shell'
+import { downloadBlob, extensionFromMime, sanitizeDownloadFilename } from '@/lib/download-blob'
 import { ApiError } from '@/lib/api-request'
 import { getArchiveMoodTheme } from '@/lib/past-melody-archive-theme'
 import { capitalizeMood, toMoodIcon } from '@/lib/past-melody-mood'
@@ -27,6 +29,8 @@ export function EntryPage() {
   const { data, isLoading, isError, error } = useGetDiaryEntry(entryId)
 
   const [favoriteByEntryId, setFavoriteByEntryId] = useState<Record<string, boolean>>({})
+  const [isDownloading, setIsDownloading] = useState(false)
+  const [downloadError, setDownloadError] = useState<string | null>(null)
 
   const is404 = error instanceof ApiError && error.status === 404
 
@@ -62,6 +66,22 @@ export function EntryPage() {
 
   const moodLabel = capitalizeMood(data?.mood ?? '')
   const displayMusicTitle = primaryMusic?.title ?? data?.title ?? ''
+
+  async function onDownload() {
+    if (!primaryMusic || !musicReady || isDownloading) return
+
+    setIsDownloading(true)
+    setDownloadError(null)
+    try {
+      const blob = await getMusic(primaryMusic.id)
+      const filename = `${sanitizeDownloadFilename(primaryMusic.title ?? data?.title ?? 'melody')}.${extensionFromMime(blob.type)}`
+      downloadBlob(blob, filename)
+    } catch (err) {
+      setDownloadError(err instanceof ApiError ? t('entry.downloadError') : t('entry.error'))
+    } finally {
+      setIsDownloading(false)
+    }
+  }
 
   async function onShare() {
     const shareData = {
@@ -151,21 +171,50 @@ export function EntryPage() {
             </div>
 
             <div className="space-y-2">
-              {musicLoading ? (
-                <Skeleton className="h-9 w-2/3 max-w-md sm:h-10" aria-hidden />
-              ) : (
-                <h1 className="font-serif text-3xl font-semibold text-primary sm:text-4xl">
-                  {musicFailed ? data.title : displayMusicTitle}
-                </h1>
-              )}
-              {!musicLoading &&
-              !musicFailed &&
-              primaryMusic?.title &&
-              primaryMusic.title !== data.title ? (
-                <p className="text-base font-medium text-on-surface-variant">{data.title}</p>
-              ) : null}
-              {musicLoading ? (
-                <p className="text-base font-medium text-on-surface-variant">{data.title}</p>
+              <div className="flex items-start justify-between gap-4">
+              <div className="min-w-0 flex-1 space-y-2">
+                {musicLoading ? (
+                  <Skeleton className="h-9 w-2/3 max-w-md sm:h-10" aria-hidden />
+                ) : (
+                  <h1 className="font-serif text-3xl font-semibold text-primary sm:text-4xl">
+                    {musicFailed ? data.title : displayMusicTitle}
+                  </h1>
+                )}
+                {!musicLoading &&
+                !musicFailed &&
+                primaryMusic?.title &&
+                primaryMusic.title !== data.title ? (
+                  <p className="text-base font-medium text-on-surface-variant">{data.title}</p>
+                ) : null}
+                {musicLoading ? (
+                  <p className="text-base font-medium text-on-surface-variant">{data.title}</p>
+                ) : null}
+              </div>
+
+              <div className="flex shrink-0 flex-wrap items-center justify-end gap-2">
+                <Button type="button" variant="outline" size="sm" className="gap-2" onClick={onShare}>
+                  <Share2 className="size-4" aria-hidden />
+                  <span className="hidden sm:inline">{t('entry.share')}</span>
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="gap-2"
+                  disabled={!musicReady || isDownloading}
+                  onClick={onDownload}
+                >
+                  <Download className="size-4" aria-hidden />
+                  <span className="hidden sm:inline">
+                    {isDownloading ? t('entry.downloading') : t('entry.download')}
+                  </span>
+                </Button>
+              </div>
+              </div>
+              {downloadError ? (
+                <p className="text-sm text-error" role="alert">
+                  {downloadError}
+                </p>
               ) : null}
             </div>
           </header>
@@ -290,16 +339,6 @@ export function EntryPage() {
                     {lyricsText}
                   </p>
                 )}
-              </div>
-              <div className="flex shrink-0 flex-wrap gap-3">
-                <Button type="button" variant="outline" className="gap-2" onClick={onShare}>
-                  <Share2 className="size-4" aria-hidden />
-                  {t('entry.share')}
-                </Button>
-                <Button type="button" variant="outline" className="gap-2" disabled={!musicReady}>
-                  <Download className="size-4" aria-hidden />
-                  {t('entry.download')}
-                </Button>
               </div>
             </article>
           </div>
