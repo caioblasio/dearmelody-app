@@ -353,7 +353,7 @@ export function EntryPage() {
               <h2 className="shrink-0 font-serif text-lg font-semibold text-on-surface lg:text-xl">
                 {t('entry.lyricsHeading')}
               </h2>
-              <div className="min-h-0 flex-1 rounded-lg bg-[#fffaf2] px-4 py-4 text-on-surface lg:px-6 lg:py-5">
+              <div className="max-h-[min(45vh,24rem)] overflow-y-auto overscroll-y-contain rounded-lg bg-[#fffaf2] px-4 py-4 text-on-surface lg:max-h-96 lg:px-6 lg:py-5">
                 {musicFailed ? (
                   <div
                     className="flex h-full min-h-[12rem] flex-col items-center justify-center gap-2 text-center text-error"
