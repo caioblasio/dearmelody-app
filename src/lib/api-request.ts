@@ -1,4 +1,4 @@
-import { getToken } from '@/lib/auth'
+import { getToken, logout } from '@/lib/auth'
 
 export type ApiRequestInit = Omit<RequestInit, "body"> & {
   body?: unknown
@@ -20,6 +20,17 @@ export class ApiError extends Error {
 
 const API_BASE = (import.meta.env.VITE_API_BASE_URL as string | undefined)?.replace(/\/$/, '') ?? ''
 
+function isLoginEndpoint(url: string): boolean {
+  const path = new URL(resolveApiUrl(url), window.location.origin).pathname
+  return path === '/api/auth'
+}
+
+function handleUnauthorized(status: number, url: string, requiresAuth: boolean) {
+  if (status === 401 && requiresAuth && !isLoginEndpoint(url)) {
+    logout()
+  }
+}
+
 export function resolveApiUrl(url: string): string {
   return url.startsWith('http') ? url : `${API_BASE}${url}`
 }
@@ -31,6 +42,7 @@ export async function fetchAuthenticatedBlob(url: string): Promise<Blob> {
   })
 
   if (!response.ok) {
+    handleUnauthorized(response.status, url, true)
     const errorData = await response.json().catch(() => null)
     throw new ApiError(response.status, errorData)
   }
@@ -61,6 +73,7 @@ export async function apiRequest<TResponse>(url: string, init: ApiRequestInit = 
   })
 
   if (!response.ok) {
+    handleUnauthorized(response.status, url, auth === true)
     const errorData = await response.json().catch(() => null)
     throw new ApiError(response.status, errorData)
   }
