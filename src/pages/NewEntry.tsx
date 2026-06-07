@@ -82,24 +82,27 @@ export function NewEntryPage() {
   })
 
   return (
-    <article className={archiveCardShellNeutralClass('space-y-6')}>
-      <div className="flex items-start justify-between gap-2">
-        <span className="text-[10px] font-semibold uppercase tracking-tight text-on-surface-variant/85 lg:text-[11px] lg:tracking-wide">
-          <span className="lg:hidden">{dateCompact}</span>
-          <span className="hidden lg:inline">{dateCaps}</span>
-        </span>
-        <span className="shrink-0 rounded-full border border-primary/20 bg-primary-container/90 px-2.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-on-primary-container lg:px-3 lg:py-1 lg:text-[10px]">
-          {t('newEntry.badge')}
-        </span>
-      </div>
+    <div className="space-y-8">
+      <header className="space-y-3">
+        <div className="flex items-start justify-between gap-3">
+          <span className="text-[10px] font-semibold uppercase tracking-tight text-on-surface-variant/90 lg:text-[11px] lg:tracking-wide">
+            <span className="lg:hidden">{dateCompact}</span>
+            <span className="hidden lg:inline">{dateCaps}</span>
+          </span>
+          <span className="shrink-0 rounded-full border border-primary/20 bg-primary-container/90 px-2.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-on-primary-container lg:px-3 lg:py-1 lg:text-[10px]">
+            {t('newEntry.badge')}
+          </span>
+        </div>
 
-      <div className="space-y-2">
-        <h1 className="font-serif text-xl font-semibold leading-tight text-on-surface lg:text-3xl">
-          {t('newEntry.heading')}
-        </h1>
-        <p className="text-sm text-on-surface-variant lg:text-base">{t('newEntry.subheading')}</p>
-      </div>
+        <div className="space-y-2">
+          <h1 className="font-serif text-3xl font-semibold text-primary sm:text-4xl">
+            {t('newEntry.heading')}
+          </h1>
+          <p className="italic text-on-surface-variant">{t('newEntry.subheading')}</p>
+        </div>
+      </header>
 
+      <article className={archiveCardShellNeutralClass('space-y-6')}>
       <form className="space-y-6" onSubmit={onSubmit}>
         <label className="block space-y-2">
           <span className="text-sm font-medium text-on-surface">{t('newEntry.titleLabel')}</span>
@@ -181,6 +184,7 @@ export function NewEntryPage() {
           {isPending ? t('newEntry.generating') : t('newEntry.generate')}
         </Button>
       </form>
-    </article>
+      </article>
+    </div>
   )
 }
