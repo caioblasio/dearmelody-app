@@ -1,22 +1,24 @@
 import { apiRequest } from '@/lib/api-request'
 
 export type NewEntryPayload = {
-  reflection: string
+  entry: string
   resonance: string
+  title?: string
 }
 
 export type NewEntryResponse = {
   id: string
-  title: string
-  url: string
-  duration: number
-  mood: string
 }
 
 export async function createNewEntry(payload: NewEntryPayload): Promise<NewEntryResponse> {
-  return apiRequest<NewEntryResponse>('/api/diary/new-entry', {
+  const title = payload.title?.trim()
+
+  return apiRequest<NewEntryResponse>('/api/new_diary', {
     method: 'POST',
-    body: payload,
+    body: {
+      entry: payload.entry,
+      ...(title ? { title } : {}),
+    },
     auth: true,
   })
 }

@@ -67,13 +67,16 @@
     "badge": "New Entry",
     "heading": "How was your day?",
     "subheading": "Capture your feelings and let Melody AI turn it into your daily soundtrack.",
+    "titleLabel": "Title (optional)",
+    "titlePlaceholder": "Give this memory a name...",
     "textareaPlaceholder": "Today felt like a slow rainy afternoon with a hopeful ending...",
     "resonanceLabel": "Current Resonance",
     "generate": "Generate My Song",
     "generating": "Generating...",
     "validation": {
-      "reflectionMin": "Write at least a few lines about your day.",
-      "reflectionMax": "Keep it under 2000 characters."
+      "titleMax": "Title must be 255 characters or fewer.",
+      "entryMin": "Write at least a few lines about your day.",
+      "entryMax": "Keep it under 2000 characters."
     },
     "inspiration": {
       "label": "Inspiration",

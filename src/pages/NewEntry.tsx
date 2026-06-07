@@ -16,16 +16,18 @@ type EntryResonanceId = (typeof NEW_ENTRY_RESONANCE_IDS)[number]
 
 function createEntrySchema(t: TFunction) {
   return z.object({
-    reflection: z
+    title: z.string().max(255, t('newEntry.validation.titleMax')),
+    entry: z
       .string()
-      .min(10, t('newEntry.validation.reflectionMin'))
-      .max(2000, t('newEntry.validation.reflectionMax')),
+      .min(10, t('newEntry.validation.entryMin'))
+      .max(2000, t('newEntry.validation.entryMax')),
     resonance: z.enum(NEW_ENTRY_RESONANCE_IDS),
   })
 }
 
 type EntryFormValues = {
-  reflection: string
+  title: string
+  entry: string
   resonance: EntryResonanceId
 }
 
@@ -52,7 +54,8 @@ export function NewEntryPage() {
   } = useForm<EntryFormValues>({
     resolver: zodResolver(entrySchema),
     defaultValues: {
-      reflection: '',
+      title: '',
+      entry: '',
       resonance: NEW_ENTRY_RESONANCE_IDS[0],
     },
   })
@@ -66,7 +69,8 @@ export function NewEntryPage() {
 
   const onSubmit = handleSubmit(async (values) => {
     createNewEntry({
-      reflection: values.reflection,
+      title: values.title,
+      entry: values.entry,
       resonance: values.resonance,
     })
   })
@@ -92,20 +96,40 @@ export function NewEntryPage() {
 
       <form className="space-y-6" onSubmit={onSubmit}>
         <label className="block space-y-2">
+          <span className="text-sm font-medium text-on-surface">{t('newEntry.titleLabel')}</span>
+          <div className="rounded-lg bg-[#fffaf2] px-4 py-3">
+            <input
+              type="text"
+              maxLength={255}
+              placeholder={t('newEntry.titlePlaceholder')}
+              className="w-full bg-transparent font-serif text-lg font-semibold text-on-surface outline-none placeholder:font-sans placeholder:text-base placeholder:font-normal placeholder:text-on-surface-variant/70"
+              aria-invalid={Boolean(errors.title)}
+              aria-describedby={errors.title ? 'title-error' : undefined}
+              {...register('title')}
+            />
+          </div>
+          {errors.title && (
+            <p id="title-error" className="text-sm text-error" role="alert">
+              {errors.title.message}
+            </p>
+          )}
+        </label>
+
+        <label className="block space-y-2">
           <div className="relative rounded-lg bg-[#fffaf2] px-4 py-2">
             <div className="pointer-events-none absolute bottom-2 left-8 top-2 w-px bg-red-300/70" />
             <textarea
               rows={9}
               placeholder={t('newEntry.textareaPlaceholder')}
               className="relative w-full resize-none bg-transparent pl-8 pr-0 text-base leading-8 text-on-surface outline-none placeholder:text-on-surface-variant/70 [background-image:linear-gradient(to_bottom,transparent_31px,theme(colors.outline-variant)_32px)] [background-size:100%_32px] focus-visible:ring-0"
-              aria-invalid={Boolean(errors.reflection)}
-              aria-describedby={errors.reflection ? 'reflection-error' : undefined}
-              {...register('reflection')}
+              aria-invalid={Boolean(errors.entry)}
+              aria-describedby={errors.entry ? 'entry-error' : undefined}
+              {...register('entry')}
             />
           </div>
-          {errors.reflection && (
-            <p id="reflection-error" className="text-sm text-error" role="alert">
-              {errors.reflection.message}
+          {errors.entry && (
+            <p id="entry-error" className="text-sm text-error" role="alert">
+              {errors.entry.message}
             </p>
           )}
         </label>

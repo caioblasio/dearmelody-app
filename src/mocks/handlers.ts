@@ -65,19 +65,20 @@ function diaryListItemToDetail(item: DiaryListItem): DiaryEntryDetail {
 // }),
 
 export const handlers = [
-  http.post('/api/diary/new-entry', async ({ request }) => {
-    const body = (await request.json()) as { reflection: string; resonance: string }
-    await delay(1500)
-    const resonantLabel =
-      body.resonance.slice(0, 1).toUpperCase() + body.resonance.slice(1).toLowerCase()
-    return HttpResponse.json({
-      id: 'entry-' + Date.now(),
-      title: `${resonantLabel} melody`,
-      url: 'https://example.com/songs/mock-song.mp3',
-      duration: 180,
-      mood: body.resonance,
-    })
-  }),
+  // http.post('/api/new_diary', async ({ request }) => {
+  //   const body = (await request.json()) as { entry: string; title?: string }
+  //   await delay(1500)
+  //   if (!body.entry?.trim()) {
+  //     return HttpResponse.json(
+  //       { errors: { entry: 'This value should not be blank.' } },
+  //       { status: 422 },
+  //     )
+  //   }
+  //   return HttpResponse.json(
+  //     { id: `22222222-2222-4222-8222-${Date.now().toString().padStart(12, '0')}` },
+  //     { status: 201 },
+  //   )
+  // }),
   // http.get('/api/diary', async ({ request }) => {
   //   await delay(400)
   //   const url = new URL(request.url)
