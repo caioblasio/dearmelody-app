@@ -38,7 +38,7 @@ export function AppHeader() {
                 isActive ? 'border-primary font-semibold text-primary' : '',
               )
             }
-            to="/past-melodies"
+            to="/melodies"
           >
             {t('nav.pastMelodies')}
           </NavLink>

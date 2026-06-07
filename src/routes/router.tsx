@@ -36,12 +36,12 @@ export const router = createBrowserRouter([
             handle: { title: 'newEntry.title' },
           },
           {
-            path: '/past-melodies/:entryId',
+            path: '/melodies/:entryId',
             element: <EntryPage />,
             handle: { title: 'entry.documentTitle' },
           },
           {
-            path: '/past-melodies',
+            path: '/melodies',
             element: <MyMelodiesPage />,
             handle: { title: 'pastMelodies.title' },
           },

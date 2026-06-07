@@ -109,7 +109,7 @@ export function EntryPage() {
   return (
     <div className="space-y-6 pb-10">
       <Link
-        to="/past-melodies"
+        to="/melodies"
         className="inline-flex items-center gap-1.5 text-sm font-medium text-primary transition-colors hover:text-primary/80"
       >
         <ChevronLeft className="size-4 shrink-0" aria-hidden />

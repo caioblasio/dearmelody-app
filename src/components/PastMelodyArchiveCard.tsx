@@ -46,7 +46,7 @@ export function PastMelodyArchiveCard({ entry, locale }: PastMelodyArchiveCardPr
       )}
     >
       <Link
-        to={`/past-melodies/${entry.id}`}
+        to={`/melodies/${entry.id}`}
         className={cn(
           'flex min-h-0 flex-1 flex-col rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-primary/35',
         )}
