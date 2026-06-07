@@ -1,17 +1,18 @@
-import { Heart, PlayCircle } from 'lucide-react'
+import { PlayCircle } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
+import type { DiaryListItem } from '@/api/diary/diary-list-item'
 import { PastMelodyMoodIcon } from '@/components/PastMelodyMoodIcon'
 import { useInViewOnce } from '@/hooks/use-in-view-once'
 import { ARCHIVE_CARD_SHELL_LAYOUT } from '@/lib/archive-card-shell'
-import type { PastMelodyEntry } from '@/lib/past-melodies-mock'
-import { parsePastMelodyEntryDate } from '@/lib/past-melody-date'
+import { parseDiaryCreatedAt } from '@/lib/past-melody-date'
 import { getArchiveMoodTheme } from '@/lib/past-melody-archive-theme'
+import { capitalizeMood, toMoodIcon } from '@/lib/past-melody-mood'
 import { cn } from '@/lib/utils'
 
 type PastMelodyArchiveCardProps = {
-  entry: PastMelodyEntry
+  entry: DiaryListItem
   locale: string
 }
 
@@ -28,8 +29,9 @@ function formatDateCompact(d: Date, locale: string): string {
 export function PastMelodyArchiveCard({ entry, locale }: PastMelodyArchiveCardProps) {
   const { t } = useTranslation()
   const { ref, visible } = useInViewOnce<HTMLElement>()
-  const theme = getArchiveMoodTheme(entry.moodIcon)
-  const parsed = parsePastMelodyEntryDate(entry)
+  const theme = getArchiveMoodTheme(toMoodIcon(entry.mood))
+  const parsed = parseDiaryCreatedAt(entry.createdAt)
+  const moodLabel = capitalizeMood(entry.mood)
 
   return (
     <article
@@ -62,23 +64,15 @@ export function PastMelodyArchiveCard({ entry, locale }: PastMelodyArchiveCardPr
             <span className="hidden lg:inline">{formatDateCaps(parsed, locale)}</span>
           </span>
           <div className="flex shrink-0 items-center gap-1.5">
-            {entry.favorite ? (
-              <span
-                className="rounded-full bg-white/55 p-1 text-secondary"
-                aria-label={t('pastMelodies.diary.favorite')}
-              >
-                <Heart className="size-3 fill-secondary/50 lg:size-3.5" aria-hidden />
-              </span>
-            ) : null}
             <div
               className={cn(
                 'flex items-center gap-1 rounded-full border px-2 py-0.5 lg:gap-1.5 lg:px-3 lg:py-1',
                 theme.moodPill,
               )}
             >
-              <PastMelodyMoodIcon mood={entry.moodIcon} className="size-3.5 lg:size-4" />
+              <PastMelodyMoodIcon mood={toMoodIcon(entry.mood)} className="size-3.5 lg:size-4" />
               <span className="max-w-[4.5rem] truncate text-[9px] font-semibold uppercase tracking-wider lg:max-w-none lg:text-[10px]">
-                {entry.moodLabel}
+                {moodLabel}
               </span>
             </div>
           </div>
@@ -101,42 +95,43 @@ export function PastMelodyArchiveCard({ entry, locale }: PastMelodyArchiveCardPr
               theme.excerpt,
             )}
           >
-            {entry.excerpt}
+            {entry.entry}
           </p>
         </div>
       </Link>
 
-      <div
-        className={cn(
-          'mt-auto flex items-center gap-2 border p-2 backdrop-blur-sm lg:gap-4 lg:rounded-2xl lg:p-3',
-          'rounded-xl border-black/5 lg:mt-auto',
-          theme.player,
-        )}
-      >
-        <div className="size-7 shrink-0 overflow-hidden rounded-md shadow-sm ring-1 ring-black/5 lg:size-12 lg:rounded-xl">
-          <img
-            src={entry.artSrc}
-            alt=""
-            className="size-full object-cover"
-            loading="lazy"
-            decoding="async"
-          />
-        </div>
-        <div className="min-w-0 flex-1">
-          <p className="truncate text-[10px] font-semibold lg:text-sm">{entry.trackTitle}</p>
-          <p className="truncate text-[9px] text-on-surface-variant lg:text-xs">{entry.trackArtist}</p>
-        </div>
-        <button
-          type="button"
-          aria-label={t('pastMelodies.playTrack', { title: entry.trackTitle })}
+      {entry.music ? (
+        <div
           className={cn(
-            'flex shrink-0 items-center justify-center transition-transform hover:scale-110 motion-reduce:hover:scale-100',
-            theme.play,
+            'mt-auto flex items-center gap-2 border p-2 backdrop-blur-sm lg:gap-4 lg:rounded-2xl lg:p-3',
+            'rounded-xl border-black/5 lg:mt-auto',
+            theme.player,
           )}
         >
-          <PlayCircle className="size-7 lg:size-10" aria-hidden />
-        </button>
-      </div>
+          <div className="size-7 shrink-0 overflow-hidden rounded-md shadow-sm ring-1 ring-black/5 lg:size-12 lg:rounded-xl">
+            <img
+              src={entry.music.imageLocation}
+              alt=""
+              className="size-full object-cover"
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-[10px] font-semibold lg:text-sm">{entry.music.title}</p>
+          </div>
+          <button
+            type="button"
+            aria-label={t('pastMelodies.playTrack', { title: entry.music.title })}
+            className={cn(
+              'flex shrink-0 items-center justify-center transition-transform hover:scale-110 motion-reduce:hover:scale-100',
+              theme.play,
+            )}
+          >
+            <PlayCircle className="size-7 lg:size-10" aria-hidden />
+          </button>
+        </div>
+      ) : null}
     </article>
   )
 }

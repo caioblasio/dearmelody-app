@@ -1,6 +1,4 @@
-import type { PastMelodyEntry } from '@/lib/past-melodies-mock'
-
-export function parsePastMelodyEntryDate(entry: PastMelodyEntry): Date {
-  const parsed = new Date(entry.dateLabel)
+export function parseDiaryCreatedAt(createdAt: string): Date {
+  const parsed = new Date(createdAt)
   return Number.isNaN(parsed.getTime()) ? new Date() : parsed
 }

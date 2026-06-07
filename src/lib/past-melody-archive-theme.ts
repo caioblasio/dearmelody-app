@@ -1,4 +1,4 @@
-import type { MoodIconKind } from '@/lib/past-melodies-mock'
+import type { MoodIconKind } from '@/lib/past-melody-mood'
 
 export type ArchiveMoodTheme = {
   card: string

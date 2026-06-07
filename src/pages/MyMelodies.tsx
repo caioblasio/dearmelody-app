@@ -4,15 +4,16 @@ import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
+import type { DiaryListItem } from '@/api/diary/diary-list-item'
 import { useGetDiary } from '@/api/diary/use-get-diary'
 import { PastMelodyArchiveCard } from '@/components/PastMelodyArchiveCard'
-import type { PastMelodyEntry } from '@/lib/past-melodies-mock'
-import { parsePastMelodyEntryDate } from '@/lib/past-melody-date'
+import { parseDiaryCreatedAt } from '@/lib/past-melody-date'
+import { capitalizeMood } from '@/lib/past-melody-mood'
 
 type DiaryGroup = {
   key: string
   label: string
-  items: PastMelodyEntry[]
+  items: DiaryListItem[]
   moodLabel: string
 }
 
@@ -20,9 +21,10 @@ function formatMonthLabel(date: Date, locale: string): string {
   return new Intl.DateTimeFormat(locale, { month: 'long', year: 'numeric' }).format(date)
 }
 
-function getTopMood(entries: PastMelodyEntry[], t: TFunction): string {
+function getTopMood(entries: DiaryListItem[], t: TFunction): string {
   const counters = entries.reduce<Record<string, number>>((acc, entry) => {
-    acc[entry.moodLabel] = (acc[entry.moodLabel] ?? 0) + 1
+    const label = capitalizeMood(entry.mood)
+    acc[label] = (acc[label] ?? 0) + 1
     return acc
   }, {})
   const top = Object.entries(counters).sort((a, b) => b[1] - a[1])[0]
@@ -30,12 +32,12 @@ function getTopMood(entries: PastMelodyEntry[], t: TFunction): string {
 }
 
 function groupDiaryEntriesByMonth(
-  entries: PastMelodyEntry[],
+  entries: DiaryListItem[],
   locale: string,
   t: TFunction
 ): DiaryGroup[] {
   const grouped = entries.reduce<Map<string, DiaryGroup>>((acc, entry) => {
-    const date = parsePastMelodyEntryDate(entry)
+    const date = parseDiaryCreatedAt(entry.createdAt)
     const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`
     const label = formatMonthLabel(date, locale)
 
@@ -50,14 +52,14 @@ function groupDiaryEntriesByMonth(
       key,
       label,
       items: [entry],
-      moodLabel: entry.moodLabel,
+      moodLabel: capitalizeMood(entry.mood),
     })
     return acc
   }, new Map<string, DiaryGroup>())
 
   return [...grouped.values()].sort((a, b) => {
-    const dateA = parsePastMelodyEntryDate(a.items[0]).getTime()
-    const dateB = parsePastMelodyEntryDate(b.items[0]).getTime()
+    const dateA = parseDiaryCreatedAt(a.items[0].createdAt).getTime()
+    const dateB = parseDiaryCreatedAt(b.items[0].createdAt).getTime()
     return dateB - dateA
   })
 }
@@ -80,11 +82,9 @@ export function MyMelodiesPage() {
   const { t, i18n } = useTranslation()
 
   const { data, isLoading, isError } = useGetDiary()
-  const entriesList = data?.entries
-
   const groupedEntries = useMemo(
-    () => groupDiaryEntriesByMonth(entriesList ?? [], i18n.language, t),
-    [entriesList, i18n.language, t]
+    () => groupDiaryEntriesByMonth(data ?? [], i18n.language, t),
+    [data, i18n.language, t]
   )
 
   return (

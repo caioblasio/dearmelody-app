@@ -1,4 +1,4 @@
-import type { MoodIconKind } from '@/lib/past-melodies-mock'
+import type { MoodIconKind } from '@/lib/past-melody-mood'
 import { CloudSnow, Leaf, type LucideIcon, type LucideProps, Smile, Sparkles, Zap } from 'lucide-react'
 
 const MOOD_ICONS: Record<MoodIconKind, LucideIcon> = {

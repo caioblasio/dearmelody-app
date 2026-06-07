@@ -22,22 +22,8 @@ import { Button } from '@/components/ui/button'
 import { ARCHIVE_CARD_SHELL_GEOMETRY, archiveCardShellNeutralClass } from '@/lib/archive-card-shell'
 import { ApiError } from '@/lib/api-request'
 import { getArchiveMoodTheme } from '@/lib/past-melody-archive-theme'
-import type { MoodIconKind } from '@/lib/past-melodies-mock'
+import { capitalizeMood, toMoodIcon } from '@/lib/past-melody-mood'
 import { cn } from '@/lib/utils'
-
-const MOOD_ICONS = new Set<MoodIconKind>([
-  'serene',
-  'melancholy',
-  'electric',
-  'organic',
-  'dreamy',
-  'cozy',
-  'nostalgic',
-])
-
-function toMoodIcon(m: string): MoodIconKind {
-  return MOOD_ICONS.has(m as MoodIconKind) ? (m as MoodIconKind) : 'serene'
-}
 
 function formatDurationMmSs(totalSeconds: number): string {
   const s = Math.max(0, Math.floor(totalSeconds))
@@ -62,11 +48,6 @@ function formatRecordedCaps(d: Date, locale: string): string {
 
 function formatMonthWord(d: Date, locale: string): string {
   return new Intl.DateTimeFormat(locale, { month: 'long' }).format(d)
-}
-
-function capitalizeMood(mood: string): string {
-  if (!mood) return ''
-  return mood.charAt(0).toUpperCase() + mood.slice(1).toLowerCase()
 }
 
 export function EntryPage() {

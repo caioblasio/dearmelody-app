@@ -1,37 +1,36 @@
 import { delay, http, HttpResponse } from 'msw'
 
 import type { DiaryEntryDetail } from '@/api/diary/diary-entry-detail'
-import { parsePastMelodyEntryDate } from '@/lib/past-melody-date'
-import { PAST_MELODIES_MOCK, type PastMelodyEntry } from '@/lib/past-melodies-mock'
+import type { DiaryListItem } from '@/api/diary/diary-list-item'
+import { PAST_MELODIES_MOCK } from '@/mocks/past-melodies-mock'
 
-function buildMockLyrics(entry: PastMelodyEntry): string {
-  const sentences = entry.excerpt.split(/(?<=[.!?])\s+/).filter(Boolean)
-  const stanzas = sentences.length > 0 ? sentences : [entry.excerpt]
+function buildMockLyrics(entry: string): string {
+  const sentences = entry.split(/(?<=[.!?])\s+/).filter(Boolean)
+  const stanzas = sentences.length > 0 ? sentences : [entry]
   return stanzas.slice(0, 6).join('\n\n')
 }
 
-function pastMelodyToDetail(entry: PastMelodyEntry): DiaryEntryDetail {
-  const d = parsePastMelodyEntryDate(entry)
-  const iso = d.toISOString()
+function diaryListItemToDetail(item: DiaryListItem): DiaryEntryDetail {
   return {
-    id: entry.id,
-    title: entry.title,
-    mood: entry.moodIcon,
-    entry: entry.excerpt,
-    createdAt: iso,
-    updatedAt: iso,
-    favorite: entry.favorite,
-    musics: [
-      {
-        id: 1,
-        title: entry.trackTitle,
-        service: 'suno',
-        location: null,
-        imageLocation: entry.artSrc,
-        lyrics: buildMockLyrics(entry),
-        createdAt: iso,
-      },
-    ],
+    id: item.id,
+    title: item.title,
+    mood: item.mood,
+    entry: item.entry,
+    createdAt: item.createdAt,
+    updatedAt: item.updatedAt,
+    musics: item.music
+      ? [
+          {
+            id: 1,
+            title: item.music.title,
+            service: 'suno',
+            location: null,
+            imageLocation: item.music.imageLocation,
+            lyrics: buildMockLyrics(item.entry),
+            createdAt: item.createdAt,
+          },
+        ]
+      : null,
   }
 }
 
@@ -79,12 +78,13 @@ export const handlers = [
       mood: body.resonance,
     })
   }),
-  http.get('/api/diary', async () => {
-    await delay(400)
-    return HttpResponse.json({
-      entries: PAST_MELODIES_MOCK,
-    })
-  }),
+  // http.get('/api/diary', async ({ request }) => {
+  //   await delay(400)
+  //   const url = new URL(request.url)
+  //   const limit = Math.max(1, Number.parseInt(url.searchParams.get('limit') ?? '10', 10) || 10)
+  //   const offset = Math.max(0, Number.parseInt(url.searchParams.get('offset') ?? '0', 10) || 0)
+  //   return HttpResponse.json(PAST_MELODIES_MOCK.slice(offset, offset + limit))
+  // }),
   http.get('/api/diary/:id', async ({ params }) => {
     await delay(350)
     const id = String(params.id)
@@ -92,6 +92,6 @@ export const handlers = [
     if (!entry) {
       return HttpResponse.json({ error: 'Not found' }, { status: 404 })
     }
-    return HttpResponse.json(pastMelodyToDetail(entry))
+    return HttpResponse.json(diaryListItemToDetail(entry))
   }),
 ]
