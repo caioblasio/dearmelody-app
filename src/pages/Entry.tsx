@@ -46,10 +46,6 @@ function formatRecordedCaps(d: Date, locale: string): string {
     .toUpperCase()
 }
 
-function formatMonthWord(d: Date, locale: string): string {
-  return new Intl.DateTimeFormat(locale, { month: 'long' }).format(d)
-}
-
 export function EntryPage() {
   const { entryId } = useParams<{ entryId: string }>()
   const { t, i18n } = useTranslation()
@@ -74,7 +70,9 @@ export function EntryPage() {
   const progressPct = totalSec > 0 ? Math.min(100, Math.round((currentSec / totalSec) * 100)) : 0
 
   const favorite = data
-    ? (data.id in favoriteByEntryId ? favoriteByEntryId[data.id] : Boolean(data.favorite))
+    ? data.id in favoriteByEntryId
+      ? favoriteByEntryId[data.id]
+      : Boolean(data.favorite)
     : false
 
   function toggleFavorite() {
@@ -135,76 +133,72 @@ export function EntryPage() {
       )}
 
       {data && recordedDate && (
-        <>
-          <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-on-surface-variant/90 lg:text-[11px]">
-            {t('entry.contextLabel')}
-          </p>
+        <div className="space-y-8">
+          <header className="space-y-3">
+            <div className="flex items-start justify-between gap-3">
+              <span
+                className={cn(
+                  'text-[10px] font-semibold uppercase tracking-tight lg:text-[11px] lg:tracking-wide',
+                  theme.date
+                )}
+              >
+                {t('entry.recorded', { date: formatRecordedCaps(recordedDate, i18n.language) })}
+              </span>
+              <div className="flex shrink-0 items-center gap-1.5">
+                <button
+                  type="button"
+                  aria-pressed={favorite}
+                  aria-label={favorite ? t('entry.unfavorite') : t('entry.favorite')}
+                  className={cn(
+                    'rounded-full border border-outline-variant/60 bg-surface-container-lowest p-1.5 text-on-surface-variant transition-colors hover:text-secondary',
+                    favorite && 'text-secondary'
+                  )}
+                  onClick={toggleFavorite}
+                >
+                  <Heart
+                    className={cn('size-3.5 lg:size-4', favorite && 'fill-secondary/60')}
+                    aria-hidden
+                  />
+                </button>
+                <div
+                  className={cn(
+                    'flex items-center gap-1 rounded-full border px-2 py-0.5 lg:gap-1.5 lg:px-3 lg:py-1',
+                    theme.moodPill
+                  )}
+                >
+                  <PastMelodyMoodIcon mood={toMoodIcon(data.mood)} className="size-3.5 lg:size-4" />
+                  <span className="max-w-[5.5rem] truncate text-[9px] font-semibold uppercase tracking-wider lg:max-w-none lg:text-[10px]">
+                    {moodLabel}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <h1 className="font-serif text-3xl font-semibold text-primary sm:text-4xl">
+                {primaryMusic?.title ?? data.title}
+              </h1>
+              {primaryMusic?.title && primaryMusic.title !== data.title ? (
+                <p className="text-base font-medium text-on-surface-variant">{data.title}</p>
+              ) : null}
+            </div>
+          </header>
 
           <div className="flex flex-col gap-6 lg:grid lg:grid-cols-3 lg:items-stretch lg:gap-8">
             <article
               className={cn(
                 ARCHIVE_CARD_SHELL_GEOMETRY,
-                'gap-5 border shadow-sm transition-[box-shadow] motion-safe:duration-300 lg:shadow-md',
+                'gap-4 border shadow-sm transition-[box-shadow] motion-safe:duration-300 lg:shadow-md',
                 'hover:shadow-xl motion-reduce:transition-none',
                 'lg:col-span-1 lg:h-full lg:min-h-0',
-                theme.card,
+                theme.card
               )}
             >
-              <div className="flex shrink-0 items-start justify-between gap-2">
-                <span
-                  className={cn(
-                    'text-[10px] font-semibold uppercase tracking-tight lg:text-[11px] lg:tracking-wide',
-                    theme.date,
-                  )}
-                >
-                  {t('entry.recorded', { date: formatRecordedCaps(recordedDate, i18n.language) })}
-                </span>
-                <div className="flex shrink-0 items-center gap-1.5">
-                  <button
-                    type="button"
-                    aria-pressed={favorite}
-                    aria-label={favorite ? t('entry.unfavorite') : t('entry.favorite')}
-                    className={cn(
-                      'rounded-full border border-black/5 bg-white/60 p-1.5 text-on-surface-variant transition-colors hover:text-secondary',
-                      favorite && 'text-secondary',
-                    )}
-                    onClick={toggleFavorite}
-                  >
-                    <Heart className={cn('size-3.5 lg:size-4', favorite && 'fill-secondary/60')} aria-hidden />
-                  </button>
-                  <div
-                    className={cn(
-                      'flex items-center gap-1 rounded-full border px-2 py-0.5 lg:gap-1.5 lg:px-3 lg:py-1',
-                      theme.moodPill,
-                    )}
-                  >
-                    <PastMelodyMoodIcon mood={toMoodIcon(data.mood)} className="size-3.5 lg:size-4" />
-                    <span className="max-w-[5.5rem] truncate text-[9px] font-semibold uppercase tracking-wider lg:max-w-none lg:text-[10px]">
-                      {moodLabel}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="shrink-0 space-y-2">
-                <h1 className={cn('font-serif text-2xl font-semibold leading-tight lg:text-3xl', theme.title)}>
-                  {data.title}
-                </h1>
-                {recordedDate ? (
-                  <p className={cn('text-sm text-on-surface-variant lg:text-base', theme.excerpt)}>
-                    {t('entry.subtitle', {
-                      month: formatMonthWord(recordedDate, i18n.language),
-                      duration: formatDurationMmSs(totalSec),
-                    })}
-                  </p>
-                ) : null}
-              </div>
-
               <div
                 className={cn(
                   'flex min-h-0 flex-col overflow-hidden rounded-2xl border border-black/5 shadow-inner ring-1 ring-black/5',
                   'aspect-[16/10] max-h-[min(52vh,28rem)]',
-                  'lg:aspect-auto lg:max-h-none lg:w-full lg:min-h-[13rem] lg:flex-1 lg:basis-0',
+                  'lg:aspect-auto lg:max-h-none lg:w-full lg:min-h-[13rem] lg:flex-1 lg:basis-0'
                 )}
               >
                 {primaryMusic?.imageLocation ? (
@@ -238,7 +232,7 @@ export function EntryPage() {
               <div
                 className={cn(
                   'flex shrink-0 flex-col gap-3 border border-black/5 p-3 backdrop-blur-sm lg:rounded-2xl lg:p-4',
-                  theme.player,
+                  theme.player
                 )}
               >
                 <div className="flex flex-wrap items-center justify-center gap-1 sm:gap-2 lg:justify-between">
@@ -290,25 +284,12 @@ export function EntryPage() {
                   </div>
                 </div>
               </div>
-
-              <div className="mt-auto flex flex-wrap items-center gap-2 lg:flex-col lg:items-stretch">
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  className="gap-2 lg:w-full"
-                  onClick={onShare}
-                >
-                  <Share2 className="size-3.5" aria-hidden />
-                  {t('entry.share')}
-                </Button>
-              </div>
             </article>
 
             <article
               className={cn(
                 archiveCardShellNeutralClass('flex min-h-0 flex-col gap-4 lg:col-span-2'),
-                'lg:h-full lg:min-h-0',
+                'lg:h-full lg:min-h-0'
               )}
             >
               <h2 className="shrink-0 font-serif text-lg font-semibold text-on-surface lg:text-xl">
@@ -320,6 +301,10 @@ export function EntryPage() {
                 </p>
               </div>
               <div className="flex shrink-0 flex-wrap gap-3">
+                <Button type="button" variant="outline" className="gap-2" onClick={onShare}>
+                  <Share2 className="size-4" aria-hidden />
+                  {t('entry.share')}
+                </Button>
                 <Button type="button" variant="outline" className="gap-2" disabled>
                   <Pencil className="size-4" aria-hidden />
                   {t('entry.editLyrics')}
@@ -331,7 +316,18 @@ export function EntryPage() {
               </div>
             </article>
           </div>
-        </>
+
+          {data.entry.trim() ? (
+            <details className="rounded-lg border border-outline-variant/50 bg-surface-container-low/60 px-4 py-3">
+              <summary className="cursor-pointer text-sm font-medium text-on-surface-variant [&::-webkit-details-marker]:hidden">
+                {t('entry.originalEntry')}
+              </summary>
+              <p className="mt-3 whitespace-pre-wrap text-sm leading-relaxed text-on-surface lg:text-base lg:leading-relaxed">
+                {data.entry}
+              </p>
+            </details>
+          ) : null}
+        </div>
       )}
     </div>
   )
