@@ -20,9 +20,27 @@ export class ApiError extends Error {
 
 const API_BASE = (import.meta.env.VITE_API_BASE_URL as string | undefined)?.replace(/\/$/, '') ?? ''
 
+export function resolveApiUrl(url: string): string {
+  return url.startsWith('http') ? url : `${API_BASE}${url}`
+}
+
+export async function fetchAuthenticatedBlob(url: string): Promise<Blob> {
+  const token = getToken()
+  const response = await fetch(resolveApiUrl(url), {
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+  })
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => null)
+    throw new ApiError(response.status, errorData)
+  }
+
+  return response.blob()
+}
+
 export async function apiRequest<TResponse>(url: string, init: ApiRequestInit = {}) {
   const { body, headers, auth, ...rest } = init
-  const resolvedUrl = url.startsWith('http') ? url : `${API_BASE}${url}`
+  const resolvedUrl = resolveApiUrl(url)
 
   const authHeaders: Record<string, string> = {}
   if (auth) {

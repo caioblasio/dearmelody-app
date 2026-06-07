@@ -154,7 +154,11 @@
       "play": "Play",
       "pause": "Pause",
       "next": "Next track",
-      "repeat": "Repeat"
+      "repeat": "Repeat",
+      "progress": "Playback position",
+      "volume": "Volume",
+      "loading": "Loading audio…",
+      "loadError": "Could not load this track. Please try again."
     }
   }
 }

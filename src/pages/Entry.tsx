@@ -1,27 +1,11 @@
-import {
-  AlertCircle,
-  ChevronLeft,
-  Download,
-  Heart,
-  Pause,
-  Pencil,
-  Play,
-  Repeat,
-  Share2,
-  Shuffle,
-  SkipBack,
-  SkipForward,
-  Volume2,
-} from 'lucide-react'
+import { AlertCircle, ChevronLeft, Download, Heart, Pencil, Share2, Volume2 } from 'lucide-react'
 import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
-import {
-  getMusicDisplayState,
-  isMusicContentLoading,
-} from '@/api/diary/generate-status'
+import { getMusicDisplayState, isMusicContentLoading } from '@/api/diary/generate-status'
 import { useGetDiaryEntry } from '@/api/diary/use-get-diary-entry'
+import { AudioPlayer } from '@/components/AudioPlayer'
 import { PastMelodyMoodIcon } from '@/components/PastMelodyMoodIcon'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -30,21 +14,6 @@ import { ApiError } from '@/lib/api-request'
 import { getArchiveMoodTheme } from '@/lib/past-melody-archive-theme'
 import { capitalizeMood, toMoodIcon } from '@/lib/past-melody-mood'
 import { cn } from '@/lib/utils'
-
-function formatDurationMmSs(totalSeconds: number): string {
-  const s = Math.max(0, Math.floor(totalSeconds))
-  const m = Math.floor(s / 60)
-  const r = s % 60
-  return `${m}:${String(r).padStart(2, '0')}`
-}
-
-function mockDurationSeconds(seed: string): number {
-  let h = 0
-  for (let i = 0; i < seed.length; i += 1) {
-    h = (h + seed.charCodeAt(i) * (i + 1)) % 200
-  }
-  return 150 + h
-}
 
 function formatRecordedCaps(d: Date, locale: string): string {
   return new Intl.DateTimeFormat(locale, { month: 'short', day: 'numeric', year: 'numeric' })
@@ -57,7 +26,6 @@ export function EntryPage() {
   const { t, i18n } = useTranslation()
   const { data, isLoading, isError, error } = useGetDiaryEntry(entryId)
 
-  const [playing, setPlaying] = useState(false)
   const [favoriteByEntryId, setFavoriteByEntryId] = useState<Record<string, boolean>>({})
 
   const is404 = error instanceof ApiError && error.status === 404
@@ -75,10 +43,6 @@ export function EntryPage() {
   }
 
   const theme = data ? getArchiveMoodTheme(toMoodIcon(data.mood)) : getArchiveMoodTheme('serene')
-
-  const totalSec = data ? mockDurationSeconds(data.id) : 0
-  const currentSec = Math.floor(totalSec * 0.42)
-  const progressPct = totalSec > 0 ? Math.min(100, Math.round((currentSec / totalSec) * 100)) : 0
 
   const favorite = data
     ? data.id in favoriteByEntryId
@@ -194,7 +158,10 @@ export function EntryPage() {
                   {musicFailed ? data.title : displayMusicTitle}
                 </h1>
               )}
-              {!musicLoading && !musicFailed && primaryMusic?.title && primaryMusic.title !== data.title ? (
+              {!musicLoading &&
+              !musicFailed &&
+              primaryMusic?.title &&
+              primaryMusic.title !== data.title ? (
                 <p className="text-base font-medium text-on-surface-variant">{data.title}</p>
               ) : null}
               {musicLoading ? (
@@ -229,7 +196,10 @@ export function EntryPage() {
                     <p className="text-sm font-medium">{t('entry.generationFailed')}</p>
                   </div>
                 ) : musicLoading ? (
-                  <Skeleton className="h-full w-full min-h-[8rem] rounded-none lg:min-h-[13rem]" aria-hidden />
+                  <Skeleton
+                    className="h-full w-full min-h-[8rem] rounded-none lg:min-h-[13rem]"
+                    aria-hidden
+                  />
                 ) : primaryMusic?.imageLocation ? (
                   <img
                     src={primaryMusic.imageLocation}
@@ -245,103 +215,44 @@ export function EntryPage() {
                 )}
               </div>
 
-              {musicLoading ? (
-                <div className="shrink-0 space-y-2" aria-hidden>
-                  <Skeleton className="h-1 w-full" />
-                  <div className="flex justify-between">
-                    <Skeleton className="h-3 w-10" />
-                    <Skeleton className="h-3 w-10" />
-                  </div>
-                </div>
-              ) : musicReady ? (
-                <div className="shrink-0 space-y-2">
-                  <div className="h-1 overflow-hidden rounded-full bg-black/10">
-                    <div
-                      className="h-full rounded-full bg-primary transition-[width] motion-safe:duration-300"
-                      style={{ width: `${progressPct}%` }}
-                    />
-                  </div>
-                  <div className="flex justify-between font-mono text-[11px] tabular-nums text-on-surface-variant lg:text-xs">
-                    <span>{formatDurationMmSs(currentSec)}</span>
-                    <span>{formatDurationMmSs(totalSec)}</span>
-                  </div>
-                </div>
-              ) : null}
-
-              <div
-                className={cn(
-                  'flex shrink-0 flex-col gap-3 border border-black/5 p-3 backdrop-blur-sm lg:rounded-2xl lg:p-4',
-                  theme.player
-                )}
-              >
-                {musicFailed ? (
-                  <p className="text-center text-sm font-medium text-error" role="alert">
-                    {t('entry.generationFailed')}
-                  </p>
-                ) : musicLoading ? (
-                  <div className="space-y-3" aria-busy="true" aria-label={t('entry.generationLoading')}>
-                    <div className="flex items-center justify-center gap-2">
-                      <Skeleton className="size-9 rounded-full" />
-                      <Skeleton className="size-9 rounded-full" />
-                      <Skeleton className="size-11 rounded-full" />
-                      <Skeleton className="size-9 rounded-full" />
-                      <Skeleton className="size-9 rounded-full" />
-                    </div>
+              {musicFailed ? (
+                <p className="text-center text-sm font-medium text-error" role="alert">
+                  {t('entry.generationFailed')}
+                </p>
+              ) : musicLoading ? (
+                <>
+                  <div className="shrink-0 space-y-2" aria-hidden>
                     <Skeleton className="h-1 w-full" />
+                    <div className="flex justify-between">
+                      <Skeleton className="h-3 w-10" />
+                      <Skeleton className="h-3 w-10" />
+                    </div>
                   </div>
-                ) : (
-                  <>
-                    <div className="flex flex-wrap items-center justify-center gap-1 sm:gap-2 lg:justify-between">
-                      <button
-                        type="button"
-                        aria-label={t('entry.player.shuffle')}
-                        className="inline-flex size-9 items-center justify-center rounded-full text-on-surface-variant transition-colors hover:bg-black/5 hover:text-primary"
-                      >
-                        <Shuffle className="size-4" aria-hidden />
-                      </button>
-                      <button
-                        type="button"
-                        aria-label={t('entry.player.previous')}
-                        className="inline-flex size-9 items-center justify-center rounded-full text-on-surface-variant transition-colors hover:bg-black/5 hover:text-primary"
-                      >
-                        <SkipBack className="size-4" aria-hidden />
-                      </button>
-                      <button
-                        type="button"
-                        aria-label={playing ? t('entry.player.pause') : t('entry.player.play')}
-                        className="inline-flex size-11 items-center justify-center rounded-full bg-primary text-on-primary shadow-md transition-transform hover:scale-105 active:scale-95"
-                        onClick={() => setPlaying((p) => !p)}
-                      >
-                        {playing ? (
-                          <Pause className="size-5" aria-hidden />
-                        ) : (
-                          <Play className="size-5 translate-x-0.5" aria-hidden />
-                        )}
-                      </button>
-                      <button
-                        type="button"
-                        aria-label={t('entry.player.next')}
-                        className="inline-flex size-9 items-center justify-center rounded-full text-on-surface-variant transition-colors hover:bg-black/5 hover:text-primary"
-                      >
-                        <SkipForward className="size-4" aria-hidden />
-                      </button>
-                      <button
-                        type="button"
-                        aria-label={t('entry.player.repeat')}
-                        className="inline-flex size-9 items-center justify-center rounded-full text-on-surface-variant transition-colors hover:bg-black/5 hover:text-primary"
-                      >
-                        <Repeat className="size-4" aria-hidden />
-                      </button>
-                    </div>
-                    <div className="flex items-center justify-center gap-2 text-on-surface-variant sm:justify-between">
-                      <Volume2 className="size-4 shrink-0 opacity-70" aria-hidden />
-                      <div className="h-1 min-w-0 flex-1 max-w-[12rem] overflow-hidden rounded-full bg-black/10 lg:max-w-none">
-                        <div className="h-full w-[60%] rounded-full bg-primary/70" />
+                  <div
+                    className={cn(
+                      'flex shrink-0 flex-col gap-3 border border-black/5 p-3 backdrop-blur-sm lg:rounded-2xl lg:p-4',
+                      theme.player
+                    )}
+                  >
+                    <div
+                      className="space-y-3"
+                      aria-busy="true"
+                      aria-label={t('entry.generationLoading')}
+                    >
+                      <div className="flex items-center justify-center gap-2">
+                        <Skeleton className="size-9 rounded-full" />
+                        <Skeleton className="size-9 rounded-full" />
+                        <Skeleton className="size-11 rounded-full" />
+                        <Skeleton className="size-9 rounded-full" />
+                        <Skeleton className="size-9 rounded-full" />
                       </div>
+                      <Skeleton className="h-1 w-full" />
                     </div>
-                  </>
-                )}
-              </div>
+                  </div>
+                </>
+              ) : musicReady && primaryMusic ? (
+                <AudioPlayer musicId={primaryMusic.id} controlsClassName={theme.player} />
+              ) : null}
             </article>
 
             <article
@@ -363,7 +274,11 @@ export function EntryPage() {
                     <p className="text-sm font-medium">{t('entry.generationFailed')}</p>
                   </div>
                 ) : musicLoading ? (
-                  <div className="space-y-3" aria-busy="true" aria-label={t('entry.generationLoading')}>
+                  <div
+                    className="space-y-3"
+                    aria-busy="true"
+                    aria-label={t('entry.generationLoading')}
+                  >
                     <Skeleton className="h-4 w-full" />
                     <Skeleton className="h-4 w-[92%]" />
                     <Skeleton className="h-4 w-full" />
@@ -380,10 +295,6 @@ export function EntryPage() {
                 <Button type="button" variant="outline" className="gap-2" onClick={onShare}>
                   <Share2 className="size-4" aria-hidden />
                   {t('entry.share')}
-                </Button>
-                <Button type="button" variant="outline" className="gap-2" disabled={!musicReady}>
-                  <Pencil className="size-4" aria-hidden />
-                  {t('entry.editLyrics')}
                 </Button>
                 <Button type="button" variant="outline" className="gap-2" disabled={!musicReady}>
                   <Download className="size-4" aria-hidden />

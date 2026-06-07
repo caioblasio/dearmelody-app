@@ -95,4 +95,18 @@ export const handlers = [
     }
     return HttpResponse.json(diaryListItemToDetail(entry))
   }),
+  http.get('/api/music/:id/stream', async () => {
+    await delay(400)
+    const sample = await fetch('https://interactive-examples.mdn.mozilla.net/media/cc0-audio/tango.mp3')
+    if (!sample.ok) {
+      return HttpResponse.json({ error: 'Not found' }, { status: 404 })
+    }
+    const buffer = await sample.arrayBuffer()
+    return HttpResponse.arrayBuffer(buffer, {
+      headers: {
+        'Content-Type': 'audio/mpeg',
+        'Content-Length': String(buffer.byteLength),
+      },
+    })
+  }),
 ]
