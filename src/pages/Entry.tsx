@@ -1,4 +1,5 @@
 import {
+  AlertCircle,
   ChevronLeft,
   Download,
   Heart,
@@ -16,9 +17,14 @@ import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
+import {
+  getMusicDisplayState,
+  isMusicContentLoading,
+} from '@/api/diary/generate-status'
 import { useGetDiaryEntry } from '@/api/diary/use-get-diary-entry'
 import { PastMelodyMoodIcon } from '@/components/PastMelodyMoodIcon'
 import { Button } from '@/components/ui/button'
+import { Skeleton } from '@/components/ui/skeleton'
 import { ARCHIVE_CARD_SHELL_GEOMETRY, archiveCardShellNeutralClass } from '@/lib/archive-card-shell'
 import { ApiError } from '@/lib/api-request'
 import { getArchiveMoodTheme } from '@/lib/past-melody-archive-theme'
@@ -57,6 +63,11 @@ export function EntryPage() {
   const is404 = error instanceof ApiError && error.status === 404
 
   const primaryMusic = data?.musics?.[0] ?? null
+  const musicState = getMusicDisplayState(data?.musics)
+  const musicLoading = isMusicContentLoading(musicState)
+  const musicReady = musicState === 'ready'
+  const musicFailed = musicState === 'failed'
+
   let recordedDate: Date | null = null
   if (data?.createdAt) {
     const d = new Date(data.createdAt)
@@ -83,9 +94,10 @@ export function EntryPage() {
     })
   }
 
-  const lyricsText = primaryMusic?.lyrics?.trim() || data?.entry || ''
+  const lyricsText = primaryMusic?.lyrics?.trim() ?? ''
 
   const moodLabel = capitalizeMood(data?.mood ?? '')
+  const displayMusicTitle = primaryMusic?.title ?? data?.title ?? ''
 
   async function onShare() {
     const shareData = {
@@ -175,10 +187,17 @@ export function EntryPage() {
             </div>
 
             <div className="space-y-2">
-              <h1 className="font-serif text-3xl font-semibold text-primary sm:text-4xl">
-                {primaryMusic?.title ?? data.title}
-              </h1>
-              {primaryMusic?.title && primaryMusic.title !== data.title ? (
+              {musicLoading ? (
+                <Skeleton className="h-9 w-2/3 max-w-md sm:h-10" aria-hidden />
+              ) : (
+                <h1 className="font-serif text-3xl font-semibold text-primary sm:text-4xl">
+                  {musicFailed ? data.title : displayMusicTitle}
+                </h1>
+              )}
+              {!musicLoading && !musicFailed && primaryMusic?.title && primaryMusic.title !== data.title ? (
+                <p className="text-base font-medium text-on-surface-variant">{data.title}</p>
+              ) : null}
+              {musicLoading ? (
                 <p className="text-base font-medium text-on-surface-variant">{data.title}</p>
               ) : null}
             </div>
@@ -201,7 +220,17 @@ export function EntryPage() {
                   'lg:aspect-auto lg:max-h-none lg:w-full lg:min-h-[13rem] lg:flex-1 lg:basis-0'
                 )}
               >
-                {primaryMusic?.imageLocation ? (
+                {musicFailed ? (
+                  <div
+                    className="flex min-h-[8rem] flex-1 flex-col items-center justify-center gap-2 bg-error-container/30 px-4 text-center text-error lg:min-h-[13rem]"
+                    role="alert"
+                  >
+                    <AlertCircle className="size-8 shrink-0" aria-hidden />
+                    <p className="text-sm font-medium">{t('entry.generationFailed')}</p>
+                  </div>
+                ) : musicLoading ? (
+                  <Skeleton className="h-full w-full min-h-[8rem] rounded-none lg:min-h-[13rem]" aria-hidden />
+                ) : primaryMusic?.imageLocation ? (
                   <img
                     src={primaryMusic.imageLocation}
                     alt=""
@@ -216,18 +245,28 @@ export function EntryPage() {
                 )}
               </div>
 
-              <div className="shrink-0 space-y-2">
-                <div className="h-1 overflow-hidden rounded-full bg-black/10">
-                  <div
-                    className="h-full rounded-full bg-primary transition-[width] motion-safe:duration-300"
-                    style={{ width: `${progressPct}%` }}
-                  />
+              {musicLoading ? (
+                <div className="shrink-0 space-y-2" aria-hidden>
+                  <Skeleton className="h-1 w-full" />
+                  <div className="flex justify-between">
+                    <Skeleton className="h-3 w-10" />
+                    <Skeleton className="h-3 w-10" />
+                  </div>
                 </div>
-                <div className="flex justify-between font-mono text-[11px] tabular-nums text-on-surface-variant lg:text-xs">
-                  <span>{formatDurationMmSs(currentSec)}</span>
-                  <span>{formatDurationMmSs(totalSec)}</span>
+              ) : musicReady ? (
+                <div className="shrink-0 space-y-2">
+                  <div className="h-1 overflow-hidden rounded-full bg-black/10">
+                    <div
+                      className="h-full rounded-full bg-primary transition-[width] motion-safe:duration-300"
+                      style={{ width: `${progressPct}%` }}
+                    />
+                  </div>
+                  <div className="flex justify-between font-mono text-[11px] tabular-nums text-on-surface-variant lg:text-xs">
+                    <span>{formatDurationMmSs(currentSec)}</span>
+                    <span>{formatDurationMmSs(totalSec)}</span>
+                  </div>
                 </div>
-              </div>
+              ) : null}
 
               <div
                 className={cn(
@@ -235,54 +274,73 @@ export function EntryPage() {
                   theme.player
                 )}
               >
-                <div className="flex flex-wrap items-center justify-center gap-1 sm:gap-2 lg:justify-between">
-                  <button
-                    type="button"
-                    aria-label={t('entry.player.shuffle')}
-                    className="inline-flex size-9 items-center justify-center rounded-full text-on-surface-variant transition-colors hover:bg-black/5 hover:text-primary"
-                  >
-                    <Shuffle className="size-4" aria-hidden />
-                  </button>
-                  <button
-                    type="button"
-                    aria-label={t('entry.player.previous')}
-                    className="inline-flex size-9 items-center justify-center rounded-full text-on-surface-variant transition-colors hover:bg-black/5 hover:text-primary"
-                  >
-                    <SkipBack className="size-4" aria-hidden />
-                  </button>
-                  <button
-                    type="button"
-                    aria-label={playing ? t('entry.player.pause') : t('entry.player.play')}
-                    className="inline-flex size-11 items-center justify-center rounded-full bg-primary text-on-primary shadow-md transition-transform hover:scale-105 active:scale-95"
-                    onClick={() => setPlaying((p) => !p)}
-                  >
-                    {playing ? (
-                      <Pause className="size-5" aria-hidden />
-                    ) : (
-                      <Play className="size-5 translate-x-0.5" aria-hidden />
-                    )}
-                  </button>
-                  <button
-                    type="button"
-                    aria-label={t('entry.player.next')}
-                    className="inline-flex size-9 items-center justify-center rounded-full text-on-surface-variant transition-colors hover:bg-black/5 hover:text-primary"
-                  >
-                    <SkipForward className="size-4" aria-hidden />
-                  </button>
-                  <button
-                    type="button"
-                    aria-label={t('entry.player.repeat')}
-                    className="inline-flex size-9 items-center justify-center rounded-full text-on-surface-variant transition-colors hover:bg-black/5 hover:text-primary"
-                  >
-                    <Repeat className="size-4" aria-hidden />
-                  </button>
-                </div>
-                <div className="flex items-center justify-center gap-2 text-on-surface-variant sm:justify-between">
-                  <Volume2 className="size-4 shrink-0 opacity-70" aria-hidden />
-                  <div className="h-1 min-w-0 flex-1 max-w-[12rem] overflow-hidden rounded-full bg-black/10 lg:max-w-none">
-                    <div className="h-full w-[60%] rounded-full bg-primary/70" />
+                {musicFailed ? (
+                  <p className="text-center text-sm font-medium text-error" role="alert">
+                    {t('entry.generationFailed')}
+                  </p>
+                ) : musicLoading ? (
+                  <div className="space-y-3" aria-busy="true" aria-label={t('entry.generationLoading')}>
+                    <div className="flex items-center justify-center gap-2">
+                      <Skeleton className="size-9 rounded-full" />
+                      <Skeleton className="size-9 rounded-full" />
+                      <Skeleton className="size-11 rounded-full" />
+                      <Skeleton className="size-9 rounded-full" />
+                      <Skeleton className="size-9 rounded-full" />
+                    </div>
+                    <Skeleton className="h-1 w-full" />
                   </div>
-                </div>
+                ) : (
+                  <>
+                    <div className="flex flex-wrap items-center justify-center gap-1 sm:gap-2 lg:justify-between">
+                      <button
+                        type="button"
+                        aria-label={t('entry.player.shuffle')}
+                        className="inline-flex size-9 items-center justify-center rounded-full text-on-surface-variant transition-colors hover:bg-black/5 hover:text-primary"
+                      >
+                        <Shuffle className="size-4" aria-hidden />
+                      </button>
+                      <button
+                        type="button"
+                        aria-label={t('entry.player.previous')}
+                        className="inline-flex size-9 items-center justify-center rounded-full text-on-surface-variant transition-colors hover:bg-black/5 hover:text-primary"
+                      >
+                        <SkipBack className="size-4" aria-hidden />
+                      </button>
+                      <button
+                        type="button"
+                        aria-label={playing ? t('entry.player.pause') : t('entry.player.play')}
+                        className="inline-flex size-11 items-center justify-center rounded-full bg-primary text-on-primary shadow-md transition-transform hover:scale-105 active:scale-95"
+                        onClick={() => setPlaying((p) => !p)}
+                      >
+                        {playing ? (
+                          <Pause className="size-5" aria-hidden />
+                        ) : (
+                          <Play className="size-5 translate-x-0.5" aria-hidden />
+                        )}
+                      </button>
+                      <button
+                        type="button"
+                        aria-label={t('entry.player.next')}
+                        className="inline-flex size-9 items-center justify-center rounded-full text-on-surface-variant transition-colors hover:bg-black/5 hover:text-primary"
+                      >
+                        <SkipForward className="size-4" aria-hidden />
+                      </button>
+                      <button
+                        type="button"
+                        aria-label={t('entry.player.repeat')}
+                        className="inline-flex size-9 items-center justify-center rounded-full text-on-surface-variant transition-colors hover:bg-black/5 hover:text-primary"
+                      >
+                        <Repeat className="size-4" aria-hidden />
+                      </button>
+                    </div>
+                    <div className="flex items-center justify-center gap-2 text-on-surface-variant sm:justify-between">
+                      <Volume2 className="size-4 shrink-0 opacity-70" aria-hidden />
+                      <div className="h-1 min-w-0 flex-1 max-w-[12rem] overflow-hidden rounded-full bg-black/10 lg:max-w-none">
+                        <div className="h-full w-[60%] rounded-full bg-primary/70" />
+                      </div>
+                    </div>
+                  </>
+                )}
               </div>
             </article>
 
@@ -296,20 +354,38 @@ export function EntryPage() {
                 {t('entry.lyricsHeading')}
               </h2>
               <div className="min-h-0 flex-1 rounded-lg bg-[#fffaf2] px-4 py-4 text-on-surface lg:px-6 lg:py-5">
-                <p className="whitespace-pre-wrap font-serif text-sm leading-relaxed lg:text-base lg:leading-relaxed">
-                  {lyricsText}
-                </p>
+                {musicFailed ? (
+                  <div
+                    className="flex h-full min-h-[12rem] flex-col items-center justify-center gap-2 text-center text-error"
+                    role="alert"
+                  >
+                    <AlertCircle className="size-8 shrink-0" aria-hidden />
+                    <p className="text-sm font-medium">{t('entry.generationFailed')}</p>
+                  </div>
+                ) : musicLoading ? (
+                  <div className="space-y-3" aria-busy="true" aria-label={t('entry.generationLoading')}>
+                    <Skeleton className="h-4 w-full" />
+                    <Skeleton className="h-4 w-[92%]" />
+                    <Skeleton className="h-4 w-full" />
+                    <Skeleton className="h-4 w-[78%]" />
+                    <Skeleton className="h-4 w-[88%]" />
+                  </div>
+                ) : (
+                  <p className="whitespace-pre-wrap font-serif text-sm leading-relaxed lg:text-base lg:leading-relaxed">
+                    {lyricsText}
+                  </p>
+                )}
               </div>
               <div className="flex shrink-0 flex-wrap gap-3">
                 <Button type="button" variant="outline" className="gap-2" onClick={onShare}>
                   <Share2 className="size-4" aria-hidden />
                   {t('entry.share')}
                 </Button>
-                <Button type="button" variant="outline" className="gap-2" disabled>
+                <Button type="button" variant="outline" className="gap-2" disabled={!musicReady}>
                   <Pencil className="size-4" aria-hidden />
                   {t('entry.editLyrics')}
                 </Button>
-                <Button type="button" variant="outline" className="gap-2" disabled>
+                <Button type="button" variant="outline" className="gap-2" disabled={!musicReady}>
                   <Download className="size-4" aria-hidden />
                   {t('entry.download')}
                 </Button>

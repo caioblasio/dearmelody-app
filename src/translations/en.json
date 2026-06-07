@@ -144,6 +144,8 @@
     "share": "Share",
     "lyricsHeading": "Captured lyrics",
     "originalEntry": "View original diary entry",
+    "generationFailed": "Music generation failed. Please try again later.",
+    "generationLoading": "Generating your melody…",
     "editLyrics": "Edit lyric",
     "download": "Download",
     "player": {

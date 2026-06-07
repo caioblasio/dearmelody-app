@@ -1,10 +1,12 @@
+import type { GenerateStatus } from './generate-status'
+
 export type DiaryMusicTrack = {
   id: number
   title: string
   service: string
-  location: string | null
   imageLocation: string | null
   lyrics: string | null
+  generateStatus: GenerateStatus
   createdAt: string
 }
 
@@ -15,7 +17,6 @@ export type DiaryEntryDetail = {
   entry: string
   createdAt: string
   updatedAt: string
-  /** Present when the API exposes it; mock maps from archive favorite. */
   favorite?: boolean
   musics: DiaryMusicTrack[] | null
 }

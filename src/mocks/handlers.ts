@@ -1,6 +1,7 @@
 import { delay, http, HttpResponse } from 'msw'
 
 import type { DiaryEntryDetail } from '@/api/diary/diary-entry-detail'
+import type { GenerateStatus } from '@/api/diary/generate-status'
 import type { DiaryListItem } from '@/api/diary/diary-list-item'
 import { PAST_MELODIES_MOCK } from '@/mocks/past-melodies-mock'
 
@@ -11,6 +12,9 @@ function buildMockLyrics(entry: string): string {
 }
 
 function diaryListItemToDetail(item: DiaryListItem): DiaryEntryDetail {
+  const generateStatus = (item.music?.generateStatus ?? 'new') as GenerateStatus
+  const isDone = generateStatus === 'done'
+
   return {
     id: item.id,
     title: item.title,
@@ -24,9 +28,9 @@ function diaryListItemToDetail(item: DiaryListItem): DiaryEntryDetail {
             id: 1,
             title: item.music.title,
             service: 'suno',
-            location: null,
-            imageLocation: item.music.imageLocation,
-            lyrics: buildMockLyrics(item.entry),
+            imageLocation: isDone ? item.music.imageLocation : null,
+            lyrics: isDone ? buildMockLyrics(item.entry) : null,
+            generateStatus,
             createdAt: item.createdAt,
           },
         ]
@@ -86,13 +90,13 @@ export const handlers = [
   //   const offset = Math.max(0, Number.parseInt(url.searchParams.get('offset') ?? '0', 10) || 0)
   //   return HttpResponse.json(PAST_MELODIES_MOCK.slice(offset, offset + limit))
   // }),
-  http.get('/api/diary/:id', async ({ params }) => {
-    await delay(350)
-    const id = String(params.id)
-    const entry = PAST_MELODIES_MOCK.find((e) => e.id === id)
-    if (!entry) {
-      return HttpResponse.json({ error: 'Not found' }, { status: 404 })
-    }
-    return HttpResponse.json(diaryListItemToDetail(entry))
-  }),
+  // http.get('/api/diary/:id', async ({ params }) => {
+  //   await delay(350)
+  //   const id = String(params.id)
+  //   const entry = PAST_MELODIES_MOCK.find((e) => e.id === id)
+  //   if (!entry) {
+  //     return HttpResponse.json({ error: 'Not found' }, { status: 404 })
+  //   }
+  //   return HttpResponse.json(diaryListItemToDetail(entry))
+  // }),
 ]
