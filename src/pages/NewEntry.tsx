@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { WandSparkles } from 'lucide-react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
@@ -43,6 +44,7 @@ function formatDateCaps(d: Date, locale: string): string {
 
 export function NewEntryPage() {
   const { t, i18n } = useTranslation()
+  const navigate = useNavigate()
   const entrySchema = useMemo(() => createEntrySchema(t), [t])
 
   const {
@@ -61,7 +63,11 @@ export function NewEntryPage() {
   })
 
   const selectedResonance = watch('resonance')
-  const { mutate: createNewEntry, isPending } = useNewEntry()
+  const { mutate: createNewEntry, isPending } = useNewEntry({
+    onSuccess: (data) => {
+      navigate(`/melodies/${data.id}`)
+    },
+  })
 
   const today = useMemo(() => new Date(), [])
   const dateCompact = formatDateCompact(today, i18n.language)
