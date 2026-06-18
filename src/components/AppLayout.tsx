@@ -2,6 +2,7 @@ import { Outlet, useMatch } from 'react-router-dom'
 
 import { AppFooter } from '@/components/AppFooter'
 import { AppHeader } from '@/components/AppHeader'
+import { MobileBottomNav } from '@/components/MobileBottomNav'
 import { RecordMemoryFab } from '@/components/RecordMemoryFab'
 import { AUTH_SHELL_CLASS } from '@/lib/auth-shell'
 import { cn } from '@/lib/utils'
@@ -15,12 +16,20 @@ export function AppLayout() {
       <AppHeader />
 
       <main className="flex-1">
-        <div className={cn(AUTH_SHELL_CLASS, 'py-6 sm:py-8', !isNewEntry && 'pb-28')}>
+        <div
+          className={cn(
+            AUTH_SHELL_CLASS,
+            'py-6 sm:py-8',
+            'pb-28 md:pb-8',
+            !isNewEntry && 'md:pb-28',
+          )}
+        >
           <Outlet />
         </div>
       </main>
 
       <AppFooter />
+      <MobileBottomNav />
       <RecordMemoryFab />
     </div>
   )

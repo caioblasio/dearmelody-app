@@ -6,6 +6,7 @@
     "loading": "Loading..."
   },
   "nav": {
+    "home": "Home",
     "songDiary": "Song Diary",
     "newEntry": "New Entry",
     "pastMelodies": "Past Melodies"
@@ -15,6 +16,7 @@
     "footerRights": "Melodiary © 2026"
   },
   "aria": {
+    "mobileNav": "Main navigation",
     "settings": "Settings",
     "searchMelodies": "Search melodies",
     "recordMemory": "Record a New Memory",
