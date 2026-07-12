@@ -62,17 +62,6 @@
   --radius-xl: 1.75rem;
   --radius-card: 1.25rem;
   --radius-panel: 1.75rem;
-
-  --spacing-xs: 0.5rem;
-  --spacing-sm: 1rem;
-  --spacing-md: 1.5rem;
-  --spacing-lg: 2rem;
-  --spacing-xl: 4rem;
-  --spacing-2xl: 8rem;
-  --spacing-3xl: 16rem;
-  --spacing-4xl: 32rem;
-  --spacing-5xl: 64rem;
-  --spacing-6xl: 128rem;
 }
 
 @layer utilities {

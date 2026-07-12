@@ -74,9 +74,9 @@ export function LoginPage() {
   return (
     <div className="flex min-h-screen flex-col bg-surface selection:bg-chip-bg selection:text-ink">
       <AuthHeader />
-      <main className="relative flex flex-grow items-center justify-center px-5 py-10 sm:px-6 sm:py-xl">
-        <div className="relative w-full min-w-0 max-w-xl">
-          <Card className="min-w-0 border-warm-border p-6 shadow-md sm:p-8">
+      <main className="relative flex flex-grow items-center justify-center px-6 py-10 sm:py-16">
+        <div className="relative w-full min-w-0 max-w-md">
+          <Card className="w-full shadow-md">
             <div className="mb-6 text-center sm:mb-8">
               <div className="mx-auto mb-4 flex size-12 items-center justify-center rounded-xl btn-coral-gradient">
                 <span className="font-heading text-xl text-on-primary">♪</span>
