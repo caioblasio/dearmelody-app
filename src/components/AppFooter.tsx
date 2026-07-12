@@ -7,11 +7,11 @@ export function AppFooter() {
   const { t } = useTranslation()
 
   return (
-    <footer className="hidden md:block border-t border-outline-variant bg-surface-container">
+    <footer className="hidden border-t border-warm-border bg-card-bg md:block">
       <div
         className={cn(
           AUTH_SHELL_CLASS,
-          'flex items-center justify-between gap-4 py-5 text-sm text-on-surface-variant'
+          'flex items-center justify-between gap-4 py-5 text-sm text-muted',
         )}
       >
         <span>{t('layout.footerLead')}</span>

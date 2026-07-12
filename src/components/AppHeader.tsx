@@ -6,40 +6,33 @@ import { useUserInfo } from '@/api/user/use-user-info'
 import { AUTH_SHELL_CLASS } from '@/lib/auth-shell'
 import { cn } from '@/lib/utils'
 
+function navLinkClass(isActive: boolean) {
+  return cn(
+    'rounded-full px-4 py-2 text-sm font-semibold transition-colors hover:bg-chip-bg/60',
+    isActive ? 'bg-chip-bg text-ink' : 'text-muted',
+  )
+}
+
 export function AppHeader() {
   const { t } = useTranslation()
   const { data: user } = useUserInfo()
 
+  const initials = user?.first_name?.[0]?.toLowerCase() ?? 'd'
+
   return (
-    <header className="border-b border-outline-variant bg-surface-container-lowest/80 backdrop-blur-md">
+    <header className="border-b border-warm-border bg-card-bg/90 backdrop-blur-md">
       <div className={cn(AUTH_SHELL_CLASS, 'flex items-center py-4')}>
         <div className="flex min-w-0 flex-1 items-center justify-start">
-          <NavLink className="font-serif text-xl font-bold italic text-primary" to="/" end>
-            {t('nav.songDiary')}
+          <NavLink className="font-heading text-xl font-semibold text-ink" to="/" end>
+            Dear<span className="text-coral">Melody</span>
           </NavLink>
         </div>
 
-        <nav className="hidden flex-none items-center gap-6 text-sm text-on-surface-variant md:flex">
-          <NavLink
-            className={({ isActive }) =>
-              cn(
-                'border-b-2 border-transparent pb-0.5 transition-colors hover:text-primary',
-                isActive ? 'border-primary font-semibold text-primary' : '',
-              )
-            }
-            to="/new-entry"
-          >
+        <nav className="hidden flex-none items-center gap-2 md:flex">
+          <NavLink className={({ isActive }) => navLinkClass(isActive)} to="/new-entry">
             {t('nav.newEntry')}
           </NavLink>
-          <NavLink
-            className={({ isActive }) =>
-              cn(
-                'border-b-2 border-transparent pb-0.5 transition-colors hover:text-primary',
-                isActive ? 'border-primary font-semibold text-primary' : '',
-              )
-            }
-            to="/melodies"
-          >
+          <NavLink className={({ isActive }) => navLinkClass(isActive)} to="/melodies">
             {t('nav.pastMelodies')}
           </NavLink>
         </nav>
@@ -48,12 +41,12 @@ export function AppHeader() {
           <button
             type="button"
             aria-label={t('aria.settings')}
-            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-outline-variant bg-surface-container-low text-on-surface-variant transition-colors hover:text-primary"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-warm-border bg-card-bg text-muted transition-colors hover:text-coral"
           >
             <Settings className="h-4 w-4" />
           </button>
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary-container font-semibold text-on-primary-container">
-            {user?.first_name?.[0] ?? 'U'}
+          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-plum font-heading text-sm font-semibold text-butter">
+            {initials}m
           </div>
         </div>
       </div>

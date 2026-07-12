@@ -63,7 +63,11 @@
   },
   "dashboard": {
     "title": "Authenticated",
-    "welcome": "{{name}}, you are now inside your Song Diary dashboard."
+    "welcome": "{{name}}, you are now inside your Song Diary dashboard.",
+    "goodMorning": "Good morning, {{name}}",
+    "goodAfternoon": "Good afternoon, {{name}}",
+    "goodEvening": "Good evening, {{name}}",
+    "streak": "{{days}}-day streak"
   },
   "newEntry": {
     "badge": "New Entry",
@@ -140,6 +144,7 @@
     "notFound": "This melody could not be found.",
     "contextLabel": "Song visualization",
     "recorded": "Recorded {{date}}",
+    "nowPlaying": "Now playing · from {{date}}",
     "subtitle": "{{month}} · {{duration}}",
     "favorite": "Save to favorites",
     "unfavorite": "Remove from favorites",

@@ -41,13 +41,15 @@ function waitForAudioMetadata(audio: HTMLAudioElement): Promise<void> {
 type AudioPlayerProps = {
   musicId: number
   controlsClassName?: string
+  variant?: 'default' | 'warm'
 }
 
-export function AudioPlayer({ musicId, controlsClassName }: AudioPlayerProps) {
+export function AudioPlayer({ musicId, controlsClassName, variant = 'default' }: AudioPlayerProps) {
   const { t } = useTranslation()
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const objectUrlRef = useRef<string | null>(null)
   const isScrubbingRef = useRef(false)
+  const isWarm = variant === 'warm'
 
   const [isPlaying, setIsPlaying] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
@@ -189,6 +191,18 @@ export function AudioPlayer({ musicId, controlsClassName }: AudioPlayerProps) {
     }
   }
 
+  const transportBtnClass = isWarm
+    ? 'inline-flex size-9 items-center justify-center rounded-full text-player-ink/70 transition-colors hover:bg-player-ink/10 hover:text-player-ink'
+    : 'inline-flex size-9 items-center justify-center rounded-full text-muted transition-colors hover:bg-black/5 hover:text-coral'
+
+  const playBtnClass = isWarm
+    ? 'inline-flex size-[4.625rem] items-center justify-center rounded-full bg-player-ink text-butter shadow-lg transition-transform hover:scale-105 active:scale-95 disabled:opacity-70'
+    : 'inline-flex size-11 items-center justify-center rounded-full btn-coral-gradient text-on-primary shadow-md transition-transform hover:scale-105 active:scale-95 disabled:opacity-70'
+
+  const timeClass = isWarm
+    ? 'font-mono text-[11px] tabular-nums text-player-brown lg:text-xs'
+    : 'font-mono text-[11px] tabular-nums text-muted lg:text-xs'
+
   return (
     <>
       <audio ref={audioRef} className="hidden" preload="none" />
@@ -212,7 +226,7 @@ export function AudioPlayer({ musicId, controlsClassName }: AudioPlayerProps) {
           disabled={isLoading}
           aria-label={t('entry.player.progress')}
         />
-        <div className="flex justify-between font-mono text-[11px] tabular-nums text-on-surface-variant lg:text-xs">
+        <div className={cn('flex justify-between', timeClass)}>
           <span>{formatDurationMmSs(displayedTime)}</span>
           <span>{formatDurationMmSs(duration)}</span>
         </div>
@@ -220,7 +234,7 @@ export function AudioPlayer({ musicId, controlsClassName }: AudioPlayerProps) {
 
       <div
         className={cn(
-          'flex shrink-0 flex-col gap-3 border border-black/5 p-3 backdrop-blur-sm lg:rounded-2xl lg:p-4',
+          'flex shrink-0 flex-col gap-3 border border-warm-border p-3 backdrop-blur-sm lg:rounded-2xl lg:p-4',
           controlsClassName,
         )}
       >
@@ -234,7 +248,7 @@ export function AudioPlayer({ musicId, controlsClassName }: AudioPlayerProps) {
           <button
             type="button"
             aria-label={t('entry.player.shuffle')}
-            className="inline-flex size-9 items-center justify-center rounded-full text-on-surface-variant transition-colors hover:bg-black/5 hover:text-primary"
+            className={transportBtnClass}
             disabled
           >
             <Shuffle className="size-4" aria-hidden />
@@ -242,7 +256,7 @@ export function AudioPlayer({ musicId, controlsClassName }: AudioPlayerProps) {
           <button
             type="button"
             aria-label={t('entry.player.previous')}
-            className="inline-flex size-9 items-center justify-center rounded-full text-on-surface-variant transition-colors hover:bg-black/5 hover:text-primary"
+            className={transportBtnClass}
             disabled
           >
             <SkipBack className="size-4" aria-hidden />
@@ -256,22 +270,22 @@ export function AudioPlayer({ musicId, controlsClassName }: AudioPlayerProps) {
                   ? t('entry.player.pause')
                   : t('entry.player.play')
             }
-            className="inline-flex size-11 items-center justify-center rounded-full bg-primary text-on-primary shadow-md transition-transform hover:scale-105 active:scale-95 disabled:opacity-70"
+            className={playBtnClass}
             onClick={togglePlay}
             disabled={isLoading}
           >
             {isLoading ? (
               <Loader2 className="size-5 animate-spin" aria-hidden />
             ) : isPlaying ? (
-              <Pause className="size-5" aria-hidden />
+              <Pause className="size-6" aria-hidden />
             ) : (
-              <Play className="size-5 translate-x-0.5" aria-hidden />
+              <Play className="size-6 translate-x-0.5" aria-hidden />
             )}
           </button>
           <button
             type="button"
             aria-label={t('entry.player.next')}
-            className="inline-flex size-9 items-center justify-center rounded-full text-on-surface-variant transition-colors hover:bg-black/5 hover:text-primary"
+            className={transportBtnClass}
             disabled
           >
             <SkipForward className="size-4" aria-hidden />
@@ -279,25 +293,27 @@ export function AudioPlayer({ musicId, controlsClassName }: AudioPlayerProps) {
           <button
             type="button"
             aria-label={t('entry.player.repeat')}
-            className="inline-flex size-9 items-center justify-center rounded-full text-on-surface-variant transition-colors hover:bg-black/5 hover:text-primary"
+            className={transportBtnClass}
             disabled
           >
             <Repeat className="size-4" aria-hidden />
           </button>
         </div>
 
-        <div className="flex items-center justify-center gap-2 text-on-surface-variant sm:justify-between">
-          <Volume2 className="size-4 shrink-0 opacity-70" aria-hidden />
-          <Slider
-            min={0}
-            max={1}
-            step={0.01}
-            value={[volume]}
-            onValueChange={(value) => setVolume(value[0] ?? 0)}
-            aria-label={t('entry.player.volume')}
-            className="min-w-0 max-w-[12rem] flex-1 lg:max-w-none"
-          />
-        </div>
+        {!isWarm ? (
+          <div className="flex items-center justify-center gap-2 text-muted sm:justify-between">
+            <Volume2 className="size-4 shrink-0 opacity-70" aria-hidden />
+            <Slider
+              min={0}
+              max={1}
+              step={0.01}
+              value={[volume]}
+              onValueChange={(value) => setVolume(value[0] ?? 0)}
+              aria-label={t('entry.player.volume')}
+              className="min-w-0 max-w-[12rem] flex-1 lg:max-w-none"
+            />
+          </div>
+        ) : null}
       </div>
     </>
   )

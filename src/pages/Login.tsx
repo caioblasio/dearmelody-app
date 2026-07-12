@@ -3,7 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 import { z } from 'zod'
-import { BookOpenText, Eye, EyeOff } from 'lucide-react'
+import { Eye, EyeOff } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
 import { AuthFooter } from '../components/AuthFooter'
@@ -72,25 +72,27 @@ export function LoginPage() {
   })
 
   return (
-    <div className="flex min-h-screen flex-col bg-white selection:bg-secondary-container selection:text-on-secondary-container">
+    <div className="flex min-h-screen flex-col bg-surface selection:bg-chip-bg selection:text-ink">
       <AuthHeader />
-      <main className="relative flex flex-grow items-center justify-center overflow-hidden px-6 py-xl">
-        <div className="relative w-full max-w-4xl">
-          <Card>
-            <div className="mb-lg text-center">
-              <BookOpenText className="h-8 w-8 text-primary" />
-              <h1 className="mb-2 text-3xl font-bold text-on-surface">{t('login.heading')}</h1>
-              <p className="italic text-on-surface-variant">{t('login.subheading')}</p>
+      <main className="relative flex flex-grow items-center justify-center px-5 py-10 sm:px-6 sm:py-xl">
+        <div className="relative w-full min-w-0 max-w-xl">
+          <Card className="min-w-0 border-warm-border p-6 shadow-md sm:p-8">
+            <div className="mb-6 text-center sm:mb-8">
+              <div className="mx-auto mb-4 flex size-12 items-center justify-center rounded-xl btn-coral-gradient">
+                <span className="font-heading text-xl text-on-primary">♪</span>
+              </div>
+              <h1 className="mb-2 font-heading text-3xl font-semibold text-ink">{t('login.heading')}</h1>
+              <p className="text-muted">{t('login.subheading')}</p>
             </div>
 
             {authError && (
-              <Alert className="mb-md" aria-live="polite">
+              <Alert className="mb-6" aria-live="polite">
                 {authError}
               </Alert>
             )}
 
-            <form className="space-y-md" onSubmit={onSubmit}>
-              <div className="space-y-xs">
+            <form className="space-y-5" onSubmit={onSubmit}>
+              <div className="space-y-2">
                 <Label htmlFor="email">{t('login.emailLabel')}</Label>
                 <Input
                   id="email"
@@ -107,10 +109,10 @@ export function LoginPage() {
                 )}
               </div>
 
-              <div className="space-y-xs">
-                <div className="flex items-center justify-between">
+              <div className="space-y-2">
+                <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
                   <Label htmlFor="password">{t('login.passwordLabel')}</Label>
-                  <a className="text-sm font-medium text-primary hover:underline" href="#">
+                  <a className="shrink-0 text-sm font-semibold text-coral hover:underline" href="#">
                     {t('login.forgotPassword')}
                   </a>
                 </div>
@@ -146,21 +148,19 @@ export function LoginPage() {
               <Button
                 type="submit"
                 size="lg"
-                className="w-full gap-2 py-4 shadow-md active:scale-[0.98]"
+                className="w-full py-4 font-heading text-lg"
                 disabled={loginMutation.isPending}
               >
-                <span className="font-serif text-lg italic">
-                  {loginMutation.isPending ? t('login.submitPending') : t('login.submitIdle')}
-                </span>
+                {loginMutation.isPending ? t('login.submitPending') : t('login.submitIdle')}
               </Button>
             </form>
 
-            <div className="relative my-md">
+            <div className="relative my-6">
               <div className="absolute inset-0 flex items-center">
                 <Separator />
               </div>
               <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-surface-container-lowest px-4 font-medium tracking-widest text-outline">
+                <span className="bg-card-bg px-4 text-xs font-medium tracking-widest text-sand uppercase">
                   {t('login.orSignInWith')}
                 </span>
               </div>
@@ -169,9 +169,9 @@ export function LoginPage() {
             <SocialLoginButtons />
           </Card>
 
-          <p className="mt-md text-center text-on-surface-variant">
+          <p className="mt-6 text-center text-muted">
             {t('login.ctaLead')}{' '}
-            <a className="font-bold text-secondary hover:underline" href="#">
+            <a className="font-bold text-coral hover:underline" href="#">
               {t('login.ctaLink')}
             </a>
           </p>

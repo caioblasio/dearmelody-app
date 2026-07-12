@@ -1,40 +1,67 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #6b5677;
-  --color-on-primary: #ffffff;
-  --color-primary-container: #f3e8ff;
-  --color-on-primary-container: #251431;
-  --color-secondary: #7c5261;
-  --color-on-secondary: #ffffff;
-  --color-secondary-container: #ffd9e2;
-  --color-on-secondary-container: #31101d;
-  --color-tertiary: #7e5733;
-  --color-on-tertiary: #ffffff;
-  --color-background: #fef7fe;
-  --color-on-background: #1e1a1d;
-  --color-surface: #fef7fe;
-  --color-on-surface: #1e1a1d;
-  --color-surface-variant: #ece0e9;
-  --color-on-surface-variant: #4d444c;
-  --color-outline: #7e747d;
-  --color-outline-variant: #cfc4cd;
-  --color-surface-container-lowest: #ffffff;
-  --color-surface-container-low: #f8f1f7;
-  --color-surface-container: #f2ebf1;
-  --color-surface-container-high: #ece6eb;
-  --color-surface-container-highest: #e7e0e5;
-  --color-surface-dim: #dfd8df;
+  /* Warm Studio palette */
+  --color-cream-bg: #fff6ec;
+  --color-card-bg: #fffdf8;
+  --color-warm-border: #f3e8d8;
+  --color-border-dashed: #eadfce;
+  --color-coral: #ff7a59;
+  --color-coral-light: #ff9a6b;
+  --color-peach: #ffb27a;
+  --color-butter: #ffd66b;
+  --color-butter-bg: #fff3d6;
+  --color-butter-deep: #7a5a16;
+  --color-plum: #5b3b8c;
+  --color-plum-light: #8b5bb0;
+  --color-plum-bg: #f1eaf7;
+  --color-ink: #3a2e45;
+  --color-body: #4a3f54;
+  --color-muted: #8a7e96;
+  --color-sand: #b39b7e;
+  --color-chip-bg: #ffe9cf;
+  --color-chip-bg-alt: #fff1e2;
+  --color-player-ink: #41243b;
+  --color-player-brown: #7a4e33;
+
+  /* Semantic aliases (backward-compatible with existing class names) */
+  --color-primary: #ff7a59;
+  --color-on-primary: #fff6ec;
+  --color-primary-container: #ffe9cf;
+  --color-on-primary-container: #3a2e45;
+  --color-secondary: #5b3b8c;
+  --color-on-secondary: #fff6ec;
+  --color-secondary-container: #f1eaf7;
+  --color-on-secondary-container: #3a2e45;
+  --color-tertiary: #ffb27a;
+  --color-on-tertiary: #3a2e45;
+  --color-background: #fff6ec;
+  --color-on-background: #3a2e45;
+  --color-surface: #fff6ec;
+  --color-on-surface: #3a2e45;
+  --color-surface-variant: #fff1e2;
+  --color-on-surface-variant: #8a7e96;
+  --color-outline: #b39b7e;
+  --color-outline-variant: #f3e8d8;
+  --color-surface-container-lowest: #fffdf8;
+  --color-surface-container-low: #fffdf8;
+  --color-surface-container: #fff1e2;
+  --color-surface-container-high: #ffe9cf;
+  --color-surface-container-highest: #fff3d6;
+  --color-surface-dim: #f3e8d8;
   --color-error: #ba1a1a;
   --color-error-container: #ffdad6;
   --color-on-error-container: #93000a;
 
-  --font-sans: "Be Vietnam Pro", sans-serif;
-  --font-serif: "Noto Serif", serif;
+  --font-sans: "Karla", sans-serif;
+  --font-heading: "Fredoka", sans-serif;
+  --font-serif: "Fredoka", sans-serif;
 
-  --radius-sm: 0.5rem;
-  --radius-lg: 1rem;
-  --radius-xl: 1.5rem;
+  --radius-sm: 0.875rem;
+  --radius-lg: 1.25rem;
+  --radius-xl: 1.75rem;
+  --radius-card: 1.25rem;
+  --radius-panel: 1.75rem;
 
   --spacing-xs: 0.5rem;
   --spacing-sm: 1rem;
@@ -49,6 +76,38 @@
 }
 
 @layer utilities {
+  .btn-coral-gradient {
+    background: linear-gradient(145deg, #ff9a6b, #ff7a59);
+  }
+
+  .player-gradient {
+    background: linear-gradient(160deg, #ffdcb8 0%, #ffb98f 45%, #ff8e6b 100%);
+  }
+
+  .album-art-gradient {
+    background: linear-gradient(150deg, #5b3b8c 0%, #8b5bb0 45%, #ff9a6b 100%);
+  }
+
+  .label-caps {
+    font-family: var(--font-sans);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    letter-spacing: 0.125rem;
+    text-transform: uppercase;
+  }
+
+  .font-heading {
+    font-family: var(--font-heading);
+  }
+
+  .shadow-fab {
+    box-shadow: 0 14px 30px rgba(255, 122, 89, 0.45);
+  }
+
+  .shadow-album-art {
+    box-shadow: 0 30px 60px rgba(91, 59, 140, 0.35);
+  }
+
   /* Tear-style bottom edge from Stitch “Past Melodies – Song Diary” */
   .deckled-edge {
     clip-path: polygon(
@@ -159,7 +218,7 @@
 
 @layer base {
   body {
-    @apply min-h-screen bg-white font-sans text-on-surface;
+    @apply min-h-screen bg-surface font-sans text-body;
   }
 
   h1,
@@ -168,7 +227,9 @@
   h4,
   h5,
   h6,
-  .font-serif {
-    font-family: "Noto Serif", serif;
+  .font-serif,
+  .font-heading {
+    font-family: var(--font-heading);
+    color: var(--color-ink);
   }
 }

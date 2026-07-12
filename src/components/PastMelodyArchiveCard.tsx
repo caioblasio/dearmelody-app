@@ -39,17 +39,15 @@ export function PastMelodyArchiveCard({ entry, locale }: PastMelodyArchiveCardPr
       className={cn(
         'past-melody-archive-card group',
         ARCHIVE_CARD_SHELL_LAYOUT,
-        'border shadow-sm transition-[opacity,transform,box-shadow] duration-700 ease-out lg:shadow-md',
-        'hover:shadow-xl motion-reduce:transition-none',
+        'border shadow-sm transition-[opacity,transform,box-shadow,border-color] duration-700 ease-out',
+        'hover:shadow-lg motion-reduce:transition-none',
         visible ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0 motion-reduce:translate-y-0 motion-reduce:opacity-100',
         theme.card,
       )}
     >
       <Link
         to={`/melodies/${entry.id}`}
-        className={cn(
-          'flex min-h-0 flex-1 flex-col rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-primary/35',
-        )}
+        className="flex min-h-0 flex-1 flex-col rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-coral/35"
         aria-label={t('pastMelodies.openEntry', { title: entry.title })}
       >
         <div className="flex items-start justify-between gap-2">
@@ -81,7 +79,7 @@ export function PastMelodyArchiveCard({ entry, locale }: PastMelodyArchiveCardPr
         <div className="mt-3 flex min-h-0 flex-1 flex-col gap-2 lg:mt-0 lg:space-y-3">
           <h2
             className={cn(
-              'font-serif font-semibold leading-tight lg:text-2xl',
+              'font-heading font-semibold leading-tight lg:text-2xl',
               'line-clamp-2 text-sm lg:line-clamp-none',
               theme.title,
             )}
@@ -91,7 +89,7 @@ export function PastMelodyArchiveCard({ entry, locale }: PastMelodyArchiveCardPr
           <p
             className={cn(
               'min-h-0 flex-1 text-[10px] leading-snug lg:line-clamp-4 lg:text-base lg:leading-relaxed',
-              'line-clamp-3 italic',
+              'line-clamp-3',
               theme.excerpt,
             )}
           >
@@ -103,12 +101,12 @@ export function PastMelodyArchiveCard({ entry, locale }: PastMelodyArchiveCardPr
       {entry.music ? (
         <div
           className={cn(
-            'mt-auto flex items-center gap-2 border p-2 backdrop-blur-sm lg:gap-4 lg:rounded-2xl lg:p-3',
-            'rounded-xl border-black/5 lg:mt-auto',
+            'mt-auto flex items-center gap-2 border p-2 lg:gap-4 lg:rounded-2xl lg:p-3',
+            'rounded-xl lg:mt-auto',
             theme.player,
           )}
         >
-          <div className="size-7 shrink-0 overflow-hidden rounded-md shadow-sm ring-1 ring-black/5 lg:size-12 lg:rounded-xl">
+          <div className="size-7 shrink-0 overflow-hidden rounded-md shadow-sm ring-1 ring-warm-border lg:size-12 lg:rounded-xl">
             <img
               src={entry.music.imageLocation}
               alt=""
@@ -118,7 +116,7 @@ export function PastMelodyArchiveCard({ entry, locale }: PastMelodyArchiveCardPr
             />
           </div>
           <div className="min-w-0 flex-1">
-            <p className="truncate text-[10px] font-semibold lg:text-sm">{entry.music.title}</p>
+            <p className="truncate text-[10px] font-bold text-plum lg:text-sm">{entry.music.title}</p>
           </div>
           <button
             type="button"

@@ -32,7 +32,7 @@ function getTopMood(entries: DiaryListItem[], t: TFunction): string {
 function groupDiaryEntriesByMonth(
   entries: DiaryListItem[],
   locale: string,
-  t: TFunction
+  t: TFunction,
 ): DiaryGroup[] {
   const grouped = entries.reduce<Map<string, DiaryGroup>>((acc, entry) => {
     const date = parseDiaryCreatedAt(entry.createdAt)
@@ -64,14 +64,14 @@ function groupDiaryEntriesByMonth(
 
 function ArchiveGroupHeading({ id, label }: { id: string; label: string }) {
   return (
-    <div className="mb-6 flex items-center gap-4 lg:mb-8 lg:block lg:border-b lg:border-outline-variant/35 lg:pb-2">
+    <div className="mb-6 flex items-center gap-4 lg:mb-8 lg:block lg:border-b lg:border-warm-border lg:pb-2">
       <h2
         id={id}
-        className="shrink-0 text-[10px] font-bold uppercase tracking-[0.2em] text-primary lg:text-sm lg:font-semibold lg:normal-case lg:tracking-wide lg:text-on-surface-variant"
+        className="shrink-0 font-heading text-lg font-semibold text-ink lg:text-xl"
       >
         {label}
       </h2>
-      <div className="h-px flex-1 bg-primary/15 lg:hidden" aria-hidden />
+      <div className="h-px flex-1 bg-warm-border lg:hidden" aria-hidden />
     </div>
   )
 }
@@ -82,21 +82,21 @@ export function MyMelodiesPage() {
   const { data, isLoading, isError } = useGetDiary()
   const groupedEntries = useMemo(
     () => groupDiaryEntriesByMonth(data ?? [], i18n.language, t),
-    [data, i18n.language, t]
+    [data, i18n.language, t],
   )
 
   return (
     <div className="space-y-8">
       <header className="space-y-2">
-        <h1 className="font-serif text-3xl font-semibold text-primary sm:text-4xl">
+        <h1 className="font-heading text-[2.125rem] font-semibold text-ink sm:text-4xl">
           {t('pastMelodies.title')}
         </h1>
-        <p className="italic text-on-surface-variant">{t('pastMelodies.subtitle')}</p>
+        <p className="text-muted">{t('pastMelodies.subtitle')}</p>
       </header>
 
       <div>
         {isLoading && (
-          <p className="text-sm text-on-surface-variant" role="status" aria-live="polite">
+          <p className="text-sm text-muted" role="status" aria-live="polite">
             {t('pastMelodies.loading')}
           </p>
         )}
@@ -108,7 +108,7 @@ export function MyMelodiesPage() {
         )}
 
         {groupedEntries.length === 0 && !isLoading && (
-          <p className="text-center text-sm text-on-surface-variant">{t('pastMelodies.empty')}</p>
+          <p className="text-center text-sm text-muted">{t('pastMelodies.empty')}</p>
         )}
 
         {groupedEntries.length > 0 && !isLoading && (

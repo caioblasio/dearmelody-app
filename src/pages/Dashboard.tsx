@@ -1,18 +1,53 @@
+import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { useUserInfo } from '@/api/user/use-user-info'
 
+function getGreetingKey(): 'dashboard.goodMorning' | 'dashboard.goodAfternoon' | 'dashboard.goodEvening' {
+  const hour = new Date().getHours()
+  if (hour < 12) return 'dashboard.goodMorning'
+  if (hour < 17) return 'dashboard.goodAfternoon'
+  return 'dashboard.goodEvening'
+}
+
+function formatTodayDate(locale: string): string {
+  return new Intl.DateTimeFormat(locale, {
+    weekday: 'long',
+    month: 'long',
+    day: 'numeric',
+  }).format(new Date())
+}
+
 export function DashboardPage() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const { data: user } = useUserInfo()
 
   const name = user?.first_name ?? ''
+  const greetingKey = useMemo(() => getGreetingKey(), [])
+  const todayLabel = useMemo(() => formatTodayDate(i18n.language), [i18n.language])
 
   return (
-    <section className="space-y-6">
-      <div className="w-full rounded-xl border border-outline-variant bg-surface-container-lowest p-8 text-center shadow-sm sm:p-10">
-        <h1 className="font-serif text-3xl font-bold text-on-surface">{t('dashboard.title')}</h1>
-        <p className="mt-3 text-on-surface-variant">{t('dashboard.welcome', { name })}</p>
+    <section className="space-y-8">
+      <header className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <p className="text-sm text-sand">{todayLabel}</p>
+          <h1 className="mt-1 font-heading text-[2.125rem] font-semibold leading-tight text-ink sm:text-[2.125rem]">
+            {t(greetingKey, { name })}
+          </h1>
+        </div>
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 rounded-full border border-warm-border bg-card-bg px-4 py-2">
+            <span className="size-2.5 rounded-full bg-butter" aria-hidden />
+            <span className="text-sm font-bold text-ink">{t('dashboard.streak', { days: 7 })}</span>
+          </div>
+          <div className="flex size-11 items-center justify-center rounded-full bg-plum font-heading text-sm font-semibold text-butter">
+            {name ? `${name[0]?.toLowerCase()}m` : 'dm'}
+          </div>
+        </div>
+      </header>
+
+      <div className="rounded-[24px] border border-warm-border bg-card-bg p-8 sm:p-10">
+        <p className="text-lg leading-relaxed text-body">{t('dashboard.welcome', { name })}</p>
       </div>
     </section>
   )
