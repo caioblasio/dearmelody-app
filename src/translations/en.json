@@ -63,11 +63,17 @@
   },
   "dashboard": {
     "title": "Authenticated",
-    "welcome": "{{name}}, you are now inside your Song Diary dashboard.",
     "goodMorning": "Good morning, {{name}}",
     "goodAfternoon": "Good afternoon, {{name}}",
     "goodEvening": "Good evening, {{name}}",
-    "streak": "{{days}}-day streak"
+    "streak": "{{days}}-day streak",
+    "recentEntries": "Recent entries",
+    "recentEntriesLoading": "Loading recent entries…",
+    "recentEntriesError": "Could not load recent entries. Please try again.",
+    "recentEntriesEmpty": "No entries in the last 7 days. Tap + to write one.",
+    "melodyReady": "♪ {{title}}",
+    "noMelodyYet": "No melody yet · Generate ♪",
+    "melodyGenerating": "Generating melody…"
   },
   "newEntry": {
     "badge": "New Entry",

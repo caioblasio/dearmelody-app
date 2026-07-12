@@ -1,7 +1,11 @@
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { useGetDiary } from '@/api/diary/use-get-diary'
 import { useUserInfo } from '@/api/user/use-user-info'
+import { RecentEntryRow } from '@/components/RecentEntryRow'
+import { getLastNDaysRange } from '@/lib/diary-date-range'
+import { parseDiaryCreatedAt } from '@/lib/past-melody-date'
 
 function getGreetingKey(): 'dashboard.goodMorning' | 'dashboard.goodAfternoon' | 'dashboard.goodEvening' {
   const hour = new Date().getHours()
@@ -21,6 +25,21 @@ function formatTodayDate(locale: string): string {
 export function DashboardPage() {
   const { t, i18n } = useTranslation()
   const { data: user } = useUserInfo()
+
+  const recentDiaryParams = useMemo(
+    () => ({ ...getLastNDaysRange(7), limit: 100 }),
+    [],
+  )
+  const { data, isLoading, isError } = useGetDiary(recentDiaryParams)
+
+  const recentEntries = useMemo(
+    () =>
+      [...(data ?? [])].sort(
+        (a, b) =>
+          parseDiaryCreatedAt(b.createdAt).getTime() - parseDiaryCreatedAt(a.createdAt).getTime(),
+      ),
+    [data],
+  )
 
   const name = user?.first_name ?? ''
   const greetingKey = useMemo(() => getGreetingKey(), [])
@@ -46,9 +65,35 @@ export function DashboardPage() {
         </div>
       </header>
 
-      <div className="rounded-[24px] border border-warm-border bg-card-bg p-8 sm:p-10">
-        <p className="text-lg leading-relaxed text-body">{t('dashboard.welcome', { name })}</p>
-      </div>
+      <section className="space-y-3.5" aria-labelledby="recent-entries-heading">
+        <h2 id="recent-entries-heading" className="font-heading text-[1.375rem] font-semibold text-ink">
+          {t('dashboard.recentEntries')}
+        </h2>
+
+        {isLoading && (
+          <p className="text-sm text-muted" role="status" aria-live="polite">
+            {t('dashboard.recentEntriesLoading')}
+          </p>
+        )}
+
+        {isError && (
+          <p className="text-sm text-error" role="alert">
+            {t('dashboard.recentEntriesError')}
+          </p>
+        )}
+
+        {!isLoading && !isError && recentEntries.length === 0 && (
+          <p className="text-sm text-muted">{t('dashboard.recentEntriesEmpty')}</p>
+        )}
+
+        {!isLoading && !isError && recentEntries.length > 0 && (
+          <div className="flex flex-col gap-2.5">
+            {recentEntries.map((entry) => (
+              <RecentEntryRow key={entry.id} entry={entry} locale={i18n.language} />
+            ))}
+          </div>
+        )}
+      </section>
     </section>
   )
 }

@@ -3,10 +3,89 @@ import { delay, http, HttpResponse } from 'msw'
 import type { DiaryEntryDetail } from '@/api/diary/diary-entry-detail'
 import type { GenerateStatus } from '@/api/diary/generate-status'
 import type { DiaryListItem } from '@/api/diary/diary-list-item'
+import { formatLocalDateYmd } from '@/lib/diary-date-range'
 import { PAST_MELODIES_MOCK } from '@/mocks/past-melodies-mock'
 
 const MOCK_SAMPLE_AUDIO_URL =
   'https://interactive-examples.mdn.mozilla.net/media/cc0-audio/tango.mp3'
+
+function toLocalDateYmd(iso: string): string {
+  const parsed = new Date(iso)
+  return Number.isNaN(parsed.getTime()) ? '' : formatLocalDateYmd(parsed)
+}
+
+function buildRecentDiaryFixtures(): DiaryListItem[] {
+  const now = new Date()
+  const daysAgo = (n: number) => {
+    const d = new Date(now)
+    d.setDate(d.getDate() - n)
+    d.setHours(12, 0, 0, 0)
+    return d.toISOString()
+  }
+
+  return [
+    {
+      id: '22222222-2222-4222-8222-222222222201',
+      title: 'Canal walk after the rain',
+      mood: 'cozy',
+      entry:
+        'We walked along the canal after the rain stopped. Everything smelled green and the city felt quiet.',
+      createdAt: daysAgo(0),
+      updatedAt: daysAgo(0),
+      music: {
+        title: 'Green Light',
+        imageLocation:
+          'https://lh3.googleusercontent.com/aida-public/AB6AXuC35UzBQIhWusSQVfgBVzObl4Jo3W1gpuJdjAHcBTJJPC9FvP1mtkj6bRLAWfZBkzn8x4Mx4G7twDGCjXtYQ2KxIZ8FWQE5-5b4bXZ9kBiIsKB3qZQiHVOfGxBDwfqI2O3NHJPVbw5XxspjNrsb7XG-Dr8CycyfpYf3PDm7HYXjtZDXZgaDakATkePEDyut0yaxlLjlcWOwlw9Vp390Aa2kQ0CiKtrHjj48OpEnpJdsk7x648TTTDSJ0Gt3IxuNscsS62COTRscIYY',
+        generateStatus: 'done',
+      },
+    },
+    {
+      id: '22222222-2222-4222-8222-222222222202',
+      title: 'Late-night thoughts',
+      mood: 'melancholy',
+      entry: 'Could not sleep. The city hummed outside and I wrote until the page felt lighter.',
+      createdAt: daysAgo(2),
+      updatedAt: daysAgo(2),
+      music: null,
+    },
+    {
+      id: '22222222-2222-4222-8222-222222222203',
+      title: 'Studio morning',
+      mood: 'dreamy',
+      entry: 'First light through the window and a melody forming in my head before coffee.',
+      createdAt: daysAgo(5),
+      updatedAt: daysAgo(5),
+      music: {
+        title: 'Beginnings',
+        imageLocation:
+          'https://lh3.googleusercontent.com/aida-public/AB6AXuAxmNaO3NI7mH3sR8pJIMTllKgVCz_gb8cQaUpJEIjYUvN0z4pMeDhFchy22TNj_SEJ6_edwe4z64BV0VfjzXIaiEqkQKWzmz1SZX9dq36U_8gBQYHDyUl5ZoZQkI5i2pbcmIwaqYxdUFT2fHK5lAl_Vr6fnNH-DhnMNCVzKbZQcpw-ftUc61fMPjGV0IIuqez1bE3YpyKidIKCRD7nIZ9k-4-VNZWKvySZXOm7DYjTpKRtphdIbeTCq2dR2jYblc2waLmv7KxGhDQ',
+        generateStatus: 'generating',
+      },
+    },
+  ]
+}
+
+const ALL_DIARY_MOCK = [...buildRecentDiaryFixtures(), ...PAST_MELODIES_MOCK]
+
+function filterDiaryEntries(
+  entries: DiaryListItem[],
+  params: URLSearchParams,
+): DiaryListItem[] {
+  const mood = params.get('mood')?.trim().toLowerCase()
+  const dateStart = params.get('dateStart')
+  const dateEnd = params.get('dateEnd')
+
+  return entries.filter((entry) => {
+    if (mood && entry.mood.toLowerCase() !== mood) return false
+
+    const entryDate = toLocalDateYmd(entry.createdAt)
+    if (!entryDate) return false
+    if (dateStart && entryDate < dateStart) return false
+    if (dateEnd && entryDate > dateEnd) return false
+
+    return true
+  })
+}
 
 async function fetchMockSampleAudio(): Promise<ArrayBuffer | null> {
   const sample = await fetch(MOCK_SAMPLE_AUDIO_URL)
@@ -93,12 +172,13 @@ export const handlers = [
     const url = new URL(request.url)
     const limit = Math.max(1, Number.parseInt(url.searchParams.get('limit') ?? '10', 10) || 10)
     const offset = Math.max(0, Number.parseInt(url.searchParams.get('offset') ?? '0', 10) || 0)
-    return HttpResponse.json(PAST_MELODIES_MOCK.slice(offset, offset + limit))
+    const filtered = filterDiaryEntries(ALL_DIARY_MOCK, url.searchParams)
+    return HttpResponse.json(filtered.slice(offset, offset + limit))
   }),
   http.get('/api/diary/:id', async ({ params }) => {
     await delay(350)
     const id = String(params.id)
-    const entry = PAST_MELODIES_MOCK.find((e) => e.id === id)
+    const entry = ALL_DIARY_MOCK.find((e) => e.id === id)
     if (!entry) {
       return HttpResponse.json({ error: 'Not found' }, { status: 404 })
     }
