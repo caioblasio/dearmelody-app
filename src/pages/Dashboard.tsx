@@ -3,12 +3,16 @@ import { useTranslation } from 'react-i18next'
 
 import { useGetDiary } from '@/api/diary/use-get-diary'
 import { useUserInfo } from '@/api/user/use-user-info'
+import { AllTimeStreak } from '@/components/AllTimeStreak'
 import { EntryInspirationCard } from '@/components/EntryInspirationCard'
 import { RecentEntryRow } from '@/components/RecentEntryRow'
 import { getLastNDaysRange } from '@/lib/diary-date-range'
 import { parseDiaryCreatedAt } from '@/lib/past-melody-date'
 
-function getGreetingKey(): 'dashboard.goodMorning' | 'dashboard.goodAfternoon' | 'dashboard.goodEvening' {
+function getGreetingKey():
+  | 'dashboard.goodMorning'
+  | 'dashboard.goodAfternoon'
+  | 'dashboard.goodEvening' {
   const hour = new Date().getHours()
   if (hour < 12) return 'dashboard.goodMorning'
   if (hour < 17) return 'dashboard.goodAfternoon'
@@ -27,19 +31,16 @@ export function DashboardPage() {
   const { t, i18n } = useTranslation()
   const { data: user } = useUserInfo()
 
-  const recentDiaryParams = useMemo(
-    () => ({ ...getLastNDaysRange(7), limit: 100 }),
-    [],
-  )
+  const recentDiaryParams = useMemo(() => ({ ...getLastNDaysRange(7), limit: 100 }), [])
   const { data, isLoading, isError } = useGetDiary(recentDiaryParams)
 
   const recentEntries = useMemo(
     () =>
       [...(data ?? [])].sort(
         (a, b) =>
-          parseDiaryCreatedAt(b.createdAt).getTime() - parseDiaryCreatedAt(a.createdAt).getTime(),
+          parseDiaryCreatedAt(b.createdAt).getTime() - parseDiaryCreatedAt(a.createdAt).getTime()
       ),
-    [data],
+    [data]
   )
 
   const name = user?.first_name ?? ''
@@ -56,20 +57,17 @@ export function DashboardPage() {
           </h1>
         </div>
         <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2 rounded-full border border-warm-border bg-card-bg px-4 py-2">
-            <span className="size-2.5 rounded-full bg-butter" aria-hidden />
-            <span className="text-sm font-bold text-ink">{t('dashboard.streak', { days: 7 })}</span>
-          </div>
-          <div className="flex size-11 items-center justify-center rounded-full bg-plum font-heading text-sm font-semibold text-butter">
-            {name ? `${name[0]?.toLowerCase()}m` : 'dm'}
-          </div>
+          <AllTimeStreak />
         </div>
       </header>
 
       <EntryInspirationCard />
 
       <section className="space-y-3.5" aria-labelledby="recent-entries-heading">
-        <h2 id="recent-entries-heading" className="font-heading text-[1.375rem] font-semibold text-ink">
+        <h2
+          id="recent-entries-heading"
+          className="font-heading text-[1.375rem] font-semibold text-ink"
+        >
           {t('dashboard.recentEntries')}
         </h2>
 
