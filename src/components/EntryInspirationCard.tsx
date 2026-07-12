@@ -27,7 +27,7 @@ export function EntryInspirationCard() {
       type="button"
       onClick={handleClick}
       className={cn(
-        'group relative block w-full overflow-hidden rounded-[22px] bg-gradient-to-br from-coral-light to-coral p-5 text-left md:w-1/2 md:rounded-3xl md:p-8',
+        'group relative block w-full overflow-hidden rounded-[22px] bg-gradient-to-br from-coral-light to-coral p-5 text-left md:rounded-3xl md:p-8',
         'transition-transform hover:scale-[1.01] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral/35',
       )}
       aria-label={`${t('dashboard.inspirationCta')}: ${activeTitle}`}

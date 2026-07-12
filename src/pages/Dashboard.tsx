@@ -5,6 +5,7 @@ import { useGetDiary } from '@/api/diary/use-get-diary'
 import { useUserInfo } from '@/api/user/use-user-info'
 import { AllTimeStreak } from '@/components/AllTimeStreak'
 import { EntryInspirationCard } from '@/components/EntryInspirationCard'
+import { MoodOfTheMonth } from '@/components/MoodOfTheMonth'
 import { RecentEntryRow } from '@/components/RecentEntryRow'
 import { getLastNDaysRange } from '@/lib/diary-date-range'
 import { parseDiaryCreatedAt } from '@/lib/past-melody-date'
@@ -61,7 +62,14 @@ export function DashboardPage() {
         </div>
       </header>
 
-      <EntryInspirationCard />
+      <div className="flex flex-col gap-4 md:flex-row md:items-stretch">
+        <div className="order-1 md:order-2 md:w-1/2">
+          <MoodOfTheMonth />
+        </div>
+        <div className="order-2 md:order-1 md:w-1/2">
+          <EntryInspirationCard />
+        </div>
+      </div>
 
       <section className="space-y-3.5" aria-labelledby="recent-entries-heading">
         <h2

@@ -165,6 +165,20 @@
     }
   }
 
+  .mood-melo-float {
+    animation: mood-melo-float 3.2s ease-in-out infinite;
+  }
+
+  @keyframes mood-melo-float {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-6px);
+    }
+  }
+
   .diary-section-panel {
     grid-template-rows: 1fr;
     opacity: 1;
@@ -201,6 +215,10 @@
 
     .diary-chevron {
       transition: none;
+    }
+
+    .mood-melo-float {
+      animation: none;
     }
   }
 }

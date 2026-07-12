@@ -77,6 +77,8 @@
     "melodyReady": "♪ {{title}}",
     "noMelodyYet": "No melody yet · Generate ♪",
     "melodyGenerating": "Generating melody…",
+    "moodOfTheMonth": "Melo says your month is {{mood}}",
+    "moodOfTheMonthPrefix": "Melo says your month is ",
     "inspirationLabel": "Need inspiration?",
     "inspirationCta": "Start writing",
     "inspirationTitles": [
