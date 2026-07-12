@@ -81,6 +81,21 @@
     "moodOfTheMonthPrefix": "Melo says your month is ",
     "inspirationLabel": "Need inspiration?",
     "inspirationCta": "Start writing",
+    "progress": {
+      "streakTitle": "You're on a roll, {{name}}!",
+      "streakSubtitle": "Write one entry a day to keep your streak alive. Melo grows with it.",
+      "daysLabel": "DAYS",
+      "milestonesTitle": "Milestones",
+      "soundRewards": "Streaks unlock <strong>sound rewards</strong>: new instruments, genres and Melo outfits — never pressure, always gifts.",
+      "meloLevel0": "Melo · level 1 — just getting started",
+      "meloLevel1": "Melo · level 2 — got headphones at day 7",
+      "meloLevel2": "Melo · level 3 — learned to whistle at day 14",
+      "meloLevel3": "Melo · level 4 — started a band at day 30",
+      "meloNext0": "At 7 days he gets headphones. At 14, he learns to whistle.",
+      "meloNext1": "At 14 days he learns to whistle. At 30, he starts a band.",
+      "meloNext2": "At 30 days he starts a band. Keep the rhythm going!",
+      "meloNext3": "You're keeping the band alive. Melo is proud of you."
+    },
     "inspirationTitles": [
       "The day we said I do...",
       "Our first dance as spouses...",

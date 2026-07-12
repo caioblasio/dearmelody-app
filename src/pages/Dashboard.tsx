@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 
 import { useGetDiary } from '@/api/diary/use-get-diary'
 import { useUserInfo } from '@/api/user/use-user-info'
-import { AllTimeStreak } from '@/components/AllTimeStreak'
+import { DashboardProgressSection } from '@/components/DashboardProgressSection'
 import { EntryInspirationCard } from '@/components/EntryInspirationCard'
 import { MoodOfTheMonth } from '@/components/MoodOfTheMonth'
 import { RecentEntryRow } from '@/components/RecentEntryRow'
@@ -57,19 +57,18 @@ export function DashboardPage() {
             {t(greetingKey, { name })}
           </h1>
         </div>
-        <div className="flex items-center gap-3">
-          <AllTimeStreak />
-        </div>
       </header>
 
-      <div className="flex flex-col gap-4 md:flex-row md:items-stretch">
-        <div className="order-1 md:order-2 md:w-1/2">
+      <div className="flex flex-col gap-6 md:flex-row md:items-stretch md:gap-8">
+        <div className="order-2 md:w-1/2">
           <MoodOfTheMonth />
         </div>
-        <div className="order-2 md:order-1 md:w-1/2">
+        <div className="order-1 md:w-1/2">
           <EntryInspirationCard />
         </div>
       </div>
+
+      <DashboardProgressSection userName={name} />
 
       <section className="space-y-3.5" aria-labelledby="recent-entries-heading">
         <h2
