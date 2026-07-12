@@ -67,10 +67,7 @@ function buildRecentDiaryFixtures(): DiaryListItem[] {
 
 const ALL_DIARY_MOCK = [...buildRecentDiaryFixtures(), ...PAST_MELODIES_MOCK]
 
-function filterDiaryEntries(
-  entries: DiaryListItem[],
-  params: URLSearchParams,
-): DiaryListItem[] {
+function filterDiaryEntries(entries: DiaryListItem[], params: URLSearchParams): DiaryListItem[] {
   const mood = params.get('mood')?.trim().toLowerCase()
   const dateStart = params.get('dateStart')
   const dateEnd = params.get('dateEnd')
@@ -127,8 +124,8 @@ function diaryListItemToDetail(item: DiaryListItem): DiaryEntryDetail {
 }
 
 const MOCK_LOGIN_USER = {
-  email: 'demo@melodiary.app',
-  password: 'Melodiary123!',
+  email: 'demo@dearmelody.app',
+  password: 'dearmelody123456',
 }
 
 export const handlers = [

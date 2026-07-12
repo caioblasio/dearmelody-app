@@ -1,6 +1,6 @@
 {
   "app": {
-    "documentTitle": "Melodiary"
+    "documentTitle": "Dear Melody"
   },
   "common": {
     "loading": "Loading..."
@@ -15,7 +15,7 @@
   },
   "layout": {
     "footerLead": "Keep journaling your musical memories.",
-    "footerRights": "Melodiary © 2026"
+    "footerRights": "Dear Melody © 2026"
   },
   "aria": {
     "mobileNav": "Main navigation",
@@ -41,7 +41,7 @@
     "google": "Google"
   },
   "login": {
-    "heading": "Log in to Melodiary",
+    "heading": "Log in to Dear Melody",
     "subheading": "Continue your musical journey...",
     "emailLabel": "Email Address",
     "passwordLabel": "Password",
