@@ -8,53 +8,24 @@ import { z } from 'zod'
 
 import { useNewEntry } from '@/api/diary/use-new-entry'
 import { Button } from '@/components/ui/button'
-import { archiveCardShellNeutralClass } from '@/lib/archive-card-shell'
 import { cn } from '@/lib/utils'
 
-const NEW_ENTRY_RESONANCE_IDS = ['melancholic', 'ethereal', 'uplifting', 'cinematic'] as const
-type EntryResonanceId = (typeof NEW_ENTRY_RESONANCE_IDS)[number]
-
-const RESONANCE_CHIP_COLORS: Record<
-  EntryResonanceId,
-  { dot: string; selected: string; idle: string }
-> = {
-  melancholic: {
-    dot: 'bg-plum-light',
-    selected: 'border-butter bg-butter-bg text-ink',
-    idle: 'border-warm-border bg-card-bg text-muted hover:border-peach',
-  },
-  ethereal: {
-    dot: 'bg-plum-light',
-    selected: 'border-butter bg-butter-bg text-ink',
-    idle: 'border-warm-border bg-card-bg text-muted hover:border-peach',
-  },
-  uplifting: {
-    dot: 'bg-butter',
-    selected: 'border-butter bg-butter-bg text-ink',
-    idle: 'border-warm-border bg-card-bg text-muted hover:border-peach',
-  },
-  cinematic: {
-    dot: 'bg-[#7A8BB0]',
-    selected: 'border-butter bg-butter-bg text-ink',
-    idle: 'border-warm-border bg-card-bg text-muted hover:border-peach',
-  },
-}
+const NEW_ENTRY_GENRE_IDS = ['indieFolk', 'dreamyPop', 'piano'] as const
+type EntryGenreId = (typeof NEW_ENTRY_GENRE_IDS)[number]
 
 function createEntrySchema(t: TFunction) {
   return z.object({
-    title: z.string().max(255, t('newEntry.validation.titleMax')),
     entry: z
       .string()
       .min(10, t('newEntry.validation.entryMin'))
       .max(2000, t('newEntry.validation.entryMax')),
-    resonance: z.enum(NEW_ENTRY_RESONANCE_IDS),
+    genre: z.enum(NEW_ENTRY_GENRE_IDS),
   })
 }
 
 type EntryFormValues = {
-  title: string
   entry: string
-  resonance: EntryResonanceId
+  genre: EntryGenreId
 }
 
 function formatDateCaps(d: Date, locale: string): string {
@@ -68,10 +39,10 @@ export function NewEntryPage() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const entrySchema = useMemo(() => createEntrySchema(t), [t])
-  const suggestedTitle = useMemo(
-    () => (searchParams.get('title') ?? '').trim().slice(0, 255),
-    [searchParams],
-  )
+  const placeholderText = useMemo(() => {
+    const fromUrl = searchParams.get('placeholder')?.trim()
+    return fromUrl || t('newEntry.textareaPlaceholder')
+  }, [searchParams, t])
 
   const {
     register,
@@ -82,13 +53,12 @@ export function NewEntryPage() {
   } = useForm<EntryFormValues>({
     resolver: zodResolver(entrySchema),
     defaultValues: {
-      title: suggestedTitle,
       entry: '',
-      resonance: NEW_ENTRY_RESONANCE_IDS[0],
+      genre: NEW_ENTRY_GENRE_IDS[0],
     },
   })
 
-  const selectedResonance = watch('resonance')
+  const selectedGenre = watch('genre')
   const { mutate: createNewEntry, isPending } = useNewEntry({
     onSuccess: (data) => {
       navigate(`/melodies/${data.id}`)
@@ -100,15 +70,14 @@ export function NewEntryPage() {
 
   const onSubmit = handleSubmit(async (values) => {
     createNewEntry({
-      title: values.title,
       entry: values.entry,
-      resonance: values.resonance,
+      genre: values.genre,
     })
   })
 
   return (
-    <div className="mx-auto max-w-[680px] space-y-8">
-      <header className="space-y-3">
+    <div className="flex min-h-0 flex-1 flex-col gap-4 md:block md:space-y-8">
+      <header className="shrink-0 space-y-3">
         <div className="flex items-start justify-between gap-3">
           <span className="text-sm tracking-wide text-sand">{dateCaps}</span>
           <span className="shrink-0 rounded-full border border-warm-border bg-card-bg px-4 py-1.5 text-sm font-semibold text-muted">
@@ -121,83 +90,66 @@ export function NewEntryPage() {
         </h1>
       </header>
 
-      <article className={archiveCardShellNeutralClass('space-y-6 bg-transparent p-0 shadow-none')}>
-        <form className="space-y-6" onSubmit={onSubmit}>
-          <label className="block space-y-2">
-            <span className="label-caps text-muted">{t('newEntry.titleLabel')}</span>
-            <input
-              type="text"
-              maxLength={255}
-              placeholder={t('newEntry.titlePlaceholder')}
-              className="w-full rounded-2xl border border-warm-border bg-card-bg px-4 py-3 font-heading text-lg font-semibold text-ink outline-none placeholder:font-sans placeholder:text-base placeholder:font-normal placeholder:text-muted focus-visible:border-coral focus-visible:ring-2 focus-visible:ring-coral/20"
-              aria-invalid={Boolean(errors.title)}
-              aria-describedby={errors.title ? 'title-error' : undefined}
-              {...register('title')}
-            />
-            {errors.title && (
-              <p id="title-error" className="text-sm text-error" role="alert">
-                {errors.title.message}
-              </p>
-            )}
-          </label>
+      <form className="flex min-h-0 flex-1 flex-col gap-4 md:block md:space-y-6" onSubmit={onSubmit}>
+        <label className="flex min-h-0 flex-1 flex-col gap-2 md:block md:space-y-2">
+          <textarea
+            placeholder={placeholderText}
+            className="diary-notebook-field diary-notebook-field--fill w-full resize-none text-body caret-coral outline-none"
+            aria-invalid={Boolean(errors.entry)}
+            aria-describedby={errors.entry ? 'entry-error' : undefined}
+            {...register('entry')}
+          />
+          {errors.entry && (
+            <p id="entry-error" className="shrink-0 text-sm text-error" role="alert">
+              {errors.entry.message}
+            </p>
+          )}
+        </label>
 
-          <label className="block space-y-2">
-            <textarea
-              rows={9}
-              placeholder={t('newEntry.textareaPlaceholder')}
-              className="w-full resize-none rounded-2xl border border-warm-border bg-card-bg px-5 py-4 text-[1.1875rem] leading-[1.75] text-body caret-coral outline-none placeholder:text-muted focus-visible:border-coral focus-visible:ring-2 focus-visible:ring-coral/20"
-              aria-invalid={Boolean(errors.entry)}
-              aria-describedby={errors.entry ? 'entry-error' : undefined}
-              {...register('entry')}
-            />
-            {errors.entry && (
-              <p id="entry-error" className="text-sm text-error" role="alert">
-                {errors.entry.message}
-              </p>
-            )}
-          </label>
-
-          <div className="space-y-3">
-            <p className="label-caps text-muted">{t('newEntry.resonanceLabel')}</p>
+        <div className="flex shrink-0 flex-wrap items-center gap-3 rounded-[20px] border border-warm-border bg-card-bg px-5 py-4 sm:justify-between">
+          <div className="flex flex-wrap items-center gap-3 sm:gap-4">
+            <span className="text-sm font-medium text-muted">{t('newEntry.soundLabel')}</span>
             <div className="flex flex-wrap gap-2">
-              {NEW_ENTRY_RESONANCE_IDS.map((id) => {
-                const isSelected = selectedResonance === id
-                const colors = RESONANCE_CHIP_COLORS[id]
+              {NEW_ENTRY_GENRE_IDS.map((id) => {
+                const isSelected = selectedGenre === id
 
                 return (
                   <button
                     key={id}
                     type="button"
                     className={cn(
-                      'inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold transition-colors',
-                      isSelected ? colors.selected : colors.idle,
+                      'rounded-full px-3.5 py-1.5 text-[13px] font-semibold transition-colors',
+                      isSelected
+                        ? 'bg-chip-bg text-coral'
+                        : 'border border-warm-border text-muted hover:border-peach',
                     )}
                     aria-pressed={isSelected}
-                    onClick={() => setValue('resonance', id, { shouldValidate: true })}
+                    onClick={() => setValue('genre', id, { shouldValidate: true })}
                   >
-                    <span className={cn('size-2.5 rounded-full', colors.dot)} aria-hidden />
-                    {t(`newEntry.resonance.${id}`)}
+                    {t(`newEntry.genres.${id}`)}
                   </button>
                 )
               })}
             </div>
-            {errors.resonance && (
-              <p className="text-sm text-error" role="alert">
-                {errors.resonance.message}
-              </p>
-            )}
           </div>
+        </div>
+        {errors.genre && (
+          <p className="shrink-0 text-sm text-error" role="alert">
+            {errors.genre.message}
+          </p>
+        )}
 
+        <div className="flex shrink-0 justify-center">
           <Button
             type="submit"
             size="lg"
-            className="w-full py-4 font-heading text-xl hover:scale-[1.03]"
+            className="w-full max-w-md py-4 font-heading text-xl hover:scale-[1.03]"
             disabled={isSubmitting || isPending}
           >
             {isPending ? t('newEntry.generating') : `♪ ${t('newEntry.generate')}`}
           </Button>
-        </form>
-      </article>
+        </div>
+      </form>
     </div>
   )
 }

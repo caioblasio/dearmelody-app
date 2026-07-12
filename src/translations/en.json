@@ -102,14 +102,11 @@
     "badge": "New Entry",
     "heading": "How was your day?",
     "subheading": "Capture your feelings and let Melody AI turn it into your daily soundtrack.",
-    "titleLabel": "Title (optional)",
-    "titlePlaceholder": "Give this memory a name...",
     "textareaPlaceholder": "Today felt like a slow rainy afternoon with a hopeful ending...",
-    "resonanceLabel": "Current Resonance",
+    "soundLabel": "Sound",
     "generate": "Generate My Song",
     "generating": "Generating...",
     "validation": {
-      "titleMax": "Title must be 255 characters or fewer.",
       "entryMin": "Write at least a few lines about your day.",
       "entryMax": "Keep it under 2000 characters."
     },
@@ -118,16 +115,10 @@
       "title": "Atmospheric Indie Folk",
       "description": "AI will interpret your mood into a musical entry with warm textures and reflective melodies."
     },
-    "tags": {
-      "acoustic": "Acoustic",
-      "ethereal": "Ethereal",
-      "slowTempo": "Slow Tempo"
-    },
-    "resonance": {
-      "melancholic": "Melancholic",
-      "ethereal": "Ethereal",
-      "uplifting": "Uplifting",
-      "cinematic": "Cinematic"
+    "genres": {
+      "indieFolk": "Indie folk",
+      "dreamyPop": "Dreamy pop",
+      "piano": "Piano"
     }
   },
   "pastMelodies": {

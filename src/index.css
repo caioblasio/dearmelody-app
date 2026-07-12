@@ -85,6 +85,59 @@
     text-transform: uppercase;
   }
 
+  /* New Entry — ruled notebook textarea (line rhythm must match font-size × line-height) */
+  .diary-notebook-field {
+    --diary-font-size: 1.1875rem;
+    --diary-line-height: 1.75;
+    --diary-line-step: calc(var(--diary-font-size) * var(--diary-line-height));
+    --diary-margin: 2.75rem;
+    --diary-line-color: color-mix(in srgb, var(--color-sand) 30%, transparent);
+    --diary-margin-color: color-mix(in srgb, var(--color-coral) 22%, transparent);
+
+    font-size: var(--diary-font-size);
+    line-height: var(--diary-line-height);
+    background-color: var(--color-card-bg);
+    background-image:
+      linear-gradient(
+        to right,
+        transparent calc(var(--diary-margin) - 1px),
+        var(--diary-margin-color) calc(var(--diary-margin) - 1px),
+        var(--diary-margin-color) var(--diary-margin),
+        transparent var(--diary-margin)
+      ),
+      repeating-linear-gradient(
+        to bottom,
+        transparent 0,
+        transparent calc(var(--diary-line-step) - 1px),
+        var(--diary-line-color) calc(var(--diary-line-step) - 1px),
+        var(--diary-line-color) var(--diary-line-step)
+      );
+    background-size: 100% var(--diary-line-step);
+    background-attachment: local;
+    border: 1px solid color-mix(in srgb, var(--color-warm-border) 80%, transparent);
+    border-radius: var(--radius-sm);
+    padding: 0.5rem 1rem 0.5rem calc(var(--diary-margin) + 0.5rem);
+    box-shadow: 0 1px 4px rgba(58, 46, 69, 0.05);
+    min-height: calc(var(--diary-line-step) * 7 + 1rem);
+  }
+
+  .diary-notebook-field::placeholder {
+    color: color-mix(in srgb, var(--color-muted) 72%, transparent);
+  }
+
+  .diary-notebook-field:focus-visible {
+    outline: none;
+    box-shadow: none;
+  }
+
+  @media (max-width: 767px) {
+    .diary-notebook-field--fill {
+      min-height: 0;
+      flex: 1 1 auto;
+      height: 100%;
+    }
+  }
+
   .font-heading {
     font-family: var(--font-heading);
   }

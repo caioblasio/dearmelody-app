@@ -2,8 +2,7 @@ import { apiRequest } from '@/lib/api-request'
 
 export type NewEntryPayload = {
   entry: string
-  resonance: string
-  title?: string
+  genre: string
 }
 
 export type NewEntryResponse = {
@@ -11,13 +10,11 @@ export type NewEntryResponse = {
 }
 
 export async function createNewEntry(payload: NewEntryPayload): Promise<NewEntryResponse> {
-  const title = payload.title?.trim()
-
   return apiRequest<NewEntryResponse>('/api/new_diary', {
     method: 'POST',
     body: {
       entry: payload.entry,
-      ...(title ? { title } : {}),
+      genre: payload.genre,
     },
     auth: true,
   })

@@ -18,19 +18,15 @@ export function EntryInspirationCard() {
 
   const activeTitle = titles[activeIndex] ?? titles[0] ?? ''
 
-  const handleClick = () => {
-    navigate(`/new-entry?title=${encodeURIComponent(normalizeInspirationTitle(activeTitle))}`)
+  const goToNewEntry = (title: string) => {
+    navigate(`/new-entry?placeholder=${encodeURIComponent(normalizeInspirationTitle(title))}`)
   }
 
   return (
-    <button
-      type="button"
-      onClick={handleClick}
+    <div
       className={cn(
         'group relative block w-full overflow-hidden rounded-[22px] bg-gradient-to-br from-coral-light to-coral p-5 text-left md:rounded-3xl md:p-8',
-        'transition-transform hover:scale-[1.01] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral/35',
       )}
-      aria-label={`${t('dashboard.inspirationCta')}: ${activeTitle}`}
     >
       <div
         className="pointer-events-none absolute -bottom-10 -right-8 size-[180px] rounded-full bg-peach opacity-35"
@@ -49,16 +45,28 @@ export function EntryInspirationCard() {
           viewportClassName="h-16 md:h-[4.5rem]"
           slideClassName="flex h-16 items-center md:h-[4.5rem]"
           renderSlide={(title) => (
-            <p className="font-heading text-lg font-semibold leading-snug text-on-primary md:text-[1.625rem]">
+            <button
+              type="button"
+              onClick={() => goToNewEntry(title)}
+              className={cn(
+                'w-full text-left font-heading text-lg font-semibold leading-snug text-on-primary transition-opacity hover:opacity-90 md:text-[1.625rem]',
+                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-on-primary/40',
+              )}
+              aria-label={`${t('dashboard.inspirationCta')}: ${title}`}
+            >
               &ldquo;{title}&rdquo;
-            </p>
+            </button>
           )}
         />
 
-        <span className="mt-1 inline-flex w-fit rounded-full bg-on-primary px-4 py-2.5 text-[13px] font-bold text-coral md:px-6 md:py-3 md:text-[15px]">
+        <button
+          type="button"
+          onClick={() => goToNewEntry(activeTitle)}
+          className="mt-1 inline-flex w-fit rounded-full bg-on-primary px-4 py-2.5 text-[13px] font-bold text-coral transition-transform hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-on-primary/40 md:px-6 md:py-3 md:text-[15px]"
+        >
           {t('dashboard.inspirationCta')}
-        </span>
+        </button>
       </div>
-    </button>
+    </div>
   )
 }
