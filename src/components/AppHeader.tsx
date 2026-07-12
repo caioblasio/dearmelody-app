@@ -22,22 +22,22 @@ export function AppHeader() {
   return (
     <header className="border-b border-warm-border bg-card-bg/90 backdrop-blur-md">
       <div className={cn(AUTH_SHELL_CLASS, 'flex items-center py-4')}>
-        <div className="flex min-w-0 flex-1 items-center justify-start">
+        <div className="flex min-w-0 flex-1 items-center gap-6">
           <NavLink className="font-heading text-xl font-semibold text-ink" to="/" end>
             Dear<span className="text-coral">Melody</span>
           </NavLink>
+
+          <nav className="hidden items-center gap-2 md:flex">
+            <NavLink className={({ isActive }) => navLinkClass(isActive)} to="/new-entry">
+              {t('nav.newEntry')}
+            </NavLink>
+            <NavLink className={({ isActive }) => navLinkClass(isActive)} to="/melodies">
+              {t('nav.pastMelodies')}
+            </NavLink>
+          </nav>
         </div>
 
-        <nav className="hidden flex-none items-center gap-2 md:flex">
-          <NavLink className={({ isActive }) => navLinkClass(isActive)} to="/new-entry">
-            {t('nav.newEntry')}
-          </NavLink>
-          <NavLink className={({ isActive }) => navLinkClass(isActive)} to="/melodies">
-            {t('nav.pastMelodies')}
-          </NavLink>
-        </nav>
-
-        <div className="flex min-w-0 flex-1 items-center justify-end gap-3">
+        <div className="flex flex-none items-center gap-3">
           <button
             type="button"
             aria-label={t('aria.settings')}
