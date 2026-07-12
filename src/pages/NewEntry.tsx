@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
@@ -66,7 +66,12 @@ function formatDateCaps(d: Date, locale: string): string {
 export function NewEntryPage() {
   const { t, i18n } = useTranslation()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const entrySchema = useMemo(() => createEntrySchema(t), [t])
+  const suggestedTitle = useMemo(
+    () => (searchParams.get('title') ?? '').trim().slice(0, 255),
+    [searchParams],
+  )
 
   const {
     register,
@@ -77,7 +82,7 @@ export function NewEntryPage() {
   } = useForm<EntryFormValues>({
     resolver: zodResolver(entrySchema),
     defaultValues: {
-      title: '',
+      title: suggestedTitle,
       entry: '',
       resonance: NEW_ENTRY_RESONANCE_IDS[0],
     },

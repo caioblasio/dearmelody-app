@@ -73,7 +73,25 @@
     "recentEntriesEmpty": "No entries in the last 7 days. Tap + to write one.",
     "melodyReady": "♪ {{title}}",
     "noMelodyYet": "No melody yet · Generate ♪",
-    "melodyGenerating": "Generating melody…"
+    "melodyGenerating": "Generating melody…",
+    "inspirationLabel": "Need inspiration?",
+    "inspirationCta": "Start writing",
+    "inspirationTitles": [
+      "The day we said I do...",
+      "Our first dance as spouses...",
+      "Goodbye to everything familiar...",
+      "First morning in a new country...",
+      "Feeling you move for the first time...",
+      "Nine months of becoming a parent...",
+      "The day I quit my job to build this...",
+      "Our first customer walked through the door...",
+      "Walking across the stage...",
+      "The last day of senior year...",
+      "What I finally said out loud...",
+      "A breakthrough I never saw coming...",
+      "Starting over, on my own terms...",
+      "The day everything changed direction..."
+    ]
   },
   "newEntry": {
     "badge": "New Entry",

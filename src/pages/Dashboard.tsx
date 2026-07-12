@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 
 import { useGetDiary } from '@/api/diary/use-get-diary'
 import { useUserInfo } from '@/api/user/use-user-info'
+import { EntryInspirationCard } from '@/components/EntryInspirationCard'
 import { RecentEntryRow } from '@/components/RecentEntryRow'
 import { getLastNDaysRange } from '@/lib/diary-date-range'
 import { parseDiaryCreatedAt } from '@/lib/past-melody-date'
@@ -64,6 +65,8 @@ export function DashboardPage() {
           </div>
         </div>
       </header>
+
+      <EntryInspirationCard />
 
       <section className="space-y-3.5" aria-labelledby="recent-entries-heading">
         <h2 id="recent-entries-heading" className="font-heading text-[1.375rem] font-semibold text-ink">
