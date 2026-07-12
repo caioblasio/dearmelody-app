@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
 
+import { DearMelodyWordmark } from '@/components/DearMelodyWordmark'
 import { AUTH_SHELL_CLASS } from '@/lib/auth-shell'
 import { cn } from '@/lib/utils'
 
@@ -15,7 +16,10 @@ export function AppFooter() {
         )}
       >
         <span>{t('layout.footerLead')}</span>
-        <span className="hidden sm:inline">{t('layout.footerRights')}</span>
+        <span className="hidden items-center gap-1 sm:inline-flex">
+          <DearMelodyWordmark className="font-heading font-semibold" />
+          <span>{t('layout.footerRights')}</span>
+        </span>
       </div>
     </footer>
   )

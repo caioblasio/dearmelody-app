@@ -2,6 +2,8 @@ import { LogOut, Settings } from 'lucide-react'
 import { NavLink } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
+import logo from '@/assets/logo.svg'
+import { DearMelodyWordmark } from '@/components/DearMelodyWordmark'
 import { useUserInfo } from '@/api/user/use-user-info'
 import {
   DropdownMenu,
@@ -24,17 +26,23 @@ export function AppHeader() {
   const { t } = useTranslation()
   const { data: user } = useUserInfo()
 
-  const initials = [user?.first_name?.[0], user?.last_name?.[0]]
-    .filter(Boolean)
-    .map((letter) => letter!.toUpperCase())
-    .join('') || 'DM'
+  const initials =
+    [user?.first_name?.[0], user?.last_name?.[0]]
+      .filter(Boolean)
+      .map((letter) => letter!.toUpperCase())
+      .join('') || 'DM'
 
   return (
     <header className="border-b border-warm-border bg-card-bg/90 backdrop-blur-md">
       <div className={cn(AUTH_SHELL_CLASS, 'flex items-center py-4')}>
         <div className="flex min-w-0 flex-1 items-center gap-6">
-          <NavLink className="font-heading text-xl font-semibold text-ink" to="/" end>
-            Dear<span className="text-coral">Melody</span>
+          <NavLink
+            className="flex items-center gap-2 font-heading text-xl font-semibold text-ink"
+            to="/"
+            end
+          >
+            <img src={logo} alt="" className="h-6 w-6 shrink-0" aria-hidden />
+            <DearMelodyWordmark />
           </NavLink>
 
           <nav className="hidden items-center gap-2 md:flex">

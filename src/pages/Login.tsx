@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next'
 
 import { AuthFooter } from '../components/AuthFooter'
 import { AuthHeader } from '../components/AuthHeader'
+import { DearMelodyWordmark } from '../components/DearMelodyWordmark'
 import { SocialLoginButtons } from '../components/SocialLoginButtons'
 import { Alert } from '../components/ui/alert'
 import { Button } from '../components/ui/button'
@@ -16,6 +17,7 @@ import { Input } from '../components/ui/input'
 import { Label } from '../components/ui/label'
 import { Separator } from '../components/ui/separator'
 import { useLogin } from '@/api/auth/use-login'
+import logo from '@/assets/logo.svg'
 import type { TFunction } from 'i18next'
 
 function createLoginSchema(t: TFunction) {
@@ -78,10 +80,11 @@ export function LoginPage() {
         <div className="relative w-full min-w-0 max-w-md">
           <Card className="w-full shadow-md">
             <div className="mb-6 text-center sm:mb-8">
-              <div className="mx-auto mb-4 flex size-12 items-center justify-center rounded-xl btn-coral-gradient">
-                <span className="font-heading text-xl text-on-primary">♪</span>
-              </div>
-              <h1 className="mb-2 font-heading text-3xl font-semibold text-ink">{t('login.heading')}</h1>
+              <img src={logo} alt="" className="mx-auto mb-4 h-12 w-12" aria-hidden />
+              <h1 className="mb-2 font-heading text-3xl font-semibold">
+                {t('login.headingLead')}{' '}
+                <DearMelodyWordmark />
+              </h1>
               <p className="text-muted">{t('login.subheading')}</p>
             </div>
 

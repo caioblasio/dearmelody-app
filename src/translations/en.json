@@ -15,7 +15,7 @@
   },
   "layout": {
     "footerLead": "Keep journaling your musical memories.",
-    "footerRights": "Dear Melody © 2026"
+    "footerRights": "© 2026"
   },
   "aria": {
     "mobileNav": "Main navigation",
@@ -38,10 +38,10 @@
     "support": "Support"
   },
   "social": {
-    "google": "Google"
+    "google": "Sign in with Google"
   },
   "login": {
-    "heading": "Log in to Dear Melody",
+    "headingLead": "Log in to",
     "subheading": "Continue your musical journey...",
     "emailLabel": "Email Address",
     "passwordLabel": "Password",
@@ -50,7 +50,7 @@
     "forgotPassword": "Forgot Password?",
     "submitIdle": "Enter Journal",
     "submitPending": "Entering...",
-    "orSignInWith": "Or Sign In With",
+    "orSignInWith": "Or",
     "ctaLead": "New to the diary?",
     "ctaLink": "Start your reflection",
     "tryAgainIn": "Try again in {{seconds}}s.",

@@ -1,5 +1,7 @@
 import { useTranslation } from 'react-i18next'
 
+import { DearMelodyWordmark } from '@/components/DearMelodyWordmark'
+
 export function AuthFooter() {
   const { t } = useTranslation()
 
@@ -7,9 +9,7 @@ export function AuthFooter() {
     <footer className="w-full border-t border-warm-border bg-card-bg px-6 py-8">
       <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 md:flex-row">
         <div className="flex items-center gap-2">
-          <span className="font-heading font-semibold text-ink">
-            Dear<span className="text-coral">Melody</span>
-          </span>
+          <DearMelodyWordmark className="font-heading font-semibold" />
           <span className="text-sm text-muted">{t('authFooter.rights')}</span>
         </div>
         <nav className="flex flex-wrap justify-center gap-6 text-sm">
