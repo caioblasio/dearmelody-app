@@ -9,7 +9,9 @@
     "home": "Home",
     "songDiary": "Song Diary",
     "newEntry": "New Entry",
-    "pastMelodies": "Past Melodies"
+    "pastMelodies": "Past Melodies",
+    "settings": "Settings",
+    "logout": "Log out"
   },
   "layout": {
     "footerLead": "Keep journaling your musical memories.",
@@ -17,6 +19,7 @@
   },
   "aria": {
     "mobileNav": "Main navigation",
+    "profileMenu": "Profile menu",
     "settings": "Settings",
     "searchMelodies": "Search melodies",
     "recordMemory": "Record a New Memory",

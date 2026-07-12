@@ -1,15 +1,22 @@
-import { Settings } from 'lucide-react'
+import { LogOut, Settings } from 'lucide-react'
 import { NavLink } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
 import { useUserInfo } from '@/api/user/use-user-info'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import { logout } from '@/lib/auth'
 import { AUTH_SHELL_CLASS } from '@/lib/auth-shell'
 import { cn } from '@/lib/utils'
 
 function navLinkClass(isActive: boolean) {
   return cn(
     'rounded-full px-4 py-2 text-sm font-semibold transition-colors hover:bg-chip-bg/60',
-    isActive ? 'bg-chip-bg text-ink' : 'text-muted',
+    isActive ? 'bg-chip-bg text-ink' : 'text-muted'
   )
 }
 
@@ -17,7 +24,10 @@ export function AppHeader() {
   const { t } = useTranslation()
   const { data: user } = useUserInfo()
 
-  const initials = user?.first_name?.[0]?.toLowerCase() ?? 'd'
+  const initials = [user?.first_name?.[0], user?.last_name?.[0]]
+    .filter(Boolean)
+    .map((letter) => letter!.toUpperCase())
+    .join('') || 'DM'
 
   return (
     <header className="border-b border-warm-border bg-card-bg/90 backdrop-blur-md">
@@ -37,18 +47,27 @@ export function AppHeader() {
           </nav>
         </div>
 
-        <div className="flex flex-none items-center gap-3">
-          <button
-            type="button"
-            aria-label={t('aria.settings')}
-            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-warm-border bg-card-bg text-muted transition-colors hover:text-coral"
-          >
-            <Settings className="h-4 w-4" />
-          </button>
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-plum font-heading text-sm font-semibold text-butter">
-            {initials}m
-          </div>
-        </div>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button
+              type="button"
+              aria-label={t('aria.profileMenu')}
+              className="flex h-10 w-10 items-center justify-center rounded-full bg-plum font-heading text-sm font-semibold text-butter transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral/30"
+            >
+              {initials}
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem>
+              <Settings />
+              {t('nav.settings')}
+            </DropdownMenuItem>
+            <DropdownMenuItem onSelect={logout}>
+              <LogOut />
+              {t('nav.logout')}
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </header>
   )
