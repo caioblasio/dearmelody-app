@@ -230,6 +230,19 @@
       "entryCount_other": "{{count}} melodies",
       "topMood": "Top mood: {{mood}}"
     },
+    "calendar": {
+      "prevMonth": "Previous month",
+      "nextMonth": "Next month",
+      "entryCount_one": "{{count}} entry this month",
+      "entryCount_other": "{{count}} entries this month",
+      "topMoodPrefix": "Top mood:",
+      "selectDayPrompt": "Select a day to see its entries.",
+      "dayEmpty": "No entries on this day.",
+      "dayAriaLabel_one": "{{day}}, {{count}} entry",
+      "dayAriaLabel_other": "{{day}}, {{count}} entries",
+      "loading": "Loading your calendar…",
+      "error": "Could not load diary entries. Please try again."
+    },
     "playTrack": "Play {{title}}",
     "openEntry": "Open entry: {{title}}",
     "diary": {

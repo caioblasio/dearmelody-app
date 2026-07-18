@@ -7,7 +7,7 @@ export type DiaryMusicSummary = {
 export type DiaryListItem = {
   id: string
   title: string
-  mood: string
+  mood: string | null
   entry: string
   createdAt: string
   updatedAt: string

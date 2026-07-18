@@ -17,11 +17,12 @@ const MOOD_ICONS = new Set<MoodIconKind>([
   'nostalgic',
 ])
 
-export function toMoodIcon(m: string): MoodIconKind {
+export function toMoodIcon(m: string | null | undefined): MoodIconKind {
+  if (!m) return 'serene'
   return MOOD_ICONS.has(m as MoodIconKind) ? (m as MoodIconKind) : 'serene'
 }
 
-export function capitalizeMood(mood: string): string {
+export function capitalizeMood(mood: string | null | undefined): string {
   if (!mood) return ''
   return mood.charAt(0).toUpperCase() + mood.slice(1).toLowerCase()
 }

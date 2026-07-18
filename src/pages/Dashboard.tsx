@@ -6,7 +6,7 @@ import { useUserInfo } from '@/api/user/use-user-info'
 import { DashboardProgressSection } from '@/components/DashboardProgressSection'
 import { EntryInspirationCard } from '@/components/EntryInspirationCard'
 import { MoodOfTheMonth } from '@/components/MoodOfTheMonth'
-import { RecentEntryRow } from '@/components/RecentEntryRow'
+import { DiaryEntryRow } from '@/components/DiaryEntryRow'
 import { getLastNDaysRange } from '@/lib/diary-date-range'
 import { parseDiaryCreatedAt } from '@/lib/past-melody-date'
 
@@ -97,7 +97,7 @@ export function DashboardPage() {
         {!isLoading && !isError && recentEntries.length > 0 && (
           <div className="flex flex-col gap-2.5">
             {recentEntries.map((entry) => (
-              <RecentEntryRow key={entry.id} entry={entry} locale={i18n.language} />
+              <DiaryEntryRow key={entry.id} entry={entry} locale={i18n.language} />
             ))}
           </div>
         )}

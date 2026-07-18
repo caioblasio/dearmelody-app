@@ -73,7 +73,7 @@ function filterDiaryEntries(entries: DiaryListItem[], params: URLSearchParams): 
   const dateEnd = params.get('dateEnd')
 
   return entries.filter((entry) => {
-    if (mood && entry.mood.toLowerCase() !== mood) return false
+    if (mood && entry.mood?.toLowerCase() !== mood) return false
 
     const entryDate = toLocalDateYmd(entry.createdAt)
     if (!entryDate) return false
