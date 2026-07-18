@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next'
 import { useGetDiary } from '@/api/diary/use-get-diary'
 import { CalendarDayEntries } from '@/components/calendar/CalendarDayEntries'
 import { CalendarGrid } from '@/components/calendar/CalendarGrid'
-import { ComposingCompactIconLoader } from '@/components/loading/composing-loaders'
 import {
   addMonths,
   buildCalendarCells,
@@ -79,19 +78,13 @@ export function MyMelodiesPage() {
         <p className="text-muted">{t('pastMelodies.subtitle')}</p>
       </header>
 
-      {isLoading && (
-        <div className="flex justify-center py-10" role="status" aria-live="polite">
-          <ComposingCompactIconLoader title={t('pastMelodies.calendar.loading')} />
-        </div>
-      )}
-
       {isError && (
         <p className="text-sm text-error" role="alert">
           {t('pastMelodies.calendar.error')}
         </p>
       )}
 
-      {!isLoading && !isError && (
+      {!isError && (
         <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:gap-8">
           <div className="min-w-0 lg:flex-[1.4]">
             <CalendarGrid
@@ -100,6 +93,7 @@ export function MyMelodiesPage() {
               selectedDayKey={selectedDayKey}
               locale={i18n.language}
               canGoNext={canGoNext}
+              isLoading={isLoading}
               onPrevMonth={() => goToMonth(addMonths(currentMonth, -1))}
               onNextMonth={() => {
                 if (!canGoNext) return
@@ -114,6 +108,7 @@ export function MyMelodiesPage() {
               selectedDayKey={selectedDayKey}
               entries={selectedEntries}
               locale={i18n.language}
+              isLoading={isLoading}
             />
           </div>
         </div>

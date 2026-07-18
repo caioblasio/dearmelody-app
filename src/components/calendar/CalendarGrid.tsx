@@ -1,6 +1,7 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
+import { Skeleton } from '@/components/ui/skeleton'
 import type { CalendarCell } from '@/lib/diary-calendar'
 import { getWeekdayLabels } from '@/lib/diary-calendar'
 import { cn } from '@/lib/utils'
@@ -14,6 +15,7 @@ type CalendarGridProps = {
   onPrevMonth: () => void
   onNextMonth: () => void
   onSelectDay: (dayKey: string) => void
+  isLoading?: boolean
 }
 
 function formatMonthTitle(date: Date, locale: string): string {
@@ -29,6 +31,7 @@ export function CalendarGrid({
   onPrevMonth,
   onNextMonth,
   onSelectDay,
+  isLoading = false,
 }: CalendarGridProps) {
   const { t } = useTranslation()
   const weekdayLabels = getWeekdayLabels(locale)
@@ -44,11 +47,13 @@ export function CalendarGrid({
           <button
             type="button"
             onClick={onPrevMonth}
+            disabled={isLoading}
             aria-label={t('pastMelodies.calendar.prevMonth')}
             className={cn(
               'flex size-10 items-center justify-center rounded-full border border-warm-border bg-card-bg text-muted',
               'transition-colors hover:border-peach hover:text-ink',
               'outline-none focus-visible:ring-2 focus-visible:ring-coral/35',
+              'disabled:pointer-events-none disabled:opacity-40',
             )}
           >
             <ChevronLeft className="size-4" aria-hidden />
@@ -56,7 +61,7 @@ export function CalendarGrid({
           <button
             type="button"
             onClick={onNextMonth}
-            disabled={!canGoNext}
+            disabled={!canGoNext || isLoading}
             aria-label={t('pastMelodies.calendar.nextMonth')}
             className={cn(
               'flex size-10 items-center justify-center rounded-full border border-warm-border bg-card-bg text-muted',
@@ -74,6 +79,7 @@ export function CalendarGrid({
         className="grid grid-cols-7 gap-1.5 sm:gap-2"
         role="grid"
         aria-label={monthTitle}
+        aria-busy={isLoading || undefined}
       >
         {weekdayLabels.map((label) => (
           <div
@@ -85,56 +91,69 @@ export function CalendarGrid({
           </div>
         ))}
 
-        {cells.map((cell) => {
-          const isSelected = selectedDayKey === cell.dayKey
-          const isDisabled = !cell.inCurrentMonth || cell.isFuture
-          const dayNumber = cell.date.getDate()
-
-          return (
-            <button
+        {isLoading &&
+          cells.map((cell) => (
+            <div
               key={cell.dayKey + (cell.inCurrentMonth ? '' : '-pad')}
-              type="button"
-              role="gridcell"
-              disabled={isDisabled}
-              aria-pressed={isSelected}
-              aria-current={cell.isToday ? 'date' : undefined}
-              aria-label={t('pastMelodies.calendar.dayAriaLabel', {
-                day: dayNumber,
-                count: cell.entryCount,
-              })}
-              onClick={() => onSelectDay(cell.dayKey)}
-              className={cn(
-                'flex min-h-[3.25rem] flex-col justify-between rounded-2xl border p-2 text-left transition-colors sm:min-h-[5.25rem] sm:p-2.5',
-                'outline-none focus-visible:ring-2 focus-visible:ring-coral/35',
-                isDisabled && 'cursor-default border-transparent bg-transparent text-[#D8CDBF]',
-                !isDisabled && !isSelected && 'border-warm-border bg-card-bg text-ink hover:border-peach',
-                !isDisabled && !isSelected && cell.hasEntry && 'bg-chip-bg',
-                !isDisabled && !isSelected && cell.isToday && 'ring-2 ring-coral ring-offset-1 ring-offset-cream-bg',
-                isSelected && 'border-coral bg-coral text-on-primary hover:border-coral',
-              )}
+              aria-hidden
+              className="flex min-h-[3.25rem] flex-col justify-between rounded-2xl border border-warm-border bg-card-bg p-2 sm:min-h-[5.25rem] sm:p-2.5"
             >
-              <span
+              <Skeleton className="h-3.5 w-4 sm:h-4 sm:w-5" />
+              <Skeleton className="size-2 rounded-full sm:size-2.5" />
+            </div>
+          ))}
+
+        {!isLoading &&
+          cells.map((cell) => {
+            const isSelected = selectedDayKey === cell.dayKey
+            const isDisabled = !cell.inCurrentMonth || cell.isFuture
+            const dayNumber = cell.date.getDate()
+
+            return (
+              <button
+                key={cell.dayKey + (cell.inCurrentMonth ? '' : '-pad')}
+                type="button"
+                role="gridcell"
+                disabled={isDisabled}
+                aria-pressed={isSelected}
+                aria-current={cell.isToday ? 'date' : undefined}
+                aria-label={t('pastMelodies.calendar.dayAriaLabel', {
+                  day: dayNumber,
+                  count: cell.entryCount,
+                })}
+                onClick={() => onSelectDay(cell.dayKey)}
                 className={cn(
-                  'text-[13px] font-semibold sm:text-[15px]',
-                  isSelected ? 'text-on-primary' : cell.isFuture || !cell.inCurrentMonth ? 'text-[#D8CDBF]' : 'text-ink',
+                  'flex min-h-[3.25rem] flex-col justify-between rounded-2xl border p-2 text-left transition-colors sm:min-h-[5.25rem] sm:p-2.5',
+                  'outline-none focus-visible:ring-2 focus-visible:ring-coral/35',
+                  isDisabled && 'cursor-default border-transparent bg-transparent text-[#D8CDBF]',
+                  !isDisabled && !isSelected && 'border-warm-border bg-card-bg text-ink hover:border-peach',
+                  !isDisabled && !isSelected && cell.hasEntry && 'bg-chip-bg',
+                  !isDisabled && !isSelected && cell.isToday && 'ring-2 ring-coral ring-offset-1 ring-offset-cream-bg',
+                  isSelected && 'border-coral bg-coral text-on-primary hover:border-coral',
                 )}
               >
-                {dayNumber}
-              </span>
-              {cell.hasEntry && cell.inCurrentMonth ? (
                 <span
                   className={cn(
-                    'size-2 rounded-full sm:size-2.5',
-                    isSelected ? 'bg-on-primary/90' : 'bg-peach',
+                    'text-[13px] font-semibold sm:text-[15px]',
+                    isSelected ? 'text-on-primary' : cell.isFuture || !cell.inCurrentMonth ? 'text-[#D8CDBF]' : 'text-ink',
                   )}
-                  aria-hidden
-                />
-              ) : (
-                <span className="size-2 sm:size-2.5" aria-hidden />
-              )}
-            </button>
-          )
-        })}
+                >
+                  {dayNumber}
+                </span>
+                {cell.hasEntry && cell.inCurrentMonth ? (
+                  <span
+                    className={cn(
+                      'size-2 rounded-full sm:size-2.5',
+                      isSelected ? 'bg-on-primary/90' : 'bg-peach',
+                    )}
+                    aria-hidden
+                  />
+                ) : (
+                  <span className="size-2 sm:size-2.5" aria-hidden />
+                )}
+              </button>
+            )
+          })}
       </div>
     </div>
   )

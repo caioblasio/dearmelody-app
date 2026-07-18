@@ -2,12 +2,14 @@ import { useTranslation } from 'react-i18next'
 
 import type { DiaryListItem } from '@/api/diary/diary-list-item'
 import { DiaryEntryRow } from '@/components/DiaryEntryRow'
+import { Skeleton } from '@/components/ui/skeleton'
 import { parseDiaryCreatedAt } from '@/lib/past-melody-date'
 
 type CalendarDayEntriesProps = {
   selectedDayKey: string | null
   entries: DiaryListItem[]
   locale: string
+  isLoading?: boolean
 }
 
 function formatSelectedDay(dayKey: string, locale: string): string {
@@ -20,8 +22,28 @@ function formatSelectedDay(dayKey: string, locale: string): string {
   }).format(date)
 }
 
-export function CalendarDayEntries({ selectedDayKey, entries, locale }: CalendarDayEntriesProps) {
+export function CalendarDayEntries({
+  selectedDayKey,
+  entries,
+  locale,
+  isLoading = false,
+}: CalendarDayEntriesProps) {
   const { t } = useTranslation()
+
+  if (isLoading) {
+    return (
+      <div
+        className="flex flex-col gap-3.5 rounded-[24px] border border-warm-border bg-card-bg p-5 sm:p-6"
+        aria-hidden
+      >
+        <Skeleton className="h-3 w-32" />
+        <div className="flex flex-col gap-2.5">
+          <Skeleton className="h-16 w-full rounded-2xl" />
+          <Skeleton className="h-16 w-full rounded-2xl" />
+        </div>
+      </div>
+    )
+  }
 
   if (!selectedDayKey) {
     return (
