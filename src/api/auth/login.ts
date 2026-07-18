@@ -14,6 +14,7 @@ export async function login(payload: LoginPayload): Promise<LoginResponse> {
   try {
     return await apiRequest<LoginResponse>('/api/auth', {
       method: 'POST',
+      credentials: 'include',
       body: {
         email: payload.email,
         password: payload.password,

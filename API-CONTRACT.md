@@ -14,7 +14,7 @@ Authorization: Bearer <token>
 
 **Auth:** Public
 
-Authenticates a user and returns a JWT access token. Also sets a `refresh_token` cookie (HttpOnly, Secure, `SameSite=None`, 14-day expiry) that clients use to obtain new access tokens via `POST /api/token/refresh` without re-entering credentials. Clients must send requests with credentials included (e.g. `fetch(..., { credentials: 'include' })`) for the cookie to be sent/received cross-origin.
+Authenticates a user and returns a JWT access token. Also sets a `refresh_token` cookie (HttpOnly, Secure, `SameSite=Lax`, 14-day expiry) that clients use to obtain new access tokens via `POST /api/token/refresh` without re-entering credentials. Clients must send requests with credentials included (e.g. `fetch(..., { credentials: 'include' })`) for the cookie to be sent/received across the API/app subdomains. `SameSite=Lax` is sufficient here because the API and frontend are same-site (subdomains of the same registrable domain) — the cookie is still sent on these cross-subdomain requests.
 
 **Request body**
 
@@ -118,7 +118,7 @@ Returns the authenticated user's profile.
 
 **Auth:** Public
 
-Registers a new user account.
+Registers a new user account. Registration is invite-only — a valid, unused `invite_code` must be supplied. Invite codes are generated in bulk by an admin via the `app:invite:generate` console command (see CLAUDE.md) and distributed out-of-band; there is no self-service invite request flow. Each code is single-use and never expires.
 
 **Request body**
 
@@ -127,17 +127,19 @@ Registers a new user account.
   "email": "user@example.com",
   "password": "secret",
   "first_name": "John",
-  "last_name": "Doe"
+  "last_name": "Doe",
+  "invite_code": "ZYW64PXAFYREX4ME"
 }
 ```
 
-| Field        | Type   | Required | Notes                                                                                      |
-| ------------ | ------ | -------- | ------------------------------------------------------------------------------------------ |
-| `email`      | string | yes      | Must be a valid e-mail; stored lowercase                                                   |
-| `password`   | string | yes      | Minimum 12 characters                                                                      |
-| `first_name` | string | yes      | —                                                                                          |
-| `last_name`  | string | no       | Omit or pass `null` to leave blank                                                         |
-| `timezone`   | string | no       | IANA timezone name (e.g. `Europe/Berlin`); defaults to `Europe/Berlin` if omitted or blank |
+| Field         | Type   | Required | Notes                                                                                                                                                             |
+| ------------- | ------ | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `email`       | string | yes      | Must be a valid e-mail; stored lowercase                                                                                                                          |
+| `password`    | string | yes      | Minimum 12 characters                                                                                                                                             |
+| `first_name`  | string | yes      | —                                                                                                                                                                 |
+| `last_name`   | string | no       | Omit or pass `null` to leave blank                                                                                                                                |
+| `timezone`    | string | no       | IANA timezone name (e.g. `Europe/Berlin`); defaults to `Europe/Berlin` if omitted or blank                                                                        |
+| `invite_code` | string | yes      | Must not be blank; normalized to uppercase. Validity (unknown/already-used) is checked as a business rule, not a field constraint — see the `409` response below. |
 
 **Response `201 Created`**
 
@@ -147,24 +149,27 @@ Registers a new user account.
 }
 ```
 
-**Response `422 Unprocessable Entity`** — validation failure.
+**Response `422 Unprocessable Entity`** — validation failure (missing/blank field, e.g. `invite_code` omitted).
 
 ```json
 {
   "errors": {
     "email": "This value is not a valid email address.",
-    "firstName": "This value should not be blank."
+    "firstName": "This value should not be blank.",
+    "inviteCode": "This value should not be blank."
   }
 }
 ```
 
-**Response `409 Conflict`** — e-mail already registered.
+**Response `409 Conflict`** — e-mail already registered, or the invite code is unknown/already used.
 
 ```json
 {
   "error": "<message>"
 }
 ```
+
+The invite-code error message is deliberately generic (`"Invalid invite code."`) for both "unknown code" and "already used" cases — it does not distinguish the two, to avoid leaking which codes exist/were used.
 
 **Response `429 Too Many Requests`** — rate limit exceeded.
 
@@ -378,6 +383,58 @@ Streams the audio file for a music track owned by the authenticated user as a ch
   "error": "Not found"
 }
 ```
+
+---
+
+## Metrics
+
+### `GET /api/metrics/streak`
+
+**Auth:** JWT
+
+Returns a 30-day diary-activity calendar plus the authenticated user's current writing streak. A day counts as written if a diary entry exists for it (regardless of whether music generation succeeded) — matches the same-day check used by `POST /api/new_diary`'s `409` response.
+
+**Response `200 OK`**
+
+```json
+{
+  "history": [
+    { "date": "2026-06-17", "hasEntry": true },
+    { "date": "2026-06-18", "hasEntry": false },
+    { "date": "2026-07-16", "hasEntry": true }
+  ],
+  "streak": 62
+}
+```
+
+`history` is always exactly 30 entries, ordered oldest first and ending with today (in the user's timezone). `date` is a plain `YYYY-MM-DD` calendar day, not a timestamp.
+
+`streak` is the number of consecutive days with an entry, most recent first. It is **not** limited to the 30 days shown in `history` — a streak longer than 30 days is reported in full. It stays active if the most recent entry was yesterday (today not yet written), and only resets to `0` once a full day has passed with no entry.
+
+---
+
+### `GET /api/metrics/dashboard`
+
+**Auth:** JWT
+
+Aggregates metrics for the authenticated user into a single response. Currently wraps the same data as `GET /api/metrics/streak` under a `streak` key; more metric keys will be added here over time as new metric types are built, without changing the existing `/api/metrics/streak` endpoint.
+
+**Response `200 OK`**
+
+```json
+{
+  "streak": {
+    "history": [
+      { "date": "2026-06-17", "hasEntry": true },
+      { "date": "2026-06-18", "hasEntry": false },
+      { "date": "2026-07-16", "hasEntry": true }
+    ],
+    "streak": 62
+  }
+}
+```
+
+The `streak` value is identical in shape and meaning to the top-level response of `GET /api/metrics/streak` — see above.
 
 ---
 

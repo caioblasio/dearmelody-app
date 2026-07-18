@@ -1,4 +1,5 @@
-// lib/auth.ts
+import { logoutRequest } from '@/api/auth/logout'
+
 export function setToken(token: string) {
   localStorage.setItem('token', token)
 }
@@ -11,8 +12,15 @@ export function removeToken() {
   localStorage.removeItem('token')
 }
 
-export function logout() {
+export async function logout() {
+  try {
+    await logoutRequest()
+  } catch {
+    // Best-effort: still clear local session if the API call fails.
+  }
+
   removeToken()
+
   if (window.location.pathname !== '/login') {
     window.location.assign('/login')
   }

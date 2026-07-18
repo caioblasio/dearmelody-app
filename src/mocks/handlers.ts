@@ -141,6 +141,18 @@ export const handlers = [
     return HttpResponse.json({ token: 'mock-jwt-token' })
   }),
 
+  http.post('/api/token/refresh', async () => {
+    await delay(200)
+    return HttpResponse.json({ token: 'mock-jwt-token-refreshed' })
+  }),
+
+  http.post('/api/logout', async () => {
+    return HttpResponse.json({
+      code: 200,
+      message: 'The supplied refresh_token has been invalidated.',
+    })
+  }),
+
   http.get('/api/user', async () => {
     return HttpResponse.json({
       id: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
