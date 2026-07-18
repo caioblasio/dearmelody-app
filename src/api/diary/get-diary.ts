@@ -1,5 +1,6 @@
 import { apiRequest } from '@/lib/api-request'
 
+import { decodeDiaryListItem } from './decode-entry'
 import type { DiaryListItem } from './diary-list-item'
 
 export type GetDiaryParams = {
@@ -20,5 +21,6 @@ export async function getDiary(params?: GetDiaryParams): Promise<DiaryListItem[]
   const query = search.toString()
   const url = query ? `/api/diary?${query}` : '/api/diary'
 
-  return apiRequest<DiaryListItem[]>(url, { auth: true })
+  const items = await apiRequest<DiaryListItem[]>(url, { auth: true })
+  return items.map(decodeDiaryListItem)
 }
