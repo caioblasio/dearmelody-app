@@ -3,6 +3,8 @@ import { useTranslation } from 'react-i18next'
 import type { DiaryListItem } from '@/api/diary/diary-list-item'
 import { DiaryEntryRow } from '@/components/DiaryEntryRow'
 import { Skeleton } from '@/components/ui/skeleton'
+import type { TopMood } from '@/lib/diary-calendar'
+import { getMoodTextColor } from '@/lib/mood-colors'
 import { parseDiaryCreatedAt } from '@/lib/past-melody-date'
 
 type CalendarDayEntriesProps = {
@@ -10,6 +12,8 @@ type CalendarDayEntriesProps = {
   entries: DiaryListItem[]
   locale: string
   isLoading?: boolean
+  monthEntryCount: number
+  topMood: TopMood | null
 }
 
 function formatSelectedDay(dayKey: string, locale: string): string {
@@ -22,11 +26,38 @@ function formatSelectedDay(dayKey: string, locale: string): string {
   }).format(date)
 }
 
+function MonthSummary({
+  monthEntryCount,
+  topMood,
+}: {
+  monthEntryCount: number
+  topMood: TopMood | null
+}) {
+  const { t } = useTranslation()
+
+  return (
+    <p className="text-sm text-muted">
+      {t('pastMelodies.calendar.entryCount', { count: monthEntryCount })}
+      {topMood ? (
+        <>
+          {' · '}
+          {t('pastMelodies.calendar.topMoodPrefix')}{' '}
+          <span className="font-semibold" style={{ color: getMoodTextColor(topMood.mood) }}>
+            {topMood.label}
+          </span>
+        </>
+      ) : null}
+    </p>
+  )
+}
+
 export function CalendarDayEntries({
   selectedDayKey,
   entries,
   locale,
   isLoading = false,
+  monthEntryCount,
+  topMood,
 }: CalendarDayEntriesProps) {
   const { t } = useTranslation()
 
@@ -47,8 +78,9 @@ export function CalendarDayEntries({
 
   if (!selectedDayKey) {
     return (
-      <div className="rounded-[24px] border border-warm-border bg-card-bg p-6">
+      <div className="flex flex-col gap-1.5 rounded-[24px] border border-warm-border bg-card-bg p-5 sm:p-6">
         <p className="text-sm text-muted">{t('pastMelodies.calendar.selectDayPrompt')}</p>
+        <MonthSummary monthEntryCount={monthEntryCount} topMood={topMood} />
       </div>
     )
   }
@@ -61,7 +93,10 @@ export function CalendarDayEntries({
 
   return (
     <div className="flex flex-col gap-3.5 rounded-[24px] border border-warm-border bg-card-bg p-5 sm:p-6">
-      <p className="label-caps text-sand">{heading}</p>
+      <div className="flex flex-col gap-1">
+        <p className="label-caps text-sand">{heading}</p>
+        <MonthSummary monthEntryCount={monthEntryCount} topMood={topMood} />
+      </div>
 
       {sorted.length === 0 ? (
         <p className="text-sm text-muted">{t('pastMelodies.calendar.dayEmpty')}</p>
@@ -73,6 +108,7 @@ export function CalendarDayEntries({
               entry={entry}
               locale={locale}
               showDate={false}
+              showSongName={false}
             />
           ))}
         </div>

@@ -14,7 +14,6 @@ import {
   startOfMonth,
 } from '@/lib/diary-calendar'
 import { formatLocalDateYmd } from '@/lib/diary-date-range'
-import { getMoodTextColor } from '@/lib/mood-colors'
 
 export function MyMelodiesPage() {
   const { t, i18n } = useTranslation()
@@ -55,26 +54,9 @@ export function MyMelodiesPage() {
   return (
     <div className="space-y-8">
       <header className="space-y-2">
-        <div className="flex items-start justify-between gap-3">
-          <h1 className="font-heading text-[2.125rem] font-semibold text-ink sm:text-4xl">
-            {t('pastMelodies.title')}
-          </h1>
-          {!isLoading && !isError && (
-            <div className="flex shrink-0 flex-wrap items-center justify-end gap-2">
-              <span className="rounded-full border border-warm-border bg-card-bg px-4 py-1.5 text-sm font-semibold text-muted">
-                {t('pastMelodies.calendar.entryCount', { count: entries.length })}
-              </span>
-              {topMood ? (
-                <span
-                  className="rounded-full border border-warm-border bg-card-bg px-4 py-1.5 text-sm font-semibold"
-                  style={{ color: getMoodTextColor(topMood.mood) }}
-                >
-                  {topMood.label}
-                </span>
-              ) : null}
-            </div>
-          )}
-        </div>
+        <h1 className="font-heading text-[2.125rem] font-semibold text-ink sm:text-4xl">
+          {t('pastMelodies.title')}
+        </h1>
         <p className="text-muted">{t('pastMelodies.subtitle')}</p>
       </header>
 
@@ -109,6 +91,8 @@ export function MyMelodiesPage() {
               entries={selectedEntries}
               locale={i18n.language}
               isLoading={isLoading}
+              monthEntryCount={entries.length}
+              topMood={topMood}
             />
           </div>
         </div>

@@ -13,6 +13,8 @@ type DiaryEntryRowProps = {
   locale: string
   /** When false, hides the date in the meta line (useful for same-day panels). Default true. */
   showDate?: boolean
+  /** When false, hides the melody title next to the play button (useful for tight layouts). Default true. */
+  showSongName?: boolean
 }
 
 function formatRowDate(date: Date, locale: string): string {
@@ -46,7 +48,12 @@ function getMelodyStatus(
   }
 }
 
-export function DiaryEntryRow({ entry, locale, showDate = true }: DiaryEntryRowProps) {
+export function DiaryEntryRow({
+  entry,
+  locale,
+  showDate = true,
+  showSongName = true,
+}: DiaryEntryRowProps) {
   const { t } = useTranslation()
   const theme = getArchiveMoodTheme(toMoodIcon(entry.mood))
   const parsed = parseDiaryCreatedAt(entry.createdAt)
@@ -85,9 +92,11 @@ export function DiaryEntryRow({ entry, locale, showDate = true }: DiaryEntryRowP
       <div className="flex shrink-0 items-center gap-2">
         {melodyStatus.ready && entry.music ? (
           <>
-            <p className={cn('max-w-[9rem] truncate text-[13px] font-semibold', melodyStatus.className)}>
-              {entry.music.title}
-            </p>
+            {showSongName ? (
+              <p className={cn('max-w-[9rem] truncate text-[13px] font-semibold', melodyStatus.className)}>
+                {entry.music.title}
+              </p>
+            ) : null}
             <PlayCircle
               className={cn('size-7', theme.play)}
               aria-hidden
