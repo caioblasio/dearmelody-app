@@ -2,7 +2,7 @@ import { apiRequest } from '@/lib/api-request'
 
 export type NewEntryPayload = {
   entry: string
-  genre: string
+  music_style: string
 }
 
 export type NewEntryResponse = {
@@ -14,7 +14,7 @@ export async function createNewEntry(payload: NewEntryPayload): Promise<NewEntry
     method: 'POST',
     body: {
       entry: payload.entry,
-      genre: payload.genre,
+      music_style: payload.music_style,
     },
     auth: true,
   })

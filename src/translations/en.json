@@ -192,17 +192,19 @@
     "generating": "Generating...",
     "validation": {
       "entryMin": "Write at least a few lines about your day.",
-      "entryMax": "Keep it under 2000 characters."
+      "entryMax": "Keep it under 2000 characters.",
+      "musicStyleRequired": "Pick a genre for your song."
     },
     "inspiration": {
       "label": "Inspiration",
       "title": "Atmospheric Indie Folk",
       "description": "AI will interpret your mood into a musical entry with warm textures and reflective melodies."
     },
-    "genres": {
-      "indieFolk": "Indie folk",
-      "dreamyPop": "Dreamy pop",
-      "piano": "Piano"
+    "genrePicker": {
+      "placeholder": "Choose a genre",
+      "chooseGenreTitle": "Choose a genre",
+      "chooseSubgenreTitle": "Choose a style",
+      "back": "Back"
     }
   },
   "pastMelodies": {

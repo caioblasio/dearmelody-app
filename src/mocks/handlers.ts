@@ -163,7 +163,7 @@ export const handlers = [
     })
   }),
   http.post('/api/new_diary', async ({ request }) => {
-    const body = (await request.json()) as { entry: string; genre?: string }
+    const body = (await request.json()) as { entry: string; music_style?: string }
     await delay(1500)
     if (!body.entry?.trim()) {
       return HttpResponse.json(

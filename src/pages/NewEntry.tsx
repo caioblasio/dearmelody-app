@@ -7,11 +7,8 @@ import type { TFunction } from 'i18next'
 import { z } from 'zod'
 
 import { useNewEntry } from '@/api/diary/use-new-entry'
+import { GenrePicker } from '@/components/genre-picker/GenrePicker'
 import { Button } from '@/components/ui/button'
-import { cn } from '@/lib/utils'
-
-const NEW_ENTRY_GENRE_IDS = ['indieFolk', 'dreamyPop', 'piano'] as const
-type EntryGenreId = (typeof NEW_ENTRY_GENRE_IDS)[number]
 
 function createEntrySchema(t: TFunction) {
   return z.object({
@@ -19,13 +16,13 @@ function createEntrySchema(t: TFunction) {
       .string()
       .min(10, t('newEntry.validation.entryMin'))
       .max(2000, t('newEntry.validation.entryMax')),
-    genre: z.enum(NEW_ENTRY_GENRE_IDS),
+    musicStyle: z.string().min(1, t('newEntry.validation.musicStyleRequired')),
   })
 }
 
 type EntryFormValues = {
   entry: string
-  genre: EntryGenreId
+  musicStyle: string
 }
 
 function formatDateCaps(d: Date, locale: string): string {
@@ -54,11 +51,11 @@ export function NewEntryPage() {
     resolver: zodResolver(entrySchema),
     defaultValues: {
       entry: '',
-      genre: NEW_ENTRY_GENRE_IDS[0],
+      musicStyle: '',
     },
   })
 
-  const selectedGenre = watch('genre')
+  const selectedMusicStyle = watch('musicStyle')
   const { mutate: createNewEntry, isPending } = useNewEntry({
     onSuccess: (data) => {
       navigate(`/melodies/${data.id}`)
@@ -71,7 +68,7 @@ export function NewEntryPage() {
   const onSubmit = handleSubmit(async (values) => {
     createNewEntry({
       entry: values.entry,
-      genre: values.genre,
+      music_style: values.musicStyle,
     })
   })
 
@@ -109,33 +106,16 @@ export function NewEntryPage() {
         <div className="flex shrink-0 flex-wrap items-center gap-3 rounded-[20px] border border-warm-border bg-card-bg px-5 py-4 sm:justify-between">
           <div className="flex flex-wrap items-center gap-3 sm:gap-4">
             <span className="text-sm font-medium text-muted">{t('newEntry.soundLabel')}</span>
-            <div className="flex flex-wrap gap-2">
-              {NEW_ENTRY_GENRE_IDS.map((id) => {
-                const isSelected = selectedGenre === id
-
-                return (
-                  <button
-                    key={id}
-                    type="button"
-                    className={cn(
-                      'rounded-full px-3.5 py-1.5 text-[13px] font-semibold transition-colors',
-                      isSelected
-                        ? 'bg-chip-bg text-coral'
-                        : 'border border-warm-border text-muted hover:border-peach',
-                    )}
-                    aria-pressed={isSelected}
-                    onClick={() => setValue('genre', id, { shouldValidate: true })}
-                  >
-                    {t(`newEntry.genres.${id}`)}
-                  </button>
-                )
-              })}
-            </div>
+            <GenrePicker
+              value={selectedMusicStyle || undefined}
+              onChange={(label) => setValue('musicStyle', label, { shouldValidate: true })}
+              error={Boolean(errors.musicStyle)}
+            />
           </div>
         </div>
-        {errors.genre && (
+        {errors.musicStyle && (
           <p className="shrink-0 text-sm text-error" role="alert">
-            {errors.genre.message}
+            {errors.musicStyle.message}
           </p>
         )}
 
