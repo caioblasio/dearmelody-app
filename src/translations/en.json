@@ -38,21 +38,33 @@
     "support": "Support"
   },
   "social": {
-    "google": "Sign in with Google"
+    "google": "Continue with Google",
+    "googleSignUp": "Sign up with Google"
   },
   "login": {
-    "headingLead": "Log in to",
-    "subheading": "Continue your musical journey...",
-    "emailLabel": "Email Address",
+    "heading": "Log in",
+    "subheading": "Welcome back — pick up where you left off.",
+    "emailLabel": "Email",
     "passwordLabel": "Password",
-    "emailPlaceholder": "your@email.com",
-    "passwordPlaceholder": "••••••••",
-    "forgotPassword": "Forgot Password?",
-    "submitIdle": "Enter Journal",
-    "submitPending": "Entering...",
-    "orSignInWith": "Or",
-    "ctaLead": "New to the diary?",
-    "ctaLink": "Start your reflection",
+    "emailPlaceholder": "you@email.com",
+    "passwordPlaceholder": "Your password",
+    "forgotPassword": "Forgot password?",
+    "submitIdle": "Log in",
+    "submitPending": "Logging in…",
+    "orContinueWith": "or continue with",
+    "ctaLead": "New to DearMelody?",
+    "ctaLink": "Create an account",
+    "registeredSuccess": "Account created. You can log in now.",
+    "brand": {
+      "headlineLine1": "Welcome back.",
+      "headlineLine2": "Your diary missed you.",
+      "body": "Pick up where you left off. Melo kept your streak warm and your melodies right where you saved them.",
+      "proofBadge": "4.9 · loved by 40,000+ journalers"
+    },
+    "mobile": {
+      "headline": "Welcome back",
+      "subheadline": "Your diary missed you."
+    },
     "tryAgainIn": "Try again in {{seconds}}s.",
     "errors": {
       "lockedOut": "Too many attempts. Please wait before trying again.",
@@ -62,6 +74,63 @@
     "validation": {
       "email": "Please enter a valid email address.",
       "passwordMin": "Password must contain at least 8 characters."
+    }
+  },
+  "signup": {
+    "heading": "Create your account",
+    "subheading": "Your first melody is on us. It takes about a minute.",
+    "firstNameLabel": "First name",
+    "firstNamePlaceholder": "What should Melo call you?",
+    "lastNameLabel": "Last name",
+    "lastNamePlaceholder": "Your last name",
+    "emailLabel": "Email",
+    "emailPlaceholder": "you@email.com",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "At least 12 characters",
+    "inviteCodeLabel": "Invite code",
+    "inviteCodePlaceholder": "Your invite code",
+    "agreeLead": "I agree to the",
+    "termsLink": "Terms",
+    "agreeAnd": "and",
+    "privacyLink": "Privacy Policy",
+    "agreeTrail": ". My journal stays private by default.",
+    "submitIdle": "Create my account — it's free",
+    "submitPending": "Creating account…",
+    "submitMobile": "Create my account",
+    "orSignUpWith": "or sign up with",
+    "reassurance": "Free to start · no card needed · private by default",
+    "ctaLead": "Already have an account?",
+    "ctaLink": "Log in",
+    "brand": {
+      "headlineLine1": "Every memory",
+      "headlineLine2": "has a melody.",
+      "perks": [
+        "Your first song, free",
+        "Private by default — you own it",
+        "Cancel anytime, keep your words"
+      ]
+    },
+    "mobile": {
+      "headline": "Start free tonight",
+      "subheadline": "Your first melody is on us."
+    },
+    "strength": {
+      "weak": "Weak",
+      "fair": "Fair",
+      "strong": "Strong"
+    },
+    "errors": {
+      "conflict": "That email or invite code can't be used.",
+      "rateLimited": "Too many registration attempts. Please try again later.",
+      "generic": "Something went wrong. Please try again.",
+      "mustAgree": "Please agree to the Terms and Privacy Policy."
+    },
+    "validation": {
+      "firstName": "Please enter your first name.",
+      "lastName": "Please enter your last name.",
+      "email": "Please enter a valid email address.",
+      "passwordMin": "Password must contain at least 12 characters.",
+      "inviteCode": "Please enter your invite code."
     }
   },
   "dashboard": {

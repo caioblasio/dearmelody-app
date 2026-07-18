@@ -3,7 +3,6 @@ import { ApiError, apiRequest } from '@/lib/api-request'
 export type LoginPayload = {
   email: string
   password: string
-  remember: boolean
 }
 
 export type LoginResponse = {

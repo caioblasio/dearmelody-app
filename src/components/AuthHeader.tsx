@@ -1,9 +1,11 @@
 import { useTranslation } from 'react-i18next'
+import { Link } from 'react-router-dom'
 
 import logo from '@/assets/logo.svg'
 import { DearMelodyWordmark } from '@/components/DearMelodyWordmark'
+import { cn } from '@/lib/utils'
 
-import { Button } from './ui/button'
+import { buttonVariants } from './ui/button'
 
 export function AuthHeader() {
   const { t } = useTranslation()
@@ -31,9 +33,12 @@ export function AuthHeader() {
             </a>
           </nav>
         </div>
-        <Button variant="outline" size="sm" className="px-4 py-2">
+        <Link
+          to="/signup"
+          className={cn(buttonVariants({ variant: 'outline', size: 'sm' }), 'px-4 py-2')}
+        >
           {t('authHeader.signUp')}
-        </Button>
+        </Link>
       </div>
     </header>
   )
