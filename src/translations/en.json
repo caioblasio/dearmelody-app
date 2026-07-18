@@ -9,7 +9,7 @@
     "home": "Home",
     "songDiary": "Song Diary",
     "newEntry": "New Entry",
-    "pastMelodies": "Past Melodies",
+    "pastMelodies": "My Diary",
     "settings": "Settings",
     "logout": "Log out"
   },
@@ -188,7 +188,7 @@
     "subheading": "Capture your feelings and let Melody AI turn it into your daily soundtrack.",
     "textareaPlaceholder": "Today felt like a slow rainy afternoon with a hopeful ending...",
     "soundLabel": "Sound",
-    "generate": "Generate My Song",
+    "generate": "Create entry with melody",
     "generating": "Generating...",
     "validation": {
       "entryMin": "Write at least a few lines about your day.",
@@ -208,10 +208,9 @@
     }
   },
   "pastMelodies": {
-    "title": "Past Melodies",
+    "title": "My Diary",
     "subtitle": "A chronological journey through your musical soul.",
     "searchPlaceholder": "Search melodies...",
-    "loading": "Loading your melodies...",
     "error": "Could not load diary entries. Please try again.",
     "empty": "No melodies match your filters.",
     "recordMemory": "Record a New Memory",

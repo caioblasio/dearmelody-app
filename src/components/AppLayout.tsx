@@ -3,7 +3,6 @@ import { Outlet, useMatch } from 'react-router-dom'
 import { AppFooter } from '@/components/AppFooter'
 import { AppHeader } from '@/components/AppHeader'
 import { MobileBottomNav } from '@/components/MobileBottomNav'
-import { RecordMemoryFab } from '@/components/RecordMemoryFab'
 import { AUTH_SHELL_CLASS } from '@/lib/auth-shell'
 import { cn } from '@/lib/utils'
 
@@ -22,7 +21,7 @@ export function AppLayout() {
             isNewEntry && 'flex min-h-0 flex-1 flex-col',
             'py-6 sm:py-8',
             'pb-28 md:pb-8',
-            !isNewEntry && 'md:pb-28',
+            !isNewEntry && 'md:pb-28'
           )}
         >
           <Outlet />
@@ -31,7 +30,6 @@ export function AppLayout() {
 
       <AppFooter />
       <MobileBottomNav />
-      <RecordMemoryFab />
     </div>
   )
 }
