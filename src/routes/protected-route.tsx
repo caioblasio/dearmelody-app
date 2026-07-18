@@ -2,6 +2,7 @@ import { Navigate, Outlet } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
 import { useUserInfo } from '@/api/user/use-user-info'
+import { ComposingCompactIconLoader } from '@/components/loading/composing-loaders'
 import { getToken } from '@/lib/auth'
 
 export function ProtectedRoute() {
@@ -13,7 +14,11 @@ export function ProtectedRoute() {
   }
 
   if (isLoading) {
-    return <p>{t('common.loading')}</p>
+    return (
+      <div className="flex min-h-screen items-center justify-center px-6">
+        <ComposingCompactIconLoader title={t('common.loading')} />
+      </div>
+    )
   }
 
   if (!user) {
