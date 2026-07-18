@@ -17,7 +17,7 @@ export function MobileBottomNav() {
   return (
     <nav
       aria-label={t('aria.mobileNav')}
-      className="fixed inset-x-0 bottom-0 z-40 border-t border-warm-border bg-card-bg/95 backdrop-blur-md md:hidden"
+      className="border-t border-warm-border bg-card-bg/95 backdrop-blur-md md:hidden"
     >
       <div className="flex w-full items-end px-1 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-1">
         <NavLink to="/" end className={({ isActive }) => sideNavClass(isActive)}>

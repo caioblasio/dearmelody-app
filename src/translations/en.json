@@ -268,7 +268,7 @@
     "unfavorite": "Remove from favorites",
     "share": "Share",
     "lyricsHeading": "Lyrics",
-    "originalEntry": "View original diary entry",
+    "originalEntry": "Your diary entry",
     "generationFailed": "Music generation failed. Please try again later.",
     "generationLoading": "Generating your melody…",
     "editLyrics": "Edit lyric",
@@ -287,5 +287,12 @@
       "loading": "Loading audio…",
       "loadError": "Could not load this track. Please try again."
     }
+  },
+  "player": {
+    "nowPlaying": "Now playing",
+    "openEntry": "Open {{title}}",
+    "stop": "Stop and close player",
+    "showLyrics": "Lyrics",
+    "showCover": "Cover"
   }
 }
