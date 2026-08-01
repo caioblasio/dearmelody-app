@@ -55,9 +55,6 @@ export function MobileBottomNav() {
 
   return (
     <nav aria-label={t('aria.mobileNav')} className="relative md:hidden">
-      {/* Transparent strip the raised new-entry button rises into */}
-      <div className="pointer-events-none h-6" />
-
       <div className="border-t border-warm-border bg-card-bg/95 backdrop-blur-md">
         <div className="flex items-end px-1 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-2.5">
           {LEFT_ITEMS.map((item) => (
@@ -75,7 +72,7 @@ export function MobileBottomNav() {
       <NavLink
         to="/new-entry"
         aria-label={t('nav.newEntry')}
-        className="btn-coral-gradient shadow-fab absolute left-1/2 top-0 flex size-14 -translate-x-1/2 items-center justify-center rounded-full text-on-primary ring-4 ring-card-bg transition-transform active:scale-95"
+        className="btn-coral-gradient shadow-fab absolute -top-6 left-1/2 flex size-14 -translate-x-1/2 items-center justify-center rounded-full text-on-primary ring-4 ring-card-bg transition-transform active:scale-95"
       >
         <Plus className="size-6" aria-hidden />
       </NavLink>

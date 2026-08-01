@@ -19,7 +19,7 @@ export function GlobalPlayerMiniBar() {
 
   return (
     <div className="border-t border-warm-border bg-card-bg/95 backdrop-blur-md">
-      <div className="flex items-center gap-3 px-3 py-2">
+      <div className="flex items-center gap-3 px-3 pb-7 pt-2">
         <Link
           to={`/melodies/${track.entryId}`}
           className="flex min-w-0 flex-1 items-center gap-3 text-left outline-none focus-visible:ring-2 focus-visible:ring-coral/35"
