@@ -13,6 +13,7 @@
     "newDiaryEntry": "New Diary Entry",
     "pastMelodies": "My Diary",
     "collections": "Collections",
+    "me": "Me",
     "settings": "Settings",
     "logout": "Log out"
   },
@@ -33,6 +34,9 @@
   "collections": {
     "title": "Collections",
     "subtitle": "Coming soon — group your diary into life chapters and albums."
+  },
+  "profile": {
+    "title": "Me"
   },
   "authHeader": {
     "about": "About",

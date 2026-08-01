@@ -1,7 +1,6 @@
 import { Outlet, useMatch } from 'react-router-dom'
 
 import { AppFooter } from '@/components/AppFooter'
-import { AppHeader } from '@/components/AppHeader'
 import { AppSidebar } from '@/components/AppSidebar'
 import { GlobalPlayerDesktopDock } from '@/components/player/GlobalPlayerDesktopDock'
 import { GlobalPlayerMiniBar } from '@/components/player/GlobalPlayerMiniBar'
@@ -27,8 +26,6 @@ function AppLayoutShell() {
       <AppSidebar />
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <AppHeader />
-
         <main className={cn('flex-1', isNewEntry && 'flex min-h-0 flex-col')}>
           <div
             className={cn(

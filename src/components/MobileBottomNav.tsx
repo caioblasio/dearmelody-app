@@ -1,13 +1,52 @@
-import { Home, Music2, Plus } from 'lucide-react'
+import { Plus } from 'lucide-react'
 import { NavLink } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
 import { cn } from '@/lib/utils'
 
-function sideNavClass(isActive: boolean) {
-  return cn(
-    'flex flex-1 flex-col items-center justify-center gap-1 rounded-xl px-2 py-2 text-xs font-semibold text-muted transition-colors',
-    isActive && 'text-coral',
+type BottomNavItem = {
+  to: string
+  labelKey: string
+  end?: boolean
+}
+
+const LEFT_ITEMS: BottomNavItem[] = [
+  { to: '/', labelKey: 'nav.home', end: true },
+  { to: '/melodies', labelKey: 'nav.pastMelodies' },
+]
+
+const RIGHT_ITEMS: BottomNavItem[] = [
+  { to: '/collections', labelKey: 'nav.collections' },
+  { to: '/profile', labelKey: 'nav.me' },
+]
+
+function BottomNavLink({ to, labelKey, end }: BottomNavItem) {
+  const { t } = useTranslation()
+
+  return (
+    <NavLink
+      to={to}
+      end={end}
+      className={({ isActive }) =>
+        cn(
+          'flex flex-1 flex-col items-center justify-center gap-1.5 px-1 py-1 text-[0.6875rem] font-semibold transition-colors',
+          isActive ? 'text-ink' : 'text-muted',
+        )
+      }
+    >
+      {({ isActive }) => (
+        <>
+          <span
+            className={cn(
+              'size-1.5 rounded-full transition-colors',
+              isActive ? 'bg-coral' : 'bg-sand/45',
+            )}
+            aria-hidden
+          />
+          <span className="truncate">{t(labelKey)}</span>
+        </>
+      )}
+    </NavLink>
   )
 }
 
@@ -15,26 +54,31 @@ export function MobileBottomNav() {
   const { t } = useTranslation()
 
   return (
-    <nav
-      aria-label={t('aria.mobileNav')}
-      className="border-t border-warm-border bg-card-bg/95 backdrop-blur-md md:hidden"
-    >
-      <div className="flex w-full items-end px-1 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-1">
-        <NavLink to="/" end className={({ isActive }) => sideNavClass(isActive)}>
-          <Home className="size-5 shrink-0" aria-hidden />
-          <span className="truncate">{t('nav.home')}</span>
-        </NavLink>
+    <nav aria-label={t('aria.mobileNav')} className="relative md:hidden">
+      {/* Transparent strip the raised new-entry button rises into */}
+      <div className="pointer-events-none h-6" />
 
-        <NavLink to="/new-entry" className={({ isActive }) => sideNavClass(isActive)}>
-          <Plus className="size-6 shrink-0" aria-hidden />
-          <span className="truncate">{t('nav.newEntry')}</span>
-        </NavLink>
+      <div className="border-t border-warm-border bg-card-bg/95 backdrop-blur-md">
+        <div className="flex items-end px-1 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-2.5">
+          {LEFT_ITEMS.map((item) => (
+            <BottomNavLink key={item.to} {...item} />
+          ))}
 
-        <NavLink to="/melodies" className={({ isActive }) => sideNavClass(isActive)}>
-          <Music2 className="size-5 shrink-0" aria-hidden />
-          <span className="truncate">{t('nav.pastMelodies')}</span>
-        </NavLink>
+          <div className="w-16 shrink-0" />
+
+          {RIGHT_ITEMS.map((item) => (
+            <BottomNavLink key={item.to} {...item} />
+          ))}
+        </div>
       </div>
+
+      <NavLink
+        to="/new-entry"
+        aria-label={t('nav.newEntry')}
+        className="btn-coral-gradient shadow-fab absolute left-1/2 top-0 flex size-14 -translate-x-1/2 items-center justify-center rounded-full text-on-primary ring-4 ring-card-bg transition-transform active:scale-95"
+      >
+        <Plus className="size-6" aria-hidden />
+      </NavLink>
     </nav>
   )
 }

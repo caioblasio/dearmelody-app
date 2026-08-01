@@ -1,8 +1,10 @@
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import logo from '@/assets/logo.svg'
 import { useGetDiary } from '@/api/diary/use-get-diary'
 import { useUserInfo } from '@/api/user/use-user-info'
+import { DearMelodyWordmark } from '@/components/DearMelodyWordmark'
 import { DashboardProgressSection } from '@/components/DashboardProgressSection'
 import { EntryInspirationCard } from '@/components/EntryInspirationCard'
 import { MoodOfTheMonth } from '@/components/MoodOfTheMonth'
@@ -50,6 +52,11 @@ export function DashboardPage() {
 
   return (
     <section className="space-y-8">
+      <div className="flex items-center gap-2 font-heading text-xl font-semibold text-ink md:hidden">
+        <img src={logo} alt="" className="size-6 shrink-0" aria-hidden />
+        <DearMelodyWordmark />
+      </div>
+
       <header className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <p className="text-sm text-sand">{todayLabel}</p>

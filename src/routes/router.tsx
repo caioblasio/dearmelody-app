@@ -7,6 +7,7 @@ import { EntryPage } from '@/pages/Entry'
 import { LoginPage } from '@/pages/Login'
 import { MyMelodiesPage } from '@/pages/MyMelodies'
 import { NewEntryPage } from '@/pages/NewEntry'
+import { ProfilePage } from '@/pages/Profile'
 import { SignUpPage } from '@/pages/SignUp'
 import { ProtectedRoute } from './protected-route'
 import { PublicRoute } from './public-route'
@@ -55,6 +56,11 @@ export const router = createBrowserRouter([
             path: '/collections',
             element: <CollectionsPage />,
             handle: { title: 'collections.title' },
+          },
+          {
+            path: '/profile',
+            element: <ProfilePage />,
+            handle: { title: 'profile.title' },
           },
         ],
       },
