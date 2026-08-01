@@ -364,6 +364,108 @@
     }
   }
 
+  @keyframes melo-level-breathe {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-3px);
+    }
+  }
+
+  @keyframes melo-level-note-drift {
+    0% {
+      transform: translate(0, 0) rotate(-4deg);
+      opacity: 0;
+    }
+    20% {
+      opacity: 1;
+    }
+    100% {
+      transform: translate(10px, -22px) rotate(8deg);
+      opacity: 0;
+    }
+  }
+
+  @keyframes melo-level-band-dot {
+    0%,
+    100% {
+      opacity: 0.4;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+
+  @keyframes melo-level-puff {
+    0% {
+      transform: translate(0, 0) scale(0.7);
+      opacity: 0;
+    }
+    30% {
+      opacity: 0.9;
+    }
+    100% {
+      transform: translate(10px, -4px) scale(1.2);
+      opacity: 0;
+    }
+  }
+
+  @keyframes melo-level-cymbal-line {
+    0%,
+    100% {
+      opacity: 0.25;
+      transform: translateX(0);
+    }
+    50% {
+      opacity: 0.9;
+      transform: translateX(2px);
+    }
+  }
+
+  @keyframes melo-level-sparkle {
+    0%,
+    100% {
+      opacity: 0.35;
+      transform: scale(0.8);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1.15);
+    }
+  }
+
+  .melo-level-breathe {
+    animation: melo-level-breathe 3.4s ease-in-out infinite;
+  }
+
+  .melo-level-note-drift {
+    animation: melo-level-note-drift 3.4s ease-in-out infinite;
+  }
+
+  .melo-level-band-dot {
+    animation: melo-level-band-dot 1.8s ease-in-out infinite;
+  }
+
+  .melo-level-puff {
+    transform-origin: left center;
+    animation: melo-level-puff 2.6s ease-in-out infinite;
+  }
+
+  .melo-level-cymbal-line {
+    animation: melo-level-cymbal-line 0.42s ease-in-out infinite;
+  }
+
+  .melo-level-cymbal-line-delay {
+    animation-delay: 0.1s;
+  }
+
+  .melo-level-sparkle {
+    transform-origin: center;
+    animation: melo-level-sparkle 1.9s ease-in-out infinite;
+  }
+
   .melo-bob {
     transform-origin: 110px 190px;
     animation: melo-bob 2.2s ease-in-out infinite;

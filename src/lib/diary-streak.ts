@@ -97,40 +97,60 @@ export function computeWeekRowFromHistory(
   return buildWeekRow(entryDays, now)
 }
 
+export type MeloLevel = 1 | 2 | 3 | 4 | 5
+
 export type MeloStreakCopy = {
-  level: number
-  titleKey: 'dashboard.progress.meloLevel0' | 'dashboard.progress.meloLevel1' | 'dashboard.progress.meloLevel2' | 'dashboard.progress.meloLevel3'
-  nextKey: 'dashboard.progress.meloNext0' | 'dashboard.progress.meloNext1' | 'dashboard.progress.meloNext2' | 'dashboard.progress.meloNext3'
+  level: MeloLevel
+  titleKey:
+    | 'dashboard.progress.meloLevel1'
+    | 'dashboard.progress.meloLevel2'
+    | 'dashboard.progress.meloLevel3'
+    | 'dashboard.progress.meloLevel4'
+    | 'dashboard.progress.meloLevel5'
+  nextKey:
+    | 'dashboard.progress.meloNext1'
+    | 'dashboard.progress.meloNext2'
+    | 'dashboard.progress.meloNext3'
+    | 'dashboard.progress.meloNext4'
+    | 'dashboard.progress.meloNext5'
 }
 
 export function getMeloStreakCopy(streakDays: number): MeloStreakCopy {
+  if (streakDays >= 60) {
+    return {
+      level: 5,
+      titleKey: 'dashboard.progress.meloLevel5',
+      nextKey: 'dashboard.progress.meloNext5',
+    }
+  }
+
   if (streakDays >= 30) {
     return {
       level: 4,
-      titleKey: 'dashboard.progress.meloLevel3',
-      nextKey: 'dashboard.progress.meloNext3',
+      titleKey: 'dashboard.progress.meloLevel4',
+      nextKey: 'dashboard.progress.meloNext4',
     }
   }
 
   if (streakDays >= 14) {
     return {
       level: 3,
-      titleKey: 'dashboard.progress.meloLevel2',
-      nextKey: 'dashboard.progress.meloNext2',
+      titleKey: 'dashboard.progress.meloLevel3',
+      nextKey: 'dashboard.progress.meloNext3',
     }
   }
 
   if (streakDays >= 7) {
     return {
       level: 2,
-      titleKey: 'dashboard.progress.meloLevel1',
-      nextKey: 'dashboard.progress.meloNext1',
+      titleKey: 'dashboard.progress.meloLevel2',
+      nextKey: 'dashboard.progress.meloNext2',
     }
   }
 
   return {
     level: 1,
-    titleKey: 'dashboard.progress.meloLevel0',
-    nextKey: 'dashboard.progress.meloNext0',
+    titleKey: 'dashboard.progress.meloLevel1',
+    nextKey: 'dashboard.progress.meloNext1',
   }
 }

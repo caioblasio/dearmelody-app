@@ -2,12 +2,8 @@ import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { useDashboardMetrics } from '@/api/dashboard/use-dashboard-metrics'
-import meloRegular from '@/assets/melo-regular.svg'
-import {
-  computeWeekRowFromHistory,
-  getMeloStreakCopy,
-  type WeekDayState,
-} from '@/lib/diary-streak'
+import { MeloLevelAvatar } from '@/components/MeloLevelAvatar'
+import { computeWeekRowFromHistory, getMeloStreakCopy, type WeekDayState } from '@/lib/diary-streak'
 import { cn } from '@/lib/utils'
 
 type StreakProgressCardProps = {
@@ -28,7 +24,7 @@ export function StreakProgressCard({ userName, className }: StreakProgressCardPr
   const streakDays = data?.streak.streak ?? 0
   const weekRow = useMemo(
     () => computeWeekRowFromHistory(data?.streak.history ?? []),
-    [data?.streak.history],
+    [data?.streak.history]
   )
   const meloCopy = useMemo(() => getMeloStreakCopy(streakDays), [streakDays])
 
@@ -36,7 +32,7 @@ export function StreakProgressCard({ userName, className }: StreakProgressCardPr
     <div
       className={cn(
         'flex flex-col gap-5 rounded-[26px] bg-gradient-to-br from-butter to-coral-light p-6 sm:gap-[22px] sm:p-[34px]',
-        className,
+        className
       )}
     >
       <div className="flex items-center gap-5">
@@ -65,7 +61,7 @@ export function StreakProgressCard({ userName, className }: StreakProgressCardPr
             <div
               className={cn(
                 'flex size-10 items-center justify-center rounded-full font-heading text-[17px] font-bold sm:size-[46px]',
-                WEEK_DAY_CIRCLE_CLASSES[day.state],
+                WEEK_DAY_CIRCLE_CLASSES[day.state]
               )}
               aria-hidden
             >
@@ -77,10 +73,12 @@ export function StreakProgressCard({ userName, className }: StreakProgressCardPr
       </div>
 
       <div className="mt-auto flex items-center gap-4 rounded-[20px] bg-card-bg/75 px-5 py-4 sm:gap-[18px] sm:px-6">
-        <img src={meloRegular} alt="" className="size-14 shrink-0 sm:size-16" aria-hidden />
+        <MeloLevelAvatar level={meloCopy.level} className="size-14 sm:size-16" />
         <div className="min-w-0">
           <p className="text-sm font-bold text-[#5A3A10] sm:text-[15px]">{t(meloCopy.titleKey)}</p>
-          <p className="mt-0.5 text-[13px] text-[#7A5A16] sm:text-[13.5px]">{t(meloCopy.nextKey)}</p>
+          <p className="mt-0.5 text-[13px] text-[#7A5A16] sm:text-[13.5px]">
+            {t(meloCopy.nextKey)}
+          </p>
         </div>
       </div>
     </div>
