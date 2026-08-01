@@ -6,12 +6,14 @@ import { useGetDiary } from '@/api/diary/use-get-diary'
 import { useUserInfo } from '@/api/user/use-user-info'
 import { DearMelodyWordmark } from '@/components/DearMelodyWordmark'
 import { DashboardProgressSection } from '@/components/DashboardProgressSection'
+import { DraftEntryCard } from '@/components/DraftEntryCard'
 import { EntryInspirationCard } from '@/components/EntryInspirationCard'
 import { MoodOfTheMonth } from '@/components/MoodOfTheMonth'
 import { DiaryEntryRow } from '@/components/DiaryEntryRow'
 import { Alert } from '@/components/ui/alert'
 import { Skeleton } from '@/components/ui/skeleton'
 import { getLastNDaysRange } from '@/lib/diary-date-range'
+import { loadNewEntryDraft } from '@/lib/new-entry-draft'
 import { parseDiaryCreatedAt } from '@/lib/past-melody-date'
 
 function getGreetingKey():
@@ -51,6 +53,7 @@ export function DashboardPage() {
   const name = user?.first_name ?? ''
   const greetingKey = useMemo(() => getGreetingKey(), [])
   const todayLabel = useMemo(() => formatTodayDate(i18n.language), [i18n.language])
+  const hasDraft = useMemo(() => loadNewEntryDraft() !== null, [])
 
   return (
     <section className="space-y-8">
@@ -73,7 +76,7 @@ export function DashboardPage() {
           <MoodOfTheMonth />
         </div>
         <div className="order-1 md:w-1/2">
-          <EntryInspirationCard />
+          {hasDraft ? <DraftEntryCard /> : <EntryInspirationCard />}
         </div>
       </div>
 

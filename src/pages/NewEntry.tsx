@@ -1,4 +1,4 @@
-import { useLayoutEffect, useMemo, useRef } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
@@ -10,6 +10,11 @@ import { useNewEntry } from '@/api/diary/use-new-entry'
 import { GenrePicker } from '@/components/genre-picker/GenrePicker'
 import { Button } from '@/components/ui/button'
 import { useMelodyGeneration } from '@/lib/melody-generation/use-melody-generation'
+import {
+  clearNewEntryDraft,
+  loadNewEntryDraft,
+  saveNewEntryDraft,
+} from '@/lib/new-entry-draft'
 
 function createEntrySchema(t: TFunction) {
   return z.object({
@@ -48,18 +53,24 @@ export function NewEntryPage() {
     return fromUrl || t('newEntry.textareaPlaceholder')
   }, [searchParams, t])
 
+  const [defaultValues] = useState<EntryFormValues>(() => {
+    const draft = loadNewEntryDraft()
+    return {
+      entry: draft?.entry ?? '',
+      musicStyle: draft?.musicStyle ?? '',
+    }
+  })
+
   const {
     register,
     setValue,
+    reset,
     watch,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<EntryFormValues>({
     resolver: zodResolver(entrySchema),
-    defaultValues: {
-      entry: '',
-      musicStyle: '',
-    },
+    defaultValues,
   })
 
   const { ref: entryRegisterRef, onChange: entryOnChange, ...entryRegister } = register('entry')
@@ -67,11 +78,22 @@ export function NewEntryPage() {
 
   useLayoutEffect(() => {
     if (entryTextareaRef.current) autosizeTextarea(entryTextareaRef.current)
-  }, [placeholderText])
+  }, [placeholderText, defaultValues.entry])
 
+  const entryValue = watch('entry')
   const selectedMusicStyle = watch('musicStyle')
+  const hasDraftContent = Boolean(entryValue.trim() || selectedMusicStyle.trim())
+
+  useEffect(() => {
+    const timeoutId = window.setTimeout(() => {
+      saveNewEntryDraft({ entry: entryValue, musicStyle: selectedMusicStyle })
+    }, 300)
+    return () => window.clearTimeout(timeoutId)
+  }, [entryValue, selectedMusicStyle])
+
   const { mutate: createNewEntry, isPending } = useNewEntry({
     onSuccess: (data) => {
+      clearNewEntryDraft()
       startComposing(data.id)
       navigate(`/melodies/${data.id}`)
     },
@@ -79,6 +101,12 @@ export function NewEntryPage() {
 
   const today = useMemo(() => new Date(), [])
   const dateCaps = formatDateCaps(today, i18n.language)
+
+  const onClearDraft = () => {
+    clearNewEntryDraft()
+    reset({ entry: '', musicStyle: '' })
+    if (entryTextareaRef.current) autosizeTextarea(entryTextareaRef.current)
+  }
 
   const onSubmit = handleSubmit(async (values) => {
     if (isComposing) return
@@ -160,11 +188,20 @@ export function NewEntryPage() {
           </p>
         )}
 
-        <div className="flex justify-center">
+        <div className="mx-auto flex w-full max-w-md flex-col items-center gap-2">
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={onClearDraft}
+            disabled={!hasDraftContent || isSubmitting || isPending}
+          >
+            {t('newEntry.clear')}
+          </Button>
           <Button
             type="submit"
             size="lg"
-            className="w-full max-w-md py-4 font-heading text-xl hover:scale-[1.03]"
+            className="w-full py-4 font-heading text-xl hover:scale-[1.03]"
             disabled={isSubmitting || isPending}
           >
             {isPending ? t('newEntry.generating') : `♪ ${t('newEntry.generate')}`}

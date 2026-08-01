@@ -162,6 +162,9 @@
     "moodOfTheMonthPrefix": "Melo says your month is ",
     "inspirationLabel": "Need inspiration?",
     "inspirationCta": "Start writing",
+    "draftLabel": "Continue your draft",
+    "draftCta": "Continue writing",
+    "draftEmptyPreview": "Pick up where you left off…",
     "progress": {
       "streakTitle": "You're on a roll, {{name}}!",
       "streakSubtitle": "Write one entry a day to keep your streak alive. Melo grows with it.",
@@ -202,6 +205,7 @@
     "soundLabel": "Sound",
     "generate": "Create entry with melody",
     "generating": "Generating...",
+    "clear": "Clear",
     "validation": {
       "entryMin": "Write at least a few lines about your day.",
       "entryMax": "Keep it under 2000 characters.",
