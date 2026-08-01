@@ -17,7 +17,6 @@ import { cn } from '@/lib/utils'
 export { AUTH_SHELL_CLASS }
 
 function AppLayoutShell() {
-  const isNewEntry = useMatch('/new-entry')
   const entryMatch = useMatch('/melodies/:entryId')
   const { track } = usePlayer()
   const showGenerationBar = useMelodyGenerationBarVisible()
@@ -31,15 +30,13 @@ function AppLayoutShell() {
       <AppSidebar />
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <main className={cn('flex-1', isNewEntry && 'flex min-h-0 flex-col')}>
+        <main className="flex-1">
           <div
             className={cn(
               AUTH_SHELL_CLASS,
-              isNewEntry && 'flex min-h-0 flex-1 flex-col',
               'py-6 sm:py-8',
               /* Base room for mobile bottom nav */
-              'pb-28 md:pb-8',
-              !isNewEntry && 'md:pb-28',
+              'pb-28 md:pb-28',
               /* Extra room when mobile mini player is stacked above the nav */
               showMiniBar && 'pb-[11.5rem] md:pb-28',
               /* Extra room when composing/ready bar is visible */

@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useLayoutEffect, useMemo, useRef } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
@@ -32,6 +32,11 @@ function formatDateCaps(d: Date, locale: string): string {
     .toUpperCase()
 }
 
+function autosizeTextarea(el: HTMLTextAreaElement) {
+  el.style.height = 'auto'
+  el.style.height = `${el.scrollHeight}px`
+}
+
 export function NewEntryPage() {
   const { t, i18n } = useTranslation()
   const navigate = useNavigate()
@@ -56,6 +61,13 @@ export function NewEntryPage() {
       musicStyle: '',
     },
   })
+
+  const { ref: entryRegisterRef, onChange: entryOnChange, ...entryRegister } = register('entry')
+  const entryTextareaRef = useRef<HTMLTextAreaElement | null>(null)
+
+  useLayoutEffect(() => {
+    if (entryTextareaRef.current) autosizeTextarea(entryTextareaRef.current)
+  }, [placeholderText])
 
   const selectedMusicStyle = watch('musicStyle')
   const { mutate: createNewEntry, isPending } = useNewEntry({
@@ -93,8 +105,8 @@ export function NewEntryPage() {
   }
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col gap-4 md:block md:space-y-8">
-      <header className="shrink-0 space-y-3">
+    <div className="space-y-8">
+      <header className="space-y-3">
         <div className="flex items-start justify-between gap-3">
           <span className="text-sm tracking-wide text-sand">{dateCaps}</span>
           <span className="shrink-0 rounded-full border border-warm-border bg-card-bg px-4 py-1.5 text-sm font-semibold text-muted">
@@ -107,23 +119,32 @@ export function NewEntryPage() {
         </h1>
       </header>
 
-      <form className="flex min-h-0 flex-1 flex-col gap-4 md:block md:space-y-6" onSubmit={onSubmit}>
-        <label className="flex min-h-0 flex-1 flex-col gap-2 md:block md:space-y-2">
+      <form className="space-y-6" onSubmit={onSubmit}>
+        <label className="block space-y-2">
           <textarea
             placeholder={placeholderText}
-            className="diary-notebook-field diary-notebook-field--fill w-full resize-none text-body caret-coral outline-none"
+            className="diary-notebook-field w-full resize-none text-body caret-coral outline-none"
             aria-invalid={Boolean(errors.entry)}
             aria-describedby={errors.entry ? 'entry-error' : undefined}
-            {...register('entry')}
+            {...entryRegister}
+            ref={(el) => {
+              entryRegisterRef(el)
+              entryTextareaRef.current = el
+              if (el) autosizeTextarea(el)
+            }}
+            onChange={(event) => {
+              void entryOnChange(event)
+              autosizeTextarea(event.currentTarget)
+            }}
           />
           {errors.entry && (
-            <p id="entry-error" className="shrink-0 text-sm text-error" role="alert">
+            <p id="entry-error" className="text-sm text-error" role="alert">
               {errors.entry.message}
             </p>
           )}
         </label>
 
-        <div className="flex shrink-0 flex-wrap items-center gap-3 rounded-[20px] border border-warm-border bg-card-bg px-5 py-4 sm:justify-between">
+        <div className="flex flex-wrap items-center gap-3 rounded-[20px] border border-warm-border bg-card-bg px-5 py-4 sm:justify-between">
           <div className="flex flex-wrap items-center gap-3 sm:gap-4">
             <span className="text-sm font-medium text-muted">{t('newEntry.soundLabel')}</span>
             <GenrePicker
@@ -134,12 +155,12 @@ export function NewEntryPage() {
           </div>
         </div>
         {errors.musicStyle && (
-          <p className="shrink-0 text-sm text-error" role="alert">
+          <p className="text-sm text-error" role="alert">
             {errors.musicStyle.message}
           </p>
         )}
 
-        <div className="flex shrink-0 justify-center">
+        <div className="flex justify-center">
           <Button
             type="submit"
             size="lg"

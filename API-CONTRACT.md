@@ -217,13 +217,15 @@ All filter parameters are optional and combine with `AND` logic. Omitting a para
       "title": "Song Title",
       "imageLocation": "https://...",
       "generateStatus": "done",
-      "styles": ["pop", "upbeat"]
+      "styles": ["pop", "upbeat"],
+      "isFavorited": false,
+      "shareToken": null
     }
   }
 ]
 ```
 
-`music` is `null` when no music has been generated for the entry.
+`music` is `null` when no music has been generated for the entry. `isFavorited` reflects whether the authenticated user has favorited this track (see `POST /api/music/{id}/favorite` below). `shareToken` is the token minted by `POST /api/music/{id}/share`, or `null` if the track hasn't been made public.
 
 **Response `422 Unprocessable Entity`** — invalid filter value (e.g. malformed date).
 
@@ -268,11 +270,17 @@ Returns a single diary entry with all its associated music tracks.
       "lyrics": "Verse 1 ...",
       "generateStatus": "done",
       "styles": ["pop", "upbeat"],
-      "createdAt": "2026-05-01T10:05:00+00:00"
+      "createdAt": "2026-05-01T10:05:00+00:00",
+      "isFavorited": false,
+      "shareToken": null
     }
   ]
 }
 ```
+
+`lyrics` has structure markers (e.g. `[intro]`, `[verse]`, `[chorus]`) stripped before being returned — the stored value in the database keeps the markers; stripping happens only on this read path (`DiaryService::stripLyricsTags()`).
+
+`isFavorited` reflects whether the authenticated user has favorited each track (see `POST /api/music/{id}/favorite` below). `shareToken` is the token minted by `POST /api/music/{id}/share`, or `null` if the track hasn't been made public.
 
 `musics` is `null` when no music has been generated for the entry.
 
@@ -338,6 +346,39 @@ Creates a new diary entry for the authenticated user.
 
 ## Music
 
+### `GET /api/music`
+
+**Auth:** JWT
+
+Returns a paginated list of the authenticated user's music tracks across all diary entries, most recently created first.
+
+**Query parameters**
+
+| Parameter | Type    | Default | Notes                  |
+| --------- | ------- | ------- | ---------------------- |
+| `limit`   | integer | 30      | Minimum 1, maximum 100 |
+| `offset`  | integer | 0       | Minimum 0              |
+
+**Response `200 OK`**
+
+```json
+[
+  {
+    "id": 1,
+    "title": "Song Title",
+    "imageLocation": "https://...",
+    "generateStatus": "done",
+    "styles": ["pop", "upbeat"],
+    "isFavorited": false,
+    "shareToken": null
+  }
+]
+```
+
+`isFavorited` reflects whether the authenticated user has favorited each track (see `POST /api/music/{id}/favorite` below). `shareToken` is the token minted by `POST /api/music/{id}/share`, or `null` if the track hasn't been made public.
+
+---
+
 ### `GET /api/music/{id}`
 
 **Auth:** JWT
@@ -386,6 +427,152 @@ Streams the audio file for a music track owned by the authenticated user as a ch
 
 ---
 
+### `POST /api/music/{id}/share`
+
+**Auth:** JWT
+
+Makes a music track owned by the authenticated user publicly accessible by minting a random 32-character share token. One-way — there is no un-publish/revoke endpoint. Idempotent: calling this again on an already-public track returns the same existing token, no rotation.
+
+**Path parameters**
+
+| Parameter | Type    | Notes           |
+| --------- | ------- | --------------- |
+| `id`      | integer | Music record ID |
+
+**Response `200 OK`**
+
+```json
+{
+  "shareToken": "aZ3kP9mQxT1vL8wR2nB6cD4fG7hJ0sYe"
+}
+```
+
+`shareToken` is 32 characters, drawn from `[0-9A-Za-z]` (base62) — safe to embed in a URL with no escaping.
+
+**Response `404 Not Found`** — music does not exist or is not owned by the authenticated user (the two cases are not distinguished).
+
+```json
+{
+  "error": "Not found"
+}
+```
+
+---
+
+### `GET /api/music/share/{token}/stream`
+
+**Auth:** Public — no JWT required.
+
+Streams the audio file for a music track that has been made public via `POST /api/music/{id}/share`. Behaves identically to `GET /api/music/{id}/stream` (chunked, no Range support) except lookup is by share token instead of `id` + ownership.
+
+**Path parameters**
+
+| Parameter | Type   | Notes                                                             |
+| --------- | ------ | ----------------------------------------------------------------- |
+| `token`   | string | 32-character share token returned by `POST /api/music/{id}/share` |
+
+**Response `200 OK`** — chunked audio stream. Includes `Content-Type` (detected from the file) and `Content-Length` headers.
+
+**Response `404 Not Found`** — unknown token, or the track's generation is not yet `done`.
+
+```json
+{
+  "error": "Not found"
+}
+```
+
+---
+
+### `POST /api/music/{id}/favorite`
+
+**Auth:** JWT
+
+Favorites a music track owned by the authenticated user. Only the owner's own tracks can be favorited for now (favoriting other users' tracks, e.g. publicly-shared ones, is not yet supported).
+
+**Path parameters**
+
+| Parameter | Type    | Notes           |
+| --------- | ------- | --------------- |
+| `id`      | integer | Music record ID |
+
+**Response `201 Created`**
+
+```json
+{
+  "id": 1
+}
+```
+
+`id` is the new favorite record's own ID, not the music ID.
+
+**Response `404 Not Found`** — music does not exist or is not owned by the authenticated user (the two cases are not distinguished).
+
+```json
+{
+  "error": "Not found"
+}
+```
+
+**Response `409 Conflict`** — the track is already favorited by this user.
+
+```json
+{
+  "error": "Music is already favorited."
+}
+```
+
+---
+
+### `DELETE /api/music/{id}/favorite`
+
+**Auth:** JWT
+
+Removes a favorite on a music track owned by the authenticated user.
+
+**Path parameters**
+
+| Parameter | Type    | Notes           |
+| --------- | ------- | --------------- |
+| `id`      | integer | Music record ID |
+
+**Response `204 No Content`** — favorite removed.
+
+**Response `404 Not Found`** — music does not exist, is not owned by the authenticated user, or was never favorited (the cases are not distinguished).
+
+```json
+{
+  "error": "Not found"
+}
+```
+
+---
+
+### `GET /api/music/favorites`
+
+**Auth:** JWT
+
+Returns all of the authenticated user's favorited music tracks, most recently favorited first.
+
+**Response `200 OK`**
+
+```json
+[
+  {
+    "id": 1,
+    "title": "Song Title",
+    "imageLocation": "https://...",
+    "generateStatus": "done",
+    "styles": ["pop", "upbeat"],
+    "isFavorited": true,
+    "shareToken": null
+  }
+]
+```
+
+`isFavorited` is always `true` here — every row returned is by definition a favorite of the authenticated user. `shareToken` is the token minted by `POST /api/music/{id}/share`, or `null` if the track hasn't been made public.
+
+---
+
 ## Metrics
 
 ### `GET /api/metrics/streak`
@@ -417,7 +604,7 @@ Returns a 30-day diary-activity calendar plus the authenticated user's current w
 
 **Auth:** JWT
 
-Aggregates metrics for the authenticated user into a single response. Currently wraps the same data as `GET /api/metrics/streak` under a `streak` key; more metric keys will be added here over time as new metric types are built, without changing the existing `/api/metrics/streak` endpoint.
+Aggregates metrics for the authenticated user into a single response. Currently wraps `GET /api/metrics/streak`'s data under a `streak` key, `GET /api/metrics/achievements`'s data under an `achievements` key, `GET /api/metrics/weekly-mood`'s data under a `weeklyMood` key, and `GET /api/metrics/weekly-style`'s data under a `weeklyStyle` key; more metric keys will be added here over time as new metric types are built, without changing the existing standalone endpoints.
 
 **Response `200 OK`**
 
@@ -430,11 +617,143 @@ Aggregates metrics for the authenticated user into a single response. Currently 
       { "date": "2026-07-16", "hasEntry": true }
     ],
     "streak": 62
+  },
+  "achievements": [
+    {
+      "code": "first_song",
+      "name": "First Song",
+      "description": "Create your first diary entry.",
+      "earned": true,
+      "earnedAt": "2026-07-20T08:03:00+00:00"
+    },
+    {
+      "code": "one_week",
+      "name": "One Week",
+      "description": "Keep a 7-day diary streak.",
+      "earned": false,
+      "earnedAt": null
+    }
+  ],
+  "weeklyMood": {
+    "mood": "melancholic",
+    "counts": { "melancholic": 3, "happy": 2, "cozy": 1, "relaxed": 1 }
+  },
+  "weeklyStyle": {
+    "style": "Pop",
+    "counts": { "Pop": 3, "Rock": 2, "Electronic": 1 }
   }
 }
 ```
 
-The `streak` value is identical in shape and meaning to the top-level response of `GET /api/metrics/streak` — see above.
+The `streak` value is identical in shape and meaning to the top-level response of `GET /api/metrics/streak` — see above. The `achievements` value is identical in shape and meaning to the top-level `achievements` array of `GET /api/metrics/achievements` — see below. The `weeklyMood` value is identical in shape and meaning to the top-level response of `GET /api/metrics/weekly-mood` — see below. The `weeklyStyle` value is identical in shape and meaning to the top-level response of `GET /api/metrics/weekly-style` — see below.
+
+---
+
+### `GET /api/metrics/achievements`
+
+**Auth:** JWT
+
+Returns all achievement badges with the authenticated user's earned status for each. Achievements are unlocked as a side effect of other actions (diary creation, music generation completing) rather than computed on read — this endpoint only reports current state, it never triggers new unlocks itself.
+
+**Response `200 OK`**
+
+```json
+{
+  "achievements": [
+    {
+      "code": "first_song",
+      "name": "First Song",
+      "description": "Create your first diary entry.",
+      "earned": true,
+      "earnedAt": "2026-07-20T08:03:00+00:00"
+    },
+    {
+      "code": "one_week",
+      "name": "One Week",
+      "description": "Keep a 7-day diary streak.",
+      "earned": false,
+      "earnedAt": null
+    },
+    {
+      "code": "night_owl",
+      "name": "Night Owl",
+      "description": "Write 5 diary entries between 10pm and 5am.",
+      "earned": false,
+      "earnedAt": null
+    },
+    {
+      "code": "one_month",
+      "name": "One Month",
+      "description": "Keep a 30-day diary streak.",
+      "earned": false,
+      "earnedAt": null
+    },
+    {
+      "code": "full_spectrum",
+      "name": "Full Spectrum",
+      "description": "Generate a song in every curated style family.",
+      "earned": false,
+      "earnedAt": null
+    },
+    {
+      "code": "renaissance_composer",
+      "name": "Renaissance Composer",
+      "description": "Generate a song in every curated sub-style variant.",
+      "earned": false,
+      "earnedAt": null
+    }
+  ]
+}
+```
+
+All 6 achievements are always present in the array, earned or not. `earnedAt` is `null` until earned, then permanently fixed at the moment it was first unlocked (never re-computed or revoked even if the underlying condition later stops holding — e.g. a broken streak does not un-earn `one_week`).
+
+| `code`                 | Unlock condition                                                                                                                      |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `first_song`           | The user's first diary entry is created.                                                                                              |
+| `one_week`             | The user's diary streak (see `GET /api/metrics/streak`) reaches 7.                                                                    |
+| `night_owl`            | 5 of the user's diary entries were created between 10pm and 5am, in the user's timezone.                                              |
+| `one_month`            | The user's diary streak reaches 30.                                                                                                   |
+| `full_spectrum`        | The user has a `done` music track in every curated style family (11 families).                                                        |
+| `renaissance_composer` | The user has a `done` music track in every individual curated sub-style variant (184 variants) — a harder tier above `full_spectrum`. |
+
+---
+
+### `GET /api/metrics/weekly-mood`
+
+**Auth:** JWT
+
+Returns the authenticated user's most frequent diary mood over the last 7 calendar days (today plus the prior 6, in the user's timezone), along with a full breakdown of counts per mood.
+
+**Response `200 OK`**
+
+```json
+{
+  "mood": "melancholic",
+  "counts": { "melancholic": 3, "happy": 2, "cozy": 1, "relaxed": 1 }
+}
+```
+
+`mood` is the most frequent value; on a tie, whichever mood was encountered first wins (not the most recent). Diary entries with no mood yet (music/mood detection not finished or failed) are excluded entirely — they never appear in `counts` and can't be picked as `mood`. If there are no entries (or none with a mood) in the window, this returns `200` with `{"mood": null, "counts": {}}` — never a `404`.
+
+---
+
+### `GET /api/metrics/weekly-style`
+
+**Auth:** JWT
+
+Returns the authenticated user's most frequent curated music style **family** (e.g. `Pop`, `Rock`, `Electronic`) across their completed (`done`) music tracks generated over the last 7 calendar days (today plus the prior 6, in the user's timezone), along with a full breakdown of counts per style. Counts individual tracks, not diary entries — if a user generates more than one song in a day, each counts separately.
+
+**Response `200 OK`**
+
+```json
+{
+  "style": "Pop",
+  "counts": { "Pop": 3, "Rock": 2, "Electronic": 1 }
+}
+```
+
+`style` is the most frequent value; on a tie, whichever style was encountered first wins (not the most recent). Only tracks with `generateStatus: "done"` **and** a matched curated style are counted — tracks still generating, failed, or whose style text didn't match any curated catalog entry are excluded entirely and can't be picked as `style`. If there are no qualifying tracks in the window, this returns `200` with `{"style": null, "counts": {}}` — never a `404`.
 
 ---
 

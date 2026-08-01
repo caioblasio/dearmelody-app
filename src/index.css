@@ -148,6 +148,7 @@
     padding: 0.5rem 1rem 0.5rem calc(var(--diary-margin) + 0.5rem);
     box-shadow: 0 1px 4px rgba(58, 46, 69, 0.05);
     min-height: calc(var(--diary-line-step) * 7 + 1rem);
+    overflow: hidden;
   }
 
   .diary-notebook-field::placeholder {
@@ -157,14 +158,6 @@
   .diary-notebook-field:focus-visible {
     outline: none;
     box-shadow: none;
-  }
-
-  @media (max-width: 767px) {
-    .diary-notebook-field--fill {
-      min-height: 0;
-      flex: 1 1 auto;
-      height: 100%;
-    }
   }
 
   .font-heading {
