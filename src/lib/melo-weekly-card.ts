@@ -19,24 +19,59 @@ const MELO_MOOD_KEYS = new Set<string>([
   'inspiring',
 ])
 
-const MELO_GENRE_KEYS = new Set<string>([
-  'pop',
-  'rock',
-  'metal',
+/** Prefer longer keys first so e.g. hip-hop wins over a hypothetical hop. */
+const MELO_GENRE_KEYS: MeloGenreKey[] = [
   'hip-hop',
-  'r&b',
-  'folk',
   'electronic',
+  'classic',
+  'r&b',
+  'metal',
   'latin',
   'asian',
-  'classic',
+  'folk',
   'jazz',
-])
+  'rock',
+  'pop',
+]
 
 function normalizeKey(value: string | null | undefined): string | null {
   if (value == null) return null
   const normalized = value.trim().toLowerCase()
   return normalized.length > 0 ? normalized : null
+}
+
+/** Split family labels like "Folk/Country" or "R&B/Soul" into comparable tokens. */
+function styleTokens(value: string): Set<string> {
+  const tokens = new Set<string>()
+  for (const part of value.toLowerCase().split(/[/,\s]+/)) {
+    const token = part.trim()
+    if (!token) continue
+    tokens.add(token)
+    // Also index hyphen parts so "hip hop" can meet "hip-hop"
+    if (token.includes('-')) {
+      for (const sub of token.split('-')) {
+        if (sub) tokens.add(sub)
+      }
+    }
+  }
+  return tokens
+}
+
+function genreTokens(key: MeloGenreKey): Set<string> {
+  const tokens = new Set<string>([key])
+  if (key.includes('-')) {
+    for (const sub of key.split('-')) {
+      if (sub) tokens.add(sub)
+    }
+  }
+  return tokens
+}
+
+function tokensOverlap(a: Set<string>, b: Set<string>): boolean {
+  for (const token of a) {
+    if (b.has(token)) return true
+  }
+  return false
 }
 
 export function matchMeloMood(mood: string | null | undefined): MeloMoodKey | null {
@@ -45,13 +80,29 @@ export function matchMeloMood(mood: string | null | undefined): MeloMoodKey | nu
   return key as MeloMoodKey
 }
 
+/**
+ * Match curated style families to Melo genre poses by shared word
+ * (case-insensitive). e.g. "Folk/Country" → folk, "R&B/Soul" → r&b.
+ */
 export function matchMeloGenre(style: string | null | undefined): MeloGenreKey | null {
-  const key = normalizeKey(style)
-  if (!key || !MELO_GENRE_KEYS.has(key)) return null
-  return key as MeloGenreKey
+  const normalized = normalizeKey(style)
+  if (!normalized) return null
+
+  if ((MELO_GENRE_KEYS as string[]).includes(normalized)) {
+    return normalized as MeloGenreKey
+  }
+
+  const incoming = styleTokens(normalized)
+  for (const key of MELO_GENRE_KEYS) {
+    if (tokensOverlap(incoming, genreTokens(key))) {
+      return key
+    }
+  }
+
+  return null
 }
 
-/** Resolve which Melo card candidates match weekly mood/style (exact, case-insensitive). */
+/** Resolve which Melo card candidates match weekly mood/style. */
 export function resolveMeloCardCandidates(
   mood: string | null | undefined,
   style: string | null | undefined

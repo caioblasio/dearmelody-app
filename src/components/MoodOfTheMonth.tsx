@@ -42,7 +42,7 @@ export function MoodOfTheMonth() {
         aria-live="polite"
         aria-label={t('dashboard.weeklyMeloLoading')}
       >
-        <Skeleton className="aspect-[290/274] w-full max-w-[290px] rounded-3xl" />
+        <Skeleton className="aspect-[290/274] w-full max-w-[200px] rounded-3xl" />
         <Skeleton className="h-3 w-16" />
         <Skeleton className="h-5 w-28" />
         <Skeleton className="h-4 w-48" />

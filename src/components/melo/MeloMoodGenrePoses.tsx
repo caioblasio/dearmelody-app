@@ -1774,14 +1774,14 @@ export function MeloMoodGenreCard({ meta, className }: MeloMoodGenreCardProps) {
       ].join(' ')}
     >
       <div
-        className="relative flex aspect-[290/274] w-full max-w-[290px] items-center justify-center overflow-hidden rounded-3xl"
+        className="relative flex aspect-[290/274] w-full max-w-[200px] items-center justify-center overflow-hidden rounded-3xl"
         style={{ background: gradient }}
       >
-        <div className="origin-center scale-[0.72] sm:scale-[0.85] md:scale-100">
+        <div className="origin-center scale-[0.55] sm:scale-[0.62] md:scale-[0.72]">
           <Pose />
         </div>
       </div>
-      <div className="max-w-[290px] text-center">
+      <div className="w-full text-center">
         {kind !== 'official' && (
           <p
             className="font-heading text-[0.6875rem] font-semibold uppercase tracking-[0.08em]"

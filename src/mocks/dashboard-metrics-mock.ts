@@ -77,7 +77,7 @@ export function buildDashboardMetricsMock(now = new Date()): DashboardMetricsRes
       counts: { cozy: 3, melancholy: 2, dreamy: 1, serene: 1 },
     },
     weeklyStyle: {
-      // Exact match → MeloGenrePop. Indie/Ambient would not match under exact rules.
+      // Word overlap → MeloGenrePop ("Folk/Country" would match folk, etc.)
       style: 'Pop',
       counts: { Pop: 3, Indie: 2, Ambient: 1 },
     },
