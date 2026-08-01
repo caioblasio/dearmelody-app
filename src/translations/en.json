@@ -306,5 +306,13 @@
     "stop": "Stop and close player",
     "showLyrics": "Lyrics",
     "showCover": "Cover"
+  },
+  "melodyGeneration": {
+    "composing": "Composing your melody",
+    "composingSubtitle": "Turning today's entry into a song. Usually about 30 seconds.",
+    "readyCta": "Your melody is ready — click to see",
+    "createBlocked": "A melody is still composing. Wait for it to finish before writing a new entry.",
+    "createBlockedLink": "Back to your melody",
+    "newEntryDisabled": "Unavailable while a melody is composing"
   }
 }

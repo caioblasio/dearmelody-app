@@ -1,9 +1,14 @@
 import { Outlet, useMatch } from 'react-router-dom'
 
 import { AppSidebar } from '@/components/AppSidebar'
+import {
+  MelodyGenerationBar,
+  useMelodyGenerationBarVisible,
+} from '@/components/melody-generation/MelodyGenerationBar'
 import { GlobalPlayerDesktopDock } from '@/components/player/GlobalPlayerDesktopDock'
 import { GlobalPlayerMiniBar } from '@/components/player/GlobalPlayerMiniBar'
 import { MobileBottomNav } from '@/components/MobileBottomNav'
+import { MelodyGenerationProvider } from '@/lib/melody-generation/MelodyGenerationProvider'
 import { PlayerProvider } from '@/lib/player/PlayerProvider'
 import { usePlayer } from '@/lib/player/use-player'
 import { AUTH_SHELL_CLASS } from '@/lib/auth-shell'
@@ -15,6 +20,7 @@ function AppLayoutShell() {
   const isNewEntry = useMatch('/new-entry')
   const entryMatch = useMatch('/melodies/:entryId')
   const { track } = usePlayer()
+  const showGenerationBar = useMelodyGenerationBarVisible()
 
   const showMiniBar =
     Boolean(track) &&
@@ -36,6 +42,9 @@ function AppLayoutShell() {
               !isNewEntry && 'md:pb-28',
               /* Extra room when mobile mini player is stacked above the nav */
               showMiniBar && 'pb-[11.5rem] md:pb-28',
+              /* Extra room when composing/ready bar is visible */
+              showGenerationBar && !showMiniBar && 'pb-[11.5rem] md:pb-32',
+              showGenerationBar && showMiniBar && 'pb-[15rem] md:pb-36',
             )}
           >
             <Outlet />
@@ -43,10 +52,18 @@ function AppLayoutShell() {
         </main>
       </div>
 
+      {/* Desktop: composing/ready bar above floating dock */}
+      <div className="pointer-events-none fixed inset-x-0 bottom-6 z-40 hidden justify-center md:flex">
+        <div className="pointer-events-auto w-full max-w-md px-4">
+          <MelodyGenerationBar variant="desktop" />
+        </div>
+      </div>
+
       <GlobalPlayerDesktopDock />
 
-      {/* Mobile: mini player stacked directly above bottom nav */}
+      {/* Mobile: generation bar → mini player → bottom nav */}
       <div className="fixed inset-x-0 bottom-0 z-40 md:hidden">
+        <MelodyGenerationBar variant="mobile" />
         <GlobalPlayerMiniBar />
         <MobileBottomNav />
       </div>
@@ -57,7 +74,9 @@ function AppLayoutShell() {
 export function AppLayout() {
   return (
     <PlayerProvider>
-      <AppLayoutShell />
+      <MelodyGenerationProvider>
+        <AppLayoutShell />
+      </MelodyGenerationProvider>
     </PlayerProvider>
   )
 }

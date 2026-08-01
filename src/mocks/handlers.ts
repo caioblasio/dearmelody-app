@@ -67,6 +67,15 @@ function buildRecentDiaryFixtures(): DiaryListItem[] {
 
 const ALL_DIARY_MOCK = [...buildRecentDiaryFixtures(), ...PAST_MELODIES_MOCK]
 
+/**
+ * Open `/melodies/{MOCK_COMPOSING_ENTRY_ID}` to exercise composing + poll → ready.
+ * Stays loading for ~COMPOSING_READY_AFTER_MS, then returns generateStatus: done.
+ * Hard-refresh the page to reset the timer.
+ */
+export const MOCK_COMPOSING_ENTRY_ID = '22222222-2222-4222-8222-222222222203'
+const COMPOSING_READY_AFTER_MS = 12_000
+const composingStartedAt = new Map<string, number>()
+
 function filterDiaryEntries(entries: DiaryListItem[], params: URLSearchParams): DiaryListItem[] {
   const mood = params.get('mood')?.trim().toLowerCase()
   const dateStart = params.get('dateStart')
@@ -171,10 +180,7 @@ export const handlers = [
         { status: 422 }
       )
     }
-    return HttpResponse.json(
-      { id: `22222222-2222-4222-8222-${Date.now().toString().padStart(12, '0')}` },
-      { status: 201 }
-    )
+    return HttpResponse.json({ id: '22222222-2222-4222-8222-222222222203' }, { status: 201 })
   }),
   http.get('/api/diary', async ({ request }) => {
     await delay(400)
@@ -191,6 +197,48 @@ export const handlers = [
     if (!entry) {
       return HttpResponse.json({ error: 'Not found' }, { status: 404 })
     }
+
+    if (id === MOCK_COMPOSING_ENTRY_ID) {
+      if (!composingStartedAt.has(id)) {
+        composingStartedAt.set(id, Date.now())
+      }
+      const elapsed = Date.now() - (composingStartedAt.get(id) ?? Date.now())
+      const isReady = elapsed >= COMPOSING_READY_AFTER_MS
+      const title = entry.music?.title ?? 'Studio morning'
+
+      if (!isReady) {
+        return HttpResponse.json({
+          ...diaryListItemToDetail(entry),
+          musics: [
+            {
+              id: 1,
+              title,
+              service: 'suno',
+              imageLocation: null,
+              lyrics: null,
+              generateStatus: elapsed < 3_000 ? 'new' : 'generating',
+              createdAt: entry.createdAt,
+            },
+          ],
+        } satisfies DiaryEntryDetail)
+      }
+
+      return HttpResponse.json({
+        ...diaryListItemToDetail(entry),
+        musics: [
+          {
+            id: 1,
+            title,
+            service: 'suno',
+            imageLocation: entry.music?.imageLocation ?? null,
+            lyrics: buildMockLyrics(entry.entry),
+            generateStatus: 'done',
+            createdAt: entry.createdAt,
+          },
+        ],
+      } satisfies DiaryEntryDetail)
+    }
+
     return HttpResponse.json(diaryListItemToDetail(entry))
   }),
   http.get('/api/music/:id/stream', async () => {

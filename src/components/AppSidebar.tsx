@@ -7,6 +7,7 @@ import logo from '@/assets/logo.svg'
 import { DearMelodyWordmark } from '@/components/DearMelodyWordmark'
 import { useUserInfo } from '@/api/user/use-user-info'
 import { logout } from '@/lib/auth'
+import { useMelodyGeneration } from '@/lib/melody-generation/use-melody-generation'
 import { cn } from '@/lib/utils'
 
 type NavItem = {
@@ -23,18 +24,21 @@ const NAV_ITEMS: NavItem[] = [
   { to: '/collections', labelKey: 'nav.collections', icon: FolderOpen },
 ]
 
-function navLinkClass(isActive: boolean) {
+function navLinkClass(isActive: boolean, disabled?: boolean) {
   return cn(
     'flex items-center gap-3 rounded-full px-4 py-2.5 text-sm font-semibold transition-colors',
-    isActive
-      ? 'bg-chip-bg text-ink'
-      : 'text-muted hover:bg-chip-bg/60 hover:text-ink',
+    disabled
+      ? 'cursor-not-allowed text-muted/50'
+      : isActive
+        ? 'bg-chip-bg text-ink'
+        : 'text-muted hover:bg-chip-bg/60 hover:text-ink',
   )
 }
 
 export function AppSidebar() {
   const { t } = useTranslation()
   const { data: user } = useUserInfo()
+  const { isComposing } = useMelodyGeneration()
 
   const initials =
     [user?.first_name?.[0], user?.last_name?.[0]]
@@ -58,17 +62,36 @@ export function AppSidebar() {
         </NavLink>
 
         <nav aria-label={t('aria.sidebarNav')} className="flex flex-col gap-1">
-          {NAV_ITEMS.map(({ to, labelKey, icon: Icon, end }) => (
-            <NavLink
-              key={to}
-              to={to}
-              end={end}
-              className={({ isActive }) => navLinkClass(isActive)}
-            >
-              <Icon className="size-4 shrink-0" aria-hidden />
-              {t(labelKey)}
-            </NavLink>
-          ))}
+          {NAV_ITEMS.map(({ to, labelKey, icon: Icon, end }) => {
+            const isNewEntry = to === '/new-entry'
+            const disabled = isNewEntry && isComposing
+
+            if (disabled) {
+              return (
+                <span
+                  key={to}
+                  className={navLinkClass(false, true)}
+                  aria-disabled="true"
+                  title={t('melodyGeneration.newEntryDisabled')}
+                >
+                  <Icon className="size-4 shrink-0" aria-hidden />
+                  {t(labelKey)}
+                </span>
+              )
+            }
+
+            return (
+              <NavLink
+                key={to}
+                to={to}
+                end={end}
+                className={({ isActive }) => navLinkClass(isActive)}
+              >
+                <Icon className="size-4 shrink-0" aria-hidden />
+                {t(labelKey)}
+              </NavLink>
+            )
+          })}
         </nav>
 
         <div className="mt-auto border-t border-warm-border pt-4">

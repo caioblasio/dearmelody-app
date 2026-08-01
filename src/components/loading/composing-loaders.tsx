@@ -39,8 +39,12 @@ function MeloPlaceholder({
 
 export function ComposingHeroLoaderCalm({
   className,
+  title = 'Composing your melody',
+  subtitle = "Turning today's entry into a song. Usually about 30 seconds.",
 }: {
   className?: string
+  title?: string
+  subtitle?: string
 }) {
   return (
     <section
@@ -48,6 +52,8 @@ export function ComposingHeroLoaderCalm({
         'mx-auto flex w-full max-w-[360px] flex-col items-center justify-center gap-4 rounded-[28px] bg-surface px-7 py-7',
         className,
       )}
+      aria-busy="true"
+      aria-live="polite"
     >
       <div className="flex h-[274px] w-[290px] items-center justify-center overflow-hidden rounded-[24px] bg-[linear-gradient(170deg,#F1EAF7,#E4D5F0)]">
         <div className="relative h-[210px] w-[220px]">
@@ -80,12 +86,10 @@ export function ComposingHeroLoaderCalm({
 
       <div className="text-center">
         <div className="font-heading text-[18px] font-semibold text-ink">
-          Composing your melody
+          {title}
           <LoadingDots />
         </div>
-        <div className="mt-0.5 text-sm text-muted">
-          Turning today&apos;s entry into a song. Usually about 30 seconds.
-        </div>
+        <div className="mt-0.5 text-sm text-muted">{subtitle}</div>
       </div>
     </section>
   )

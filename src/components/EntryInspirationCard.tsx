@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
 import { VerticalAutoSlider } from '@/components/VerticalAutoSlider'
+import { useMelodyGeneration } from '@/lib/melody-generation/use-melody-generation'
 import { cn } from '@/lib/utils'
 
 function normalizeInspirationTitle(raw: string): string {
@@ -13,12 +14,14 @@ function normalizeInspirationTitle(raw: string): string {
 export function EntryInspirationCard() {
   const { t } = useTranslation()
   const navigate = useNavigate()
+  const { isComposing } = useMelodyGeneration()
   const titles = t('dashboard.inspirationTitles', { returnObjects: true }) as string[]
   const [activeIndex, setActiveIndex] = useState(0)
 
   const activeTitle = titles[activeIndex] ?? titles[0] ?? ''
 
   const goToNewEntry = (title: string) => {
+    if (isComposing) return
     navigate(`/new-entry?placeholder=${encodeURIComponent(normalizeInspirationTitle(title))}`)
   }
 
@@ -26,6 +29,7 @@ export function EntryInspirationCard() {
     <div
       className={cn(
         'group relative block w-full overflow-hidden rounded-[22px] bg-gradient-to-br from-coral-light to-coral p-5 text-left md:rounded-3xl md:p-8',
+        isComposing && 'opacity-70',
       )}
     >
       <div
@@ -48,9 +52,12 @@ export function EntryInspirationCard() {
             <button
               type="button"
               onClick={() => goToNewEntry(title)}
+              disabled={isComposing}
+              title={isComposing ? t('melodyGeneration.newEntryDisabled') : undefined}
               className={cn(
                 'w-full text-left font-heading text-lg font-semibold leading-snug text-on-primary transition-opacity hover:opacity-90 md:text-[1.625rem]',
                 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-on-primary/40',
+                'disabled:cursor-not-allowed disabled:hover:opacity-100',
               )}
               aria-label={`${t('dashboard.inspirationCta')}: ${title}`}
             >
@@ -62,7 +69,9 @@ export function EntryInspirationCard() {
         <button
           type="button"
           onClick={() => goToNewEntry(activeTitle)}
-          className="mt-1 inline-flex w-fit rounded-full bg-on-primary px-4 py-2.5 text-[13px] font-bold text-coral transition-transform hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-on-primary/40 md:px-6 md:py-3 md:text-[15px]"
+          disabled={isComposing}
+          title={isComposing ? t('melodyGeneration.newEntryDisabled') : undefined}
+          className="mt-1 inline-flex w-fit rounded-full bg-on-primary px-4 py-2.5 text-[13px] font-bold text-coral transition-transform hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-on-primary/40 disabled:cursor-not-allowed disabled:hover:scale-100 md:px-6 md:py-3 md:text-[15px]"
         >
           {t('dashboard.inspirationCta')}
         </button>

@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
@@ -9,6 +9,7 @@ import { z } from 'zod'
 import { useNewEntry } from '@/api/diary/use-new-entry'
 import { GenrePicker } from '@/components/genre-picker/GenrePicker'
 import { Button } from '@/components/ui/button'
+import { useMelodyGeneration } from '@/lib/melody-generation/use-melody-generation'
 
 function createEntrySchema(t: TFunction) {
   return z.object({
@@ -35,6 +36,7 @@ export function NewEntryPage() {
   const { t, i18n } = useTranslation()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
+  const { isComposing, entryId: composingEntryId, startComposing } = useMelodyGeneration()
   const entrySchema = useMemo(() => createEntrySchema(t), [t])
   const placeholderText = useMemo(() => {
     const fromUrl = searchParams.get('placeholder')?.trim()
@@ -58,6 +60,7 @@ export function NewEntryPage() {
   const selectedMusicStyle = watch('musicStyle')
   const { mutate: createNewEntry, isPending } = useNewEntry({
     onSuccess: (data) => {
+      startComposing(data.id)
       navigate(`/melodies/${data.id}`)
     },
   })
@@ -66,11 +69,28 @@ export function NewEntryPage() {
   const dateCaps = formatDateCaps(today, i18n.language)
 
   const onSubmit = handleSubmit(async (values) => {
+    if (isComposing) return
     createNewEntry({
       entry: values.entry,
       music_style: values.musicStyle,
     })
   })
+
+  if (isComposing && composingEntryId) {
+    return (
+      <div className="flex min-h-0 flex-1 flex-col items-start justify-center gap-4 py-10">
+        <p className="max-w-md text-sm leading-relaxed text-muted" role="status">
+          {t('melodyGeneration.createBlocked')}
+        </p>
+        <Link
+          to={`/melodies/${composingEntryId}`}
+          className="font-heading text-base font-semibold text-coral transition-colors hover:text-coral-light"
+        >
+          {t('melodyGeneration.createBlockedLink')}
+        </Link>
+      </div>
+    )
+  }
 
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-4 md:block md:space-y-8">
