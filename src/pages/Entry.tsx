@@ -6,15 +6,70 @@ import { useTranslation } from 'react-i18next'
 import { getMusicDisplayState, isMusicContentLoading } from '@/api/diary/generate-status'
 import { getMusic } from '@/api/music/get-music'
 import { useGetDiaryEntry } from '@/api/diary/use-get-diary-entry'
-import {
-  ComposingHeroLoaderCalm,
-  ComposingHeroLoaderDrums,
-} from '@/components/loading/composing-loaders'
+import { ComposingHeroLoaderCalm } from '@/components/loading/composing-loaders'
 import { PlayerHero } from '@/components/player/PlayerHero'
 import { Button } from '@/components/ui/button'
+import { Skeleton } from '@/components/ui/skeleton'
 import { downloadBlob, extensionFromMime, sanitizeDownloadFilename } from '@/lib/download-blob'
 import { ApiError } from '@/lib/api-request'
 import { cn } from '@/lib/utils'
+
+function EntryPageSkeleton() {
+  const { t } = useTranslation()
+
+  return (
+    <div
+      className="space-y-6"
+      aria-busy="true"
+      aria-live="polite"
+      aria-label={t('entry.loading')}
+    >
+      <div className="rounded-[20px] border border-warm-border bg-card-bg px-5 py-4 lg:px-6 lg:py-5">
+        <Skeleton className="h-3 w-32" />
+        <div className="mt-3 space-y-2.5">
+          <Skeleton className="h-4 w-full" />
+          <Skeleton className="h-4 w-[94%]" />
+          <Skeleton className="h-4 w-[88%]" />
+          <Skeleton className="h-4 w-[72%]" />
+        </div>
+      </div>
+
+      <section className="player-gradient rounded-[28px] px-4 py-8 sm:px-8 lg:px-12 lg:py-12">
+        <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:gap-11">
+          <div className="mx-auto w-full max-w-[400px] shrink-0 lg:mx-0">
+            <Skeleton className="aspect-square w-full rounded-[24px]" />
+          </div>
+
+          <div className="min-w-0 flex-1 space-y-5">
+            <div className="flex items-start justify-between gap-3">
+              <Skeleton className="h-3 w-44 bg-player-ink/15" />
+              <div className="flex shrink-0 items-center gap-1.5">
+                <Skeleton className="size-8 rounded-full bg-player-ink/15" />
+                <Skeleton className="h-7 w-20 rounded-full bg-player-ink/15" />
+              </div>
+            </div>
+
+            <Skeleton className="h-12 w-3/4 max-w-lg bg-player-ink/20" />
+
+            <div className="flex flex-wrap items-center gap-2">
+              <Skeleton className="h-8 w-20 rounded-md bg-player-ink/15" />
+              <Skeleton className="h-8 w-24 rounded-md bg-player-ink/15" />
+            </div>
+
+            <div className="space-y-3">
+              <Skeleton className="h-1 w-full bg-player-ink/20" />
+              <div className="flex justify-center gap-2">
+                <Skeleton className="size-9 rounded-full bg-player-ink/20" />
+                <Skeleton className="size-[4.625rem] rounded-full bg-player-ink/30" />
+                <Skeleton className="size-9 rounded-full bg-player-ink/20" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  )
+}
 
 export function EntryPage() {
   const { entryId } = useParams<{ entryId: string }>()
@@ -96,12 +151,7 @@ export function EntryPage() {
         {t('entry.backToArchive')}
       </Link>
 
-      {isLoading && (
-        <ComposingHeroLoaderDrums
-          title={t('melodyGeneration.drumming')}
-          subtitle={t('melodyGeneration.drummingSubtitle')}
-        />
-      )}
+      {isLoading && <EntryPageSkeleton />}
 
       {isError && !is404 && (
         <p className="text-sm text-error" role="alert">
