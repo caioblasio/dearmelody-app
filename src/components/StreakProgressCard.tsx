@@ -1,11 +1,10 @@
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { useGetDiary } from '@/api/diary/use-get-diary'
+import { useDashboardMetrics } from '@/api/dashboard/use-dashboard-metrics'
 import meloRegular from '@/assets/melo-regular.svg'
 import {
-  computeCurrentStreak,
-  computeWeekRow,
+  computeWeekRowFromHistory,
   getMeloStreakCopy,
   type WeekDayState,
 } from '@/lib/diary-streak'
@@ -24,10 +23,13 @@ const WEEK_DAY_CIRCLE_CLASSES: Record<WeekDayState, string> = {
 
 export function StreakProgressCard({ userName, className }: StreakProgressCardProps) {
   const { t } = useTranslation()
-  const { data } = useGetDiary({ limit: 100 })
+  const { data } = useDashboardMetrics()
 
-  const streakDays = useMemo(() => computeCurrentStreak(data ?? []), [data])
-  const weekRow = useMemo(() => computeWeekRow(data ?? []), [data])
+  const streakDays = data?.streak.streak ?? 0
+  const weekRow = useMemo(
+    () => computeWeekRowFromHistory(data?.streak.history ?? []),
+    [data?.streak.history],
+  )
   const meloCopy = useMemo(() => getMeloStreakCopy(streakDays), [streakDays])
 
   return (

@@ -1,3 +1,4 @@
+import type { StreakHistoryDay } from '@/api/dashboard/dashboard-metrics'
 import type { DiaryListItem } from '@/api/diary/diary-list-item'
 import { formatLocalDateYmd } from '@/lib/diary-date-range'
 import { parseDiaryCreatedAt } from '@/lib/past-melody-date'
@@ -60,8 +61,7 @@ export type WeekDayStatus = {
 
 const WEEK_DAY_LABELS = ['M', 'T', 'W', 'T', 'F', 'S', 'S'] as const
 
-export function computeWeekRow(entries: DiaryListItem[], now = new Date()): WeekDayStatus[] {
-  const entryDays = getEntryDayKeys(entries)
+function buildWeekRow(entryDays: Set<string>, now = new Date()): WeekDayStatus[] {
   const todayKey = formatLocalDateYmd(now)
   const weekStart = getWeekStartMonday(now)
 
@@ -80,6 +80,21 @@ export function computeWeekRow(entries: DiaryListItem[], now = new Date()): Week
 
     return { label, state: 'pending' as const, mark: '·' as const }
   })
+}
+
+export function computeWeekRow(entries: DiaryListItem[], now = new Date()): WeekDayStatus[] {
+  return buildWeekRow(getEntryDayKeys(entries), now)
+}
+
+export function computeWeekRowFromHistory(
+  history: StreakHistoryDay[],
+  now = new Date(),
+): WeekDayStatus[] {
+  const entryDays = new Set<string>()
+  for (const day of history) {
+    if (day.hasEntry) entryDays.add(day.date)
+  }
+  return buildWeekRow(entryDays, now)
 }
 
 export type MeloStreakCopy = {
