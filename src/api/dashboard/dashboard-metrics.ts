@@ -19,12 +19,12 @@ export type Achievement = {
 }
 
 export type WeeklyMoodMetrics = {
-  mood: string
+  mood: string | null
   counts: Record<string, number>
 }
 
 export type WeeklyStyleMetrics = {
-  style: string
+  style: string | null
   counts: Record<string, number>
 }
 

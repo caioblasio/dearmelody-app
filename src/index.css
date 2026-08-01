@@ -344,6 +344,143 @@
     }
   }
 
+  /* Mood / genre mascot idle animations (design HTML) */
+  @keyframes melo-lift {
+    0%,
+    100% {
+      transform: translateY(3px);
+    }
+    50% {
+      transform: translateY(-8px);
+    }
+  }
+
+  @keyframes melo-tapL {
+    0%,
+    100% {
+      transform: rotate(-26deg);
+    }
+    50% {
+      transform: rotate(-4deg);
+    }
+  }
+
+  @keyframes melo-tapR {
+    0%,
+    100% {
+      transform: rotate(24deg);
+    }
+    50% {
+      transform: rotate(3deg);
+    }
+  }
+
+  @keyframes melo-arm-pumpL {
+    0%,
+    100% {
+      transform: rotate(34deg) translateY(0);
+    }
+    50% {
+      transform: rotate(34deg) translateY(-4px);
+    }
+  }
+
+  @keyframes melo-arm-pumpR {
+    0%,
+    100% {
+      transform: rotate(-30deg) translateY(0);
+    }
+    50% {
+      transform: rotate(-30deg) translateY(-4px);
+    }
+  }
+
+  @keyframes melo-happy-bounce {
+    0%,
+    100% {
+      transform: translateY(0) scale(1);
+    }
+    50% {
+      transform: translateY(-10px) scale(1.03);
+    }
+  }
+
+  @keyframes melo-sparkle {
+    0%,
+    100% {
+      opacity: 0.35;
+      transform: scale(0.8);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1.2);
+    }
+  }
+
+  @keyframes melo-rain-drop {
+    0% {
+      transform: translateY(-2px);
+      opacity: 0;
+    }
+    30% {
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(16px);
+      opacity: 0;
+    }
+  }
+
+  @keyframes melo-sad-bob {
+    0%,
+    100% {
+      transform: translateY(0) rotate(-1deg);
+    }
+    50% {
+      transform: translateY(4px) rotate(1deg);
+    }
+  }
+
+  @keyframes melo-rock-headbang {
+    0%,
+    100% {
+      transform: rotate(-5deg);
+    }
+    50% {
+      transform: rotate(5deg);
+    }
+  }
+
+  @keyframes melo-rock-armpump {
+    0%,
+    100% {
+      transform: rotate(28deg) translateY(0);
+    }
+    50% {
+      transform: rotate(28deg) translateY(-6px);
+    }
+  }
+
+  @keyframes melo-rock-armpump-l {
+    0%,
+    100% {
+      transform: rotate(-28deg) translateY(0);
+    }
+    50% {
+      transform: rotate(-28deg) translateY(-6px);
+    }
+  }
+
+  @keyframes melo-jazz-sway {
+    0%,
+    100% {
+      transform: rotate(-4deg) translateY(0);
+    }
+    50% {
+      transform: rotate(4deg) translateY(-4px);
+    }
+  }
+
   @keyframes melo-arm-pump-l {
     0%,
     100% {

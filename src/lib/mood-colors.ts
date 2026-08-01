@@ -11,9 +11,6 @@ export const MOOD_TEXT_COLORS: Record<MoodIconKind, string> = {
   nostalgic: '#8B4A4A',
 }
 
-/** Static placeholder until mood-of-the-month is computed from diary data. */
-export const MOOD_OF_THE_MONTH: MoodIconKind = 'cozy'
-
 export function getMoodTextColor(mood: MoodIconKind): string {
   return MOOD_TEXT_COLORS[mood]
 }

@@ -1,93 +1,65 @@
-import { useEffect, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import meloRegular from '@/assets/melo-regular.svg'
-import { usePrefersReducedMotion } from '@/hooks/use-prefers-reduced-motion'
-import { getMoodTextColor, MOOD_OF_THE_MONTH } from '@/lib/mood-colors'
-import { capitalizeMood } from '@/lib/past-melody-mood'
-
-const PREFIX_CHAR_MS = 42
-const MOOD_START_DELAY_MS = 750
-const MOOD_CHAR_MS = 95
+import { useDashboardMetrics } from '@/api/dashboard/use-dashboard-metrics'
+import { getMeloCardMeta, MeloMoodGenreCard } from '@/components/melo/MeloMoodGenrePoses'
+import { Skeleton } from '@/components/ui/skeleton'
+import { pickMeloCard, resolveMeloCardCandidates } from '@/lib/melo-weekly-card'
 
 export function MoodOfTheMonth() {
   const { t } = useTranslation()
-  const prefersReducedMotion = usePrefersReducedMotion()
-  const moodLabel = capitalizeMood(MOOD_OF_THE_MONTH)
-  const moodColor = getMoodTextColor(MOOD_OF_THE_MONTH)
-  const prefix = t('dashboard.moodOfTheMonthPrefix')
+  const { data, isLoading, isError } = useDashboardMetrics()
 
-  const [typedPrefix, setTypedPrefix] = useState(prefersReducedMotion ? prefix : '')
-  const [typedMood, setTypedMood] = useState(prefersReducedMotion ? moodLabel : '')
+  const candidates = useMemo(
+    () =>
+      resolveMeloCardCandidates(data?.weeklyMood.mood ?? null, data?.weeklyStyle.style ?? null),
+    [data?.weeklyMood.mood, data?.weeklyStyle.style]
+  )
 
-  useEffect(() => {
-    if (prefersReducedMotion) {
-      setTypedPrefix(prefix)
-      setTypedMood(moodLabel)
-      return
-    }
+  /** Fixed for this mount when both mood and genre match. */
+  const [bothPrefer] = useState<'mood' | 'genre'>(() =>
+    Math.random() < 0.5 ? 'mood' : 'genre'
+  )
 
-    setTypedPrefix('')
-    setTypedMood('')
+  const meta = useMemo(() => {
+    if (!data || isError) return getMeloCardMeta('official')
 
-    let prefixIndex = 0
-    let moodIndex = 0
-    const timeoutIds: number[] = []
+    const resolved = pickMeloCard(
+      candidates.mood,
+      candidates.genre,
+      candidates.mood && candidates.genre ? bothPrefer : null
+    )
 
-    const schedule = (callback: () => void, delayMs: number) => {
-      timeoutIds.push(window.setTimeout(callback, delayMs))
-    }
+    if (resolved.kind === 'official') return getMeloCardMeta('official')
+    return getMeloCardMeta(resolved.kind, resolved.key)
+  }, [bothPrefer, candidates.genre, candidates.mood, data, isError])
 
-    const typePrefixChar = () => {
-      prefixIndex += 1
-      setTypedPrefix(prefix.slice(0, prefixIndex))
+  if (isLoading) {
+    return (
+      <div
+        className="flex h-full w-full flex-col items-center justify-center gap-3 p-4 md:gap-4 md:p-6"
+        aria-busy="true"
+        aria-live="polite"
+        aria-label={t('dashboard.weeklyMeloLoading')}
+      >
+        <Skeleton className="aspect-[290/274] w-full max-w-[290px] rounded-3xl" />
+        <Skeleton className="h-3 w-16" />
+        <Skeleton className="h-5 w-28" />
+        <Skeleton className="h-4 w-48" />
+      </div>
+    )
+  }
 
-      if (prefixIndex < prefix.length) {
-        schedule(typePrefixChar, PREFIX_CHAR_MS)
-        return
-      }
-
-      schedule(typeMoodChar, MOOD_START_DELAY_MS)
-    }
-
-    const typeMoodChar = () => {
-      moodIndex += 1
-      setTypedMood(moodLabel.slice(0, moodIndex))
-
-      if (moodIndex < moodLabel.length) {
-        schedule(typeMoodChar, MOOD_CHAR_MS)
-      }
-    }
-
-    schedule(typePrefixChar, PREFIX_CHAR_MS)
-
-    return () => {
-      timeoutIds.forEach((id) => window.clearTimeout(id))
-    }
-  }, [moodLabel, prefix, prefersReducedMotion])
+  const ariaLabel =
+    meta.kind === 'official'
+      ? t('dashboard.weeklyMeloOfficial')
+      : meta.kind === 'mood'
+        ? t('dashboard.weeklyMeloMood', { mood: meta.title })
+        : t('dashboard.weeklyMeloGenre', { genre: meta.title })
 
   return (
-    <div
-      className="flex h-full w-full flex-row items-center gap-3 p-4 text-left md:flex-col md:justify-center md:gap-4 md:p-8 md:text-center"
-      aria-label={t('dashboard.moodOfTheMonth', { mood: moodLabel })}
-    >
-      <img
-        src={meloRegular}
-        alt=""
-        className="mood-melo-float size-20 shrink-0 md:size-32"
-        aria-hidden
-      />
-
-      <p
-        className="min-w-0 flex-1 font-heading text-base font-medium leading-snug text-ink md:flex-none md:text-[1.375rem]"
-        aria-live="polite"
-        aria-atomic="true"
-      >
-        {typedPrefix}
-        <span className="font-semibold" style={{ color: moodColor }}>
-          {typedMood}
-        </span>
-      </p>
+    <div aria-label={ariaLabel}>
+      <MeloMoodGenreCard meta={meta} />
     </div>
   )
 }
