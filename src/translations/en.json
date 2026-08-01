@@ -7,9 +7,12 @@
   },
   "nav": {
     "home": "Home",
+    "dashboard": "Dashboard",
     "songDiary": "Song Diary",
     "newEntry": "New Entry",
+    "newDiaryEntry": "New Diary Entry",
     "pastMelodies": "My Diary",
+    "collections": "Collections",
     "settings": "Settings",
     "logout": "Log out"
   },
@@ -19,12 +22,17 @@
   },
   "aria": {
     "mobileNav": "Main navigation",
+    "sidebarNav": "Main navigation",
     "profileMenu": "Profile menu",
     "settings": "Settings",
     "searchMelodies": "Search melodies",
     "recordMemory": "Record a New Memory",
     "hidePassword": "Hide password",
     "showPassword": "Show password"
+  },
+  "collections": {
+    "title": "Collections",
+    "subtitle": "Coming soon — group your diary into life chapters and albums."
   },
   "authHeader": {
     "about": "About",

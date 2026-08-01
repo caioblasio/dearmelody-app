@@ -1,6 +1,7 @@
 // router.tsx
 import { createBrowserRouter } from 'react-router-dom'
 import { AppLayout } from '@/components/AppLayout'
+import { CollectionsPage } from '@/pages/Collections'
 import { DashboardPage } from '@/pages/Dashboard'
 import { EntryPage } from '@/pages/Entry'
 import { LoginPage } from '@/pages/Login'
@@ -49,6 +50,11 @@ export const router = createBrowserRouter([
             path: '/melodies',
             element: <MyMelodiesPage />,
             handle: { title: 'pastMelodies.title' },
+          },
+          {
+            path: '/collections',
+            element: <CollectionsPage />,
+            handle: { title: 'collections.title' },
           },
         ],
       },

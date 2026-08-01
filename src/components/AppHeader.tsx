@@ -15,13 +15,6 @@ import { logout } from '@/lib/auth'
 import { AUTH_SHELL_CLASS } from '@/lib/auth-shell'
 import { cn } from '@/lib/utils'
 
-function navLinkClass(isActive: boolean) {
-  return cn(
-    'rounded-full px-4 py-2 text-sm font-semibold transition-colors hover:bg-chip-bg/60',
-    isActive ? 'bg-chip-bg text-ink' : 'text-muted'
-  )
-}
-
 export function AppHeader() {
   const { t } = useTranslation()
   const { data: user } = useUserInfo()
@@ -33,7 +26,7 @@ export function AppHeader() {
       .join('') || 'DM'
 
   return (
-    <header className="border-b border-warm-border bg-card-bg/90 backdrop-blur-md">
+    <header className="border-b border-warm-border bg-card-bg/90 backdrop-blur-md md:hidden">
       <div className={cn(AUTH_SHELL_CLASS, 'flex items-center py-4')}>
         <div className="flex min-w-0 flex-1 items-center gap-6">
           <NavLink
@@ -44,15 +37,6 @@ export function AppHeader() {
             <img src={logo} alt="" className="h-6 w-6 shrink-0" aria-hidden />
             <DearMelodyWordmark />
           </NavLink>
-
-          <nav className="hidden items-center gap-2 md:flex">
-            <NavLink className={({ isActive }) => navLinkClass(isActive)} to="/new-entry">
-              {t('nav.newEntry')}
-            </NavLink>
-            <NavLink className={({ isActive }) => navLinkClass(isActive)} to="/melodies">
-              {t('nav.pastMelodies')}
-            </NavLink>
-          </nav>
         </div>
 
         <DropdownMenu>

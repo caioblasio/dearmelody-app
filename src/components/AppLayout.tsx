@@ -2,6 +2,7 @@ import { Outlet, useMatch } from 'react-router-dom'
 
 import { AppFooter } from '@/components/AppFooter'
 import { AppHeader } from '@/components/AppHeader'
+import { AppSidebar } from '@/components/AppSidebar'
 import { GlobalPlayerDesktopDock } from '@/components/player/GlobalPlayerDesktopDock'
 import { GlobalPlayerMiniBar } from '@/components/player/GlobalPlayerMiniBar'
 import { MobileBottomNav } from '@/components/MobileBottomNav'
@@ -22,27 +23,31 @@ function AppLayoutShell() {
     !(entryMatch?.params.entryId && track?.entryId === entryMatch.params.entryId)
 
   return (
-    <div className="flex min-h-screen flex-col bg-surface">
-      <AppHeader />
+    <div className="flex min-h-screen bg-surface">
+      <AppSidebar />
 
-      <main className={cn('flex-1', isNewEntry && 'flex min-h-0 flex-col')}>
-        <div
-          className={cn(
-            AUTH_SHELL_CLASS,
-            isNewEntry && 'flex min-h-0 flex-1 flex-col',
-            'py-6 sm:py-8',
-            /* Base room for mobile bottom nav */
-            'pb-28 md:pb-8',
-            !isNewEntry && 'md:pb-28',
-            /* Extra room when mobile mini player is stacked above the nav */
-            showMiniBar && 'pb-[11.5rem] md:pb-28',
-          )}
-        >
-          <Outlet />
-        </div>
-      </main>
+      <div className="flex min-w-0 flex-1 flex-col">
+        <AppHeader />
 
-      <AppFooter />
+        <main className={cn('flex-1', isNewEntry && 'flex min-h-0 flex-col')}>
+          <div
+            className={cn(
+              AUTH_SHELL_CLASS,
+              isNewEntry && 'flex min-h-0 flex-1 flex-col',
+              'py-6 sm:py-8',
+              /* Base room for mobile bottom nav */
+              'pb-28 md:pb-8',
+              !isNewEntry && 'md:pb-28',
+              /* Extra room when mobile mini player is stacked above the nav */
+              showMiniBar && 'pb-[11.5rem] md:pb-28',
+            )}
+          >
+            <Outlet />
+          </div>
+        </main>
+
+        <AppFooter />
+      </div>
 
       <GlobalPlayerDesktopDock />
 
