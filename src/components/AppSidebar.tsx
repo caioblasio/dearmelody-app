@@ -99,6 +99,14 @@ export function AppSidebar() {
               {t('nav.logout')}
             </button>
           </div>
+
+          <div className="mt-4 space-y-1 border-t border-warm-border px-2 pt-4 text-xs text-muted">
+            <p>{t('layout.footerLead')}</p>
+            <p className="flex items-center gap-1">
+              <DearMelodyWordmark className="font-heading font-semibold" />
+              <span>{t('layout.footerRights')}</span>
+            </p>
+          </div>
         </div>
       </div>
     </aside>

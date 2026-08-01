@@ -1,6 +1,5 @@
 import { Outlet, useMatch } from 'react-router-dom'
 
-import { AppFooter } from '@/components/AppFooter'
 import { AppSidebar } from '@/components/AppSidebar'
 import { GlobalPlayerDesktopDock } from '@/components/player/GlobalPlayerDesktopDock'
 import { GlobalPlayerMiniBar } from '@/components/player/GlobalPlayerMiniBar'
@@ -42,8 +41,6 @@ function AppLayoutShell() {
             <Outlet />
           </div>
         </main>
-
-        <AppFooter />
       </div>
 
       <GlobalPlayerDesktopDock />
