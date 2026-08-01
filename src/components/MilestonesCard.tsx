@@ -2,9 +2,11 @@ import { Trans, useTranslation } from 'react-i18next'
 
 import type { Achievement } from '@/api/dashboard/dashboard-metrics'
 import { useDashboardMetrics } from '@/api/dashboard/use-dashboard-metrics'
+import { Skeleton } from '@/components/ui/skeleton'
 import { cn } from '@/lib/utils'
 
 const UNEARNED_COLOR = '#D8CDBF'
+const MILESTONE_SKELETON_COUNT = 6
 
 const ACHIEVEMENT_STYLE: Record<string, { icon: string; color: string }> = {
   first_song: { icon: '♪', color: '#FF7A59' },
@@ -34,53 +36,76 @@ function getAchievementSub(achievement: Achievement, locale: string): string {
   return achievement.description
 }
 
+function MilestoneSkeleton() {
+  return (
+    <div className="flex flex-col items-center gap-2 rounded-[20px] border border-warm-border bg-card-bg px-2 py-3 sm:gap-2 sm:px-2.5 sm:py-3.5">
+      <Skeleton className="size-9 rounded-full sm:size-10" />
+      <div className="flex w-full flex-col items-center gap-1.5">
+        <Skeleton className="h-3 w-14" />
+        <Skeleton className="h-2.5 w-10" />
+      </div>
+    </div>
+  )
+}
+
 type MilestonesCardProps = {
   className?: string
 }
 
 export function MilestonesCard({ className }: MilestonesCardProps) {
   const { t, i18n } = useTranslation()
-  const { data } = useDashboardMetrics()
+  const { data, isLoading } = useDashboardMetrics()
   const achievements = data?.achievements ?? []
 
   return (
-    <div className={cn('flex flex-col gap-4', className)}>
+    <div
+      className={cn('flex flex-col gap-4', className)}
+      aria-busy={isLoading || undefined}
+      aria-live={isLoading ? 'polite' : undefined}
+      aria-label={isLoading ? t('dashboard.progress.milestonesLoading') : undefined}
+    >
       <h2 className="font-heading text-2xl font-semibold text-ink">
         {t('dashboard.progress.milestonesTitle')}
       </h2>
 
       <div className="grid grid-cols-3 gap-2.5 sm:gap-3">
-        {achievements.map((badge) => {
-          const style = getAchievementStyle(badge.code)
-          const color = badge.earned ? style.color : UNEARNED_COLOR
+        {isLoading
+          ? Array.from({ length: MILESTONE_SKELETON_COUNT }, (_, index) => (
+              <MilestoneSkeleton key={index} />
+            ))
+          : achievements.map((badge) => {
+              const style = getAchievementStyle(badge.code)
+              const color = badge.earned ? style.color : UNEARNED_COLOR
 
-          return (
-            <div
-              key={badge.code}
-              className={cn(
-                'flex flex-col items-center gap-2 rounded-[20px] border border-warm-border bg-card-bg px-2 py-3 sm:gap-2 sm:px-2.5 sm:py-3.5',
-                !badge.earned && 'opacity-45',
-              )}
-            >
-              <div
-                className={cn(
-                  'flex size-9 items-center justify-center rounded-full font-heading text-base font-bold sm:size-10 sm:text-lg',
-                  badge.earned ? 'text-on-primary' : 'text-body',
-                )}
-                style={{ backgroundColor: color }}
-                aria-hidden
-              >
-                {style.icon}
-              </div>
-              <div className="text-center">
-                <p className="text-xs font-bold leading-tight text-ink sm:text-[13px]">{badge.name}</p>
-                <p className="mt-0.5 text-[10px] leading-tight text-muted sm:text-[11px]">
-                  {getAchievementSub(badge, i18n.language)}
-                </p>
-              </div>
-            </div>
-          )
-        })}
+              return (
+                <div
+                  key={badge.code}
+                  className={cn(
+                    'flex flex-col items-center gap-2 rounded-[20px] border border-warm-border bg-card-bg px-2 py-3 sm:gap-2 sm:px-2.5 sm:py-3.5',
+                    !badge.earned && 'opacity-45',
+                  )}
+                >
+                  <div
+                    className={cn(
+                      'flex size-9 items-center justify-center rounded-full font-heading text-base font-bold sm:size-10 sm:text-lg',
+                      badge.earned ? 'text-on-primary' : 'text-body',
+                    )}
+                    style={{ backgroundColor: color }}
+                    aria-hidden
+                  >
+                    {style.icon}
+                  </div>
+                  <div className="text-center">
+                    <p className="text-xs font-bold leading-tight text-ink sm:text-[13px]">
+                      {badge.name}
+                    </p>
+                    <p className="mt-0.5 text-[10px] leading-tight text-muted sm:text-[11px]">
+                      {getAchievementSub(badge, i18n.language)}
+                    </p>
+                  </div>
+                </div>
+              )
+            })}
       </div>
 
       <div className="mt-auto flex items-center gap-3.5 rounded-[20px] bg-plum-bg px-5 py-4 sm:gap-3.5 sm:px-[22px] sm:py-[18px]">

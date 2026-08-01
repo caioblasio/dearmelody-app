@@ -69,13 +69,18 @@ function buildWeekRow(entryDays: Set<string>, now = new Date()): WeekDayStatus[]
     const day = new Date(weekStart)
     day.setDate(weekStart.getDate() + index)
     const dayKey = formatLocalDateYmd(day)
-
-    if (entryDays.has(dayKey)) {
-      return { label, state: 'completed' as const, mark: '✓' as const }
-    }
+    const hasEntry = entryDays.has(dayKey)
 
     if (dayKey === todayKey) {
-      return { label, state: 'today' as const, mark: '♪' as const }
+      return {
+        label,
+        state: 'today' as const,
+        mark: hasEntry ? ('✓' as const) : ('♪' as const),
+      }
+    }
+
+    if (hasEntry) {
+      return { label, state: 'completed' as const, mark: '✓' as const }
     }
 
     return { label, state: 'pending' as const, mark: '·' as const }

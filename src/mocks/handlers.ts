@@ -1,9 +1,11 @@
 import { delay, http, HttpResponse } from 'msw'
 
+import type { DashboardMetricsResponse } from '@/api/dashboard/dashboard-metrics'
 import type { DiaryEntryDetail } from '@/api/diary/diary-entry-detail'
 import type { GenerateStatus } from '@/api/diary/generate-status'
 import type { DiaryListItem } from '@/api/diary/diary-list-item'
 import { formatLocalDateYmd } from '@/lib/diary-date-range'
+import { buildDashboardMetricsMock } from '@/mocks/dashboard-metrics-mock'
 import { PAST_MELODIES_MOCK } from '@/mocks/past-melodies-mock'
 
 const MOCK_SAMPLE_AUDIO_URL =
@@ -170,6 +172,10 @@ export const handlers = [
       last_name: 'Doe',
       plan: 'free',
     })
+  }),
+  http.get('/api/metrics/dashboard', async () => {
+    await delay(400)
+    return HttpResponse.json(buildDashboardMetricsMock() satisfies DashboardMetricsResponse)
   }),
   http.post('/api/new_diary', async ({ request }) => {
     const body = (await request.json()) as { entry: string; music_style?: string }

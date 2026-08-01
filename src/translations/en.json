@@ -168,8 +168,10 @@
     "progress": {
       "streakTitle": "You're on a roll, {{name}}!",
       "streakSubtitle": "Write one entry a day to keep your streak alive. Melo grows with it.",
+      "streakLoading": "Loading streak…",
       "daysLabel": "DAYS",
       "milestonesTitle": "Milestones",
+      "milestonesLoading": "Loading milestones…",
       "soundRewards": "Streaks unlock <strong>sound rewards</strong>: new instruments, genres and Melo outfits — never pressure, always gifts.",
       "meloLevel1": "Melo · level 1 — Just Melo",
       "meloLevel2": "Melo · level 2 — Headphones",
