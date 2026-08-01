@@ -351,8 +351,34 @@
     }
   }
 
+  @keyframes melo-arm-pump-l {
+    0%,
+    100% {
+      transform: rotate(34deg) translateY(0);
+    }
+    50% {
+      transform: rotate(34deg) translateY(-4px);
+    }
+  }
+
+  @keyframes melo-arm-pump-r {
+    0%,
+    100% {
+      transform: rotate(-30deg) translateY(0);
+    }
+    50% {
+      transform: rotate(-30deg) translateY(-4px);
+    }
+  }
+
   .melo-bob {
     transform-origin: 110px 190px;
+    animation: melo-bob 2.2s ease-in-out infinite;
+  }
+
+  /* Bob for Melo SVG assets (placeholder used pixel origin for CSS-drawn Melo). */
+  .melo-bob-asset {
+    transform-origin: center 90%;
     animation: melo-bob 2.2s ease-in-out infinite;
   }
 
@@ -415,6 +441,17 @@
   }
   .melo-note-float-delay-2 {
     animation-delay: 0.9s;
+  }
+
+  .melo-arm-pump-l {
+    transform-origin: top center;
+    animation: melo-arm-pump-l 0.42s ease-in-out infinite;
+  }
+
+  .melo-arm-pump-r {
+    transform-origin: top center;
+    animation: melo-arm-pump-r 0.42s ease-in-out infinite;
+    animation-delay: 0.21s;
   }
 
   .diary-section-panel {

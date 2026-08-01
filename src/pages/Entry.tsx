@@ -6,7 +6,10 @@ import { useTranslation } from 'react-i18next'
 import { getMusicDisplayState, isMusicContentLoading } from '@/api/diary/generate-status'
 import { getMusic } from '@/api/music/get-music'
 import { useGetDiaryEntry } from '@/api/diary/use-get-diary-entry'
-import { ComposingHeroLoaderCalm } from '@/components/loading/composing-loaders'
+import {
+  ComposingHeroLoaderCalm,
+  ComposingHeroLoaderDrums,
+} from '@/components/loading/composing-loaders'
 import { PlayerHero } from '@/components/player/PlayerHero'
 import { Button } from '@/components/ui/button'
 import { downloadBlob, extensionFromMime, sanitizeDownloadFilename } from '@/lib/download-blob'
@@ -94,9 +97,10 @@ export function EntryPage() {
       </Link>
 
       {isLoading && (
-        <p className="text-sm text-muted" role="status" aria-live="polite">
-          {t('entry.loading')}
-        </p>
+        <ComposingHeroLoaderDrums
+          title={t('melodyGeneration.drumming')}
+          subtitle={t('melodyGeneration.drummingSubtitle')}
+        />
       )}
 
       {isError && !is404 && (

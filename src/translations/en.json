@@ -310,6 +310,8 @@
   "melodyGeneration": {
     "composing": "Composing your melody",
     "composingSubtitle": "Turning today's entry into a song. Usually about 30 seconds.",
+    "drumming": "Drumming up your melody",
+    "drummingSubtitle": "A more upbeat wait — Melo lays down the beat while it renders.",
     "readyCta": "Your melody is ready — click to see",
     "createBlocked": "A melody is still composing. Wait for it to finish before writing a new entry.",
     "createBlockedLink": "Back to your melody",
