@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { useGetDiary } from '@/api/diary/use-get-diary'
 import { CalendarDayEntries } from '@/components/calendar/CalendarDayEntries'
 import { CalendarGrid } from '@/components/calendar/CalendarGrid'
+import { Alert } from '@/components/ui/alert'
 import {
   addMonths,
   buildCalendarCells,
@@ -60,11 +61,7 @@ export function MyMelodiesPage() {
         <p className="text-muted">{t('pastMelodies.subtitle')}</p>
       </header>
 
-      {isError && (
-        <p className="text-sm text-error" role="alert">
-          {t('pastMelodies.calendar.error')}
-        </p>
-      )}
+      {isError && <Alert variant="destructive">{t('pastMelodies.calendar.error')}</Alert>}
 
       {!isError && (
         <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:gap-8">

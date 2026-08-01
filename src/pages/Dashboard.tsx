@@ -9,6 +9,8 @@ import { DashboardProgressSection } from '@/components/DashboardProgressSection'
 import { EntryInspirationCard } from '@/components/EntryInspirationCard'
 import { MoodOfTheMonth } from '@/components/MoodOfTheMonth'
 import { DiaryEntryRow } from '@/components/DiaryEntryRow'
+import { Alert } from '@/components/ui/alert'
+import { Skeleton } from '@/components/ui/skeleton'
 import { getLastNDaysRange } from '@/lib/diary-date-range'
 import { parseDiaryCreatedAt } from '@/lib/past-melody-date'
 
@@ -86,16 +88,19 @@ export function DashboardPage() {
         </h2>
 
         {isLoading && (
-          <p className="text-sm text-muted" role="status" aria-live="polite">
-            {t('dashboard.recentEntriesLoading')}
-          </p>
+          <div
+            className="flex flex-col gap-2.5"
+            aria-busy="true"
+            aria-live="polite"
+            aria-label={t('dashboard.recentEntriesLoading')}
+          >
+            <Skeleton className="h-16 w-full rounded-[18px]" />
+            <Skeleton className="h-16 w-full rounded-[18px]" />
+            <Skeleton className="h-16 w-full rounded-[18px]" />
+          </div>
         )}
 
-        {isError && (
-          <p className="text-sm text-error" role="alert">
-            {t('dashboard.recentEntriesError')}
-          </p>
-        )}
+        {isError && <Alert variant="destructive">{t('dashboard.recentEntriesError')}</Alert>}
 
         {!isLoading && !isError && recentEntries.length === 0 && (
           <p className="text-sm text-muted">{t('dashboard.recentEntriesEmpty')}</p>

@@ -89,13 +89,13 @@ export function LoginPage() {
       </div>
 
       {showRegisteredBanner && (
-        <Alert className="mb-5 border-coral/30 bg-chip-bg text-ink" aria-live="polite">
+        <Alert className="mb-5" aria-live="polite">
           {t('login.registeredSuccess')}
         </Alert>
       )}
 
       {authError && (
-        <Alert className="mb-5" aria-live="polite">
+        <Alert className="mb-5" variant="destructive" aria-live="polite">
           {authError}
         </Alert>
       )}

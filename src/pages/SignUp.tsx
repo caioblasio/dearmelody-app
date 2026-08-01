@@ -114,7 +114,7 @@ export function SignUpPage() {
       </div>
 
       {formError && (
-        <Alert className="mb-5" aria-live="polite">
+        <Alert className="mb-5" variant="destructive" aria-live="polite">
           {formError}
         </Alert>
       )}

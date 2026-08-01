@@ -8,6 +8,7 @@ import { getMusic } from '@/api/music/get-music'
 import { useGetDiaryEntry } from '@/api/diary/use-get-diary-entry'
 import { ComposingHeroLoaderCalm } from '@/components/loading/composing-loaders'
 import { PlayerHero } from '@/components/player/PlayerHero'
+import { Alert } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { downloadBlob, extensionFromMime, sanitizeDownloadFilename } from '@/lib/download-blob'
@@ -153,11 +154,7 @@ export function EntryPage() {
 
       {isLoading && <EntryPageSkeleton />}
 
-      {isError && !is404 && (
-        <p className="text-sm text-error" role="alert">
-          {t('entry.error')}
-        </p>
-      )}
+      {isError && !is404 && <Alert variant="destructive">{t('entry.error')}</Alert>}
 
       {is404 && (
         <p className="text-sm text-muted" role="status">
@@ -238,11 +235,7 @@ export function EntryPage() {
                 )
               }
               belowToolbar={
-                downloadError ? (
-                  <p className="text-sm text-error" role="alert">
-                    {downloadError}
-                  </p>
-                ) : null
+                downloadError ? <Alert variant="destructive">{downloadError}</Alert> : null
               }
             />
           )}
