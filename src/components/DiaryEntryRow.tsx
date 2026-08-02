@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
 import type { DiaryListItem } from '@/api/diary/diary-list-item'
+import { MusicFavoriteButton } from '@/components/MusicFavoriteButton'
 import { getArchiveMoodTheme } from '@/lib/past-melody-archive-theme'
 import { parseDiaryCreatedAt } from '@/lib/past-melody-date'
 import { capitalizeMood, toMoodIcon } from '@/lib/past-melody-mood'
@@ -129,6 +130,11 @@ export function DiaryEntryRow({
                 {entry.music.title}
               </p>
             ) : null}
+            <MusicFavoriteButton
+              musicId={entry.music.id}
+              isFavorited={entry.music.isFavorited}
+              variant="row"
+            />
             <button
               type="button"
               className={cn(

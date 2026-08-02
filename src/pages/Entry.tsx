@@ -1,4 +1,4 @@
-import { ChevronLeft, Download, Heart, Share2 } from 'lucide-react'
+import { ChevronLeft, Download, Share2 } from 'lucide-react'
 import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
@@ -7,13 +7,13 @@ import { getMusicDisplayState, isMusicContentLoading } from '@/api/diary/generat
 import { getMusic } from '@/api/music/get-music'
 import { useGetDiaryEntry } from '@/api/diary/use-get-diary-entry'
 import { ComposingHeroLoaderCalm } from '@/components/loading/composing-loaders'
+import { MusicFavoriteButton } from '@/components/MusicFavoriteButton'
 import { PlayerHero } from '@/components/player/PlayerHero'
 import { Alert } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { downloadBlob, extensionFromMime, sanitizeDownloadFilename } from '@/lib/download-blob'
 import { ApiError } from '@/lib/api-request'
-import { cn } from '@/lib/utils'
 
 function EntryPageSkeleton() {
   const { t } = useTranslation()
@@ -77,7 +77,6 @@ export function EntryPage() {
   const { t } = useTranslation()
   const { data, isLoading, isError, error } = useGetDiaryEntry(entryId)
 
-  const [favoriteByEntryId, setFavoriteByEntryId] = useState<Record<string, boolean>>({})
   const [isDownloading, setIsDownloading] = useState(false)
   const [downloadError, setDownloadError] = useState<string | null>(null)
 
@@ -93,20 +92,6 @@ export function EntryPage() {
   if (data?.createdAt) {
     const d = new Date(data.createdAt)
     recordedDate = Number.isNaN(d.getTime()) ? null : d
-  }
-
-  const favorite = data
-    ? data.id in favoriteByEntryId
-      ? favoriteByEntryId[data.id]
-      : Boolean(data.favorite)
-    : false
-
-  function toggleFavorite() {
-    if (!data) return
-    setFavoriteByEntryId((prev) => {
-      const prior = data.id in prev ? prev[data.id] : Boolean(data.favorite)
-      return { ...prev, [data.id]: !prior }
-    })
   }
 
   async function onDownload() {
@@ -189,21 +174,13 @@ export function EntryPage() {
               entryDetail={data}
               lyricsMode="flip"
               headerActions={
-                <button
-                  type="button"
-                  aria-pressed={favorite}
-                  aria-label={favorite ? t('entry.unfavorite') : t('entry.favorite')}
-                  className={cn(
-                    'rounded-full border border-warm-border/60 bg-card-bg/70 p-1.5 text-muted transition-colors hover:text-plum',
-                    favorite && 'text-plum'
-                  )}
-                  onClick={toggleFavorite}
-                >
-                  <Heart
-                    className={cn('size-3.5 lg:size-4', favorite && 'fill-plum/60')}
-                    aria-hidden
+                primaryMusic ? (
+                  <MusicFavoriteButton
+                    musicId={primaryMusic.id}
+                    isFavorited={primaryMusic.isFavorited}
+                    variant="hero"
                   />
-                </button>
+                ) : null
               }
               toolbar={
                 musicFailed ? null : (

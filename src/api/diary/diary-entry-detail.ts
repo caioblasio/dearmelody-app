@@ -7,7 +7,10 @@ export type DiaryMusicTrack = {
   imageLocation: string | null
   lyrics: string | null
   generateStatus: GenerateStatus
+  styles: string[]
   createdAt: string
+  isFavorited: boolean
+  shareToken: string | null
 }
 
 export type DiaryEntryDetail = {
@@ -17,6 +20,5 @@ export type DiaryEntryDetail = {
   entry: string
   createdAt: string
   updatedAt: string
-  favorite?: boolean
   musics: DiaryMusicTrack[] | null
 }

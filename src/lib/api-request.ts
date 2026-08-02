@@ -116,5 +116,9 @@ export async function apiRequest<TResponse>(
     throw new ApiError(response.status, errorData)
   }
 
+  if (response.status === 204) {
+    return undefined as TResponse
+  }
+
   return (await response.json()) as TResponse
 }

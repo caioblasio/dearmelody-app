@@ -1,7 +1,11 @@
 export type DiaryMusicSummary = {
+  id: number
   title: string
   imageLocation: string
   generateStatus: string
+  styles: string[]
+  isFavorited: boolean
+  shareToken: string | null
 }
 
 export type DiaryListItem = {
