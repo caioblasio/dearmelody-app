@@ -281,6 +281,7 @@
   "entry": {
     "documentTitle": "Your melody",
     "backToArchive": "Past Melodies",
+    "backAria": "Back to Past Melodies",
     "loading": "Loading this melody…",
     "error": "Could not load this entry. Please try again.",
     "notFound": "This melody could not be found.",
@@ -299,6 +300,13 @@
     "download": "Download",
     "downloadError": "Could not download this track. Please try again.",
     "downloading": "Downloading…",
+    "snippet": {
+      "fromEntry": "From your entry: \"{{title}}\"",
+      "readBehind": "Read the entry behind this song",
+      "readEntry": "Read entry →",
+      "hideEntry": "Hide entry",
+      "drawerDescription": "Full diary entry for this melody"
+    },
     "player": {
       "shuffle": "Shuffle",
       "previous": "Previous track",

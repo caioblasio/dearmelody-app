@@ -18,6 +18,7 @@ export { AUTH_SHELL_CLASS }
 
 function AppLayoutShell() {
   const entryMatch = useMatch('/melodies/:entryId')
+  const isEntryPage = Boolean(entryMatch)
   const { track } = usePlayer()
   const showGenerationBar = useMelodyGenerationBarVisible()
 
@@ -34,14 +35,18 @@ function AppLayoutShell() {
           <div
             className={cn(
               AUTH_SHELL_CLASS,
-              'py-6 sm:py-8',
-              /* Base room for mobile bottom nav */
-              'pb-28 md:pb-28',
-              /* Extra room when mobile mini player is stacked above the nav */
-              showMiniBar && 'pb-[11.5rem] md:pb-28',
-              /* Extra room when composing/ready bar is visible */
-              showGenerationBar && !showMiniBar && 'pb-[11.5rem] md:pb-32',
-              showGenerationBar && showMiniBar && 'pb-[15rem] md:pb-36',
+              isEntryPage
+                ? 'px-0 py-0 sm:px-0 lg:px-8 lg:py-8'
+                : cn(
+                    'py-6 sm:py-8',
+                    /* Base room for mobile bottom nav */
+                    'pb-28 md:pb-28',
+                    /* Extra room when mobile mini player is stacked above the nav */
+                    showMiniBar && 'pb-[11.5rem] md:pb-28',
+                    /* Extra room when composing/ready bar is visible */
+                    showGenerationBar && !showMiniBar && 'pb-[11.5rem] md:pb-32',
+                    showGenerationBar && showMiniBar && 'pb-[15rem] md:pb-36'
+                  )
             )}
           >
             <Outlet />
