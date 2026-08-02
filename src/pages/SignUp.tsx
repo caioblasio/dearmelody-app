@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Controller, useForm } from 'react-hook-form'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { z } from 'zod'
 import { Eye, EyeOff } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
@@ -44,6 +44,7 @@ type SignUpFormValues = {
 
 export function SignUpPage() {
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const { t } = useTranslation()
   const signUpSchema = useMemo(() => createSignUpSchema(t), [t])
 
@@ -61,9 +62,9 @@ export function SignUpPage() {
     defaultValues: {
       firstName: '',
       lastName: '',
-      email: '',
+      email: searchParams.get('email')?.trim() ?? '',
       password: '',
-      inviteCode: '',
+      inviteCode: searchParams.get('invite_code')?.trim() ?? '',
       agree: false,
     },
   })
