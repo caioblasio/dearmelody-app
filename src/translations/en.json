@@ -35,6 +35,10 @@
     "title": "Collections",
     "subtitle": "Coming soon — group your diary into life chapters and albums."
   },
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Coming soon — manage your account and preferences."
+  },
   "profile": {
     "title": "Me"
   },

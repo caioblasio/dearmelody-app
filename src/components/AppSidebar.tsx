@@ -106,13 +106,13 @@ export function AppSidebar() {
           </div>
 
           <div className="flex flex-col gap-0.5">
-            <button
-              type="button"
-              className="flex w-full items-center gap-3 rounded-full px-4 py-2.5 text-sm font-semibold text-muted transition-colors hover:bg-chip-bg/60 hover:text-ink"
+            <NavLink
+              to="/settings"
+              className={({ isActive }) => navLinkClass(isActive)}
             >
               <Settings className="size-4 shrink-0" aria-hidden />
               {t('nav.settings')}
-            </button>
+            </NavLink>
             <button
               type="button"
               onClick={() => void logout()}
