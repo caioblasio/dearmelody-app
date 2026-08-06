@@ -1,8 +1,7 @@
-import { Plus } from 'lucide-react'
 import { NavLink } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
-import { useMelodyGeneration } from '@/lib/melody-generation/use-melody-generation'
+import { NewEntryFab } from '@/components/NewEntryFab'
 import { cn } from '@/lib/utils'
 
 type BottomNavItem = {
@@ -53,7 +52,6 @@ function BottomNavLink({ to, labelKey, end }: BottomNavItem) {
 
 export function MobileBottomNav() {
   const { t } = useTranslation()
-  const { isComposing } = useMelodyGeneration()
 
   return (
     <nav aria-label={t('aria.mobileNav')} className="relative md:hidden">
@@ -71,26 +69,7 @@ export function MobileBottomNav() {
         </div>
       </div>
 
-      {isComposing ? (
-        <button
-          type="button"
-          disabled
-          aria-disabled="true"
-          aria-label={t('melodyGeneration.newEntryDisabled')}
-          title={t('melodyGeneration.newEntryDisabled')}
-          className="btn-coral-gradient shadow-fab absolute -top-6 left-1/2 flex size-14 -translate-x-1/2 cursor-not-allowed items-center justify-center rounded-full text-on-primary opacity-50 ring-4 ring-card-bg"
-        >
-          <Plus className="size-6" aria-hidden />
-        </button>
-      ) : (
-        <NavLink
-          to="/new-entry"
-          aria-label={t('nav.newEntry')}
-          className="btn-coral-gradient shadow-fab absolute -top-6 left-1/2 flex size-14 -translate-x-1/2 items-center justify-center rounded-full text-on-primary ring-4 ring-card-bg transition-transform active:scale-95"
-        >
-          <Plus className="size-6" aria-hidden />
-        </NavLink>
-      )}
+      <NewEntryFab className="absolute -top-6 left-1/2 -translate-x-1/2" />
     </nav>
   )
 }
