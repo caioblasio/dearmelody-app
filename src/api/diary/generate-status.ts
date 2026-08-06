@@ -5,7 +5,7 @@ export type GenerateStatus = 'new' | 'generating' | 'downloading' | 'done' | 'fa
 export type MusicDisplayState = 'pending' | 'loading' | 'ready' | 'failed'
 
 /** Poll interval while melody generation is in progress. */
-export const MUSIC_READY_POLL_MS = 2500
+export const MUSIC_READY_POLL_MS = 10_000
 
 export function getMusicDisplayState(
   musics: DiaryMusicTrack[] | null | undefined
