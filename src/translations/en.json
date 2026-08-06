@@ -302,7 +302,7 @@
     "downloadError": "Could not download this track. Please try again.",
     "downloading": "Downloading…",
     "snippet": {
-      "fromEntry": "From your entry: \"{{title}}\"",
+      "fromEntry": "From your entry:",
       "readBehind": "Read the entry behind this song",
       "readEntry": "Read entry →",
       "hideEntry": "Hide entry",

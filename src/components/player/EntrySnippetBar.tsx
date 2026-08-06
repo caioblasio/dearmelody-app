@@ -43,7 +43,7 @@ export function EntrySnippetBar({ entryText, entryTitle, className }: EntrySnipp
           <span className="w-1 shrink-0 self-stretch rounded-full bg-coral" aria-hidden />
           <span className="min-w-0 flex-1">
             <span className="block text-sm font-semibold text-player-ink">
-              {t('entry.snippet.fromEntry', { title: entryTitle || t('entry.originalEntry') })}
+              {t('entry.snippet.fromEntry')}
             </span>
             <span className="mt-0.5 block truncate text-sm italic text-player-brown group-open:hidden">
               “{preview}”
