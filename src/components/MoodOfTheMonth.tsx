@@ -37,12 +37,12 @@ export function MoodOfTheMonth() {
   if (isLoading) {
     return (
       <div
-        className="flex h-full w-full flex-col items-center justify-center gap-3 p-4 md:gap-4 md:p-6"
+        className="flex h-full w-full flex-col items-center justify-center gap-4 rounded-[28px] border border-warm-border bg-card-bg p-7 shadow-sm"
         aria-busy="true"
         aria-live="polite"
         aria-label={t('dashboard.weeklyMeloLoading')}
       >
-        <Skeleton className="aspect-[290/274] w-full max-w-[200px] rounded-3xl" />
+        <Skeleton className="aspect-[290/274] w-full max-w-[200px] rounded-[24px]" />
         <Skeleton className="h-3 w-16" />
         <Skeleton className="h-5 w-28" />
         <Skeleton className="h-4 w-48" />
@@ -58,7 +58,7 @@ export function MoodOfTheMonth() {
         : t('dashboard.weeklyMeloGenre', { genre: meta.title })
 
   return (
-    <div aria-label={ariaLabel}>
+    <div className="h-full w-full" aria-label={ariaLabel}>
       <MeloMoodGenreCard meta={meta} />
     </div>
   )

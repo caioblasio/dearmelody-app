@@ -6,7 +6,7 @@ import { useMelodyGeneration } from '@/lib/melody-generation/use-melody-generati
 import { loadNewEntryDraft, type NewEntryDraft } from '@/lib/new-entry-draft'
 import { cn } from '@/lib/utils'
 
-const PREVIEW_MAX_LENGTH = 90
+const PREVIEW_MAX_LENGTH = 60
 
 function draftPreview(draft: NewEntryDraft, emptyFallback: string): string {
   const trimmed = draft.entry.trim().replace(/\s+/g, ' ')
@@ -33,7 +33,7 @@ export function DraftEntryCard() {
   return (
     <div
       className={cn(
-        'group relative block w-full overflow-hidden rounded-[22px] bg-gradient-to-br from-coral-light to-coral p-5 text-left md:rounded-3xl md:p-8',
+        'group relative flex h-full w-full flex-col overflow-hidden rounded-[22px] bg-gradient-to-br from-coral-light to-coral p-5 text-left md:rounded-3xl md:p-8',
         isComposing && 'opacity-70',
       )}
     >
@@ -42,30 +42,32 @@ export function DraftEntryCard() {
         aria-hidden
       />
 
-      <div className="relative flex flex-col gap-2.5 md:gap-3.5">
+      <div className="relative flex h-full flex-col gap-2.5 md:gap-3.5">
         <p className="label-caps text-on-primary/80">{t('dashboard.draftLabel')}</p>
 
-        <button
-          type="button"
-          onClick={goToDraft}
-          disabled={isComposing}
-          title={isComposing ? t('melodyGeneration.newEntryDisabled') : undefined}
-          className={cn(
-            'min-h-16 w-full text-left font-heading text-lg font-semibold leading-snug text-on-primary transition-opacity hover:opacity-90 md:min-h-[4.5rem] md:text-[1.625rem]',
-            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-on-primary/40',
-            'disabled:cursor-not-allowed disabled:hover:opacity-100',
-          )}
-          aria-label={`${t('dashboard.draftCta')}: ${preview}`}
-        >
-          &ldquo;{preview}&rdquo;
-        </button>
+        <div className="flex flex-1 flex-col justify-center">
+          <button
+            type="button"
+            onClick={goToDraft}
+            disabled={isComposing}
+            title={isComposing ? t('melodyGeneration.newEntryDisabled') : undefined}
+            className={cn(
+              'line-clamp-2 min-h-16 w-full text-left font-heading text-lg font-semibold leading-snug text-on-primary transition-opacity hover:opacity-90 md:min-h-[4.5rem] md:text-[1.625rem]',
+              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-on-primary/40',
+              'disabled:cursor-not-allowed disabled:hover:opacity-100',
+            )}
+            aria-label={`${t('dashboard.draftCta')}: ${preview}`}
+          >
+            &ldquo;{preview}&rdquo;
+          </button>
+        </div>
 
         <button
           type="button"
           onClick={goToDraft}
           disabled={isComposing}
           title={isComposing ? t('melodyGeneration.newEntryDisabled') : undefined}
-          className="mt-1 inline-flex w-fit rounded-full bg-on-primary px-4 py-2.5 text-[13px] font-bold text-coral transition-transform hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-on-primary/40 disabled:cursor-not-allowed disabled:hover:scale-100 md:px-6 md:py-3 md:text-[15px]"
+          className="mt-auto inline-flex w-fit rounded-full bg-on-primary px-4 py-2.5 text-[13px] font-bold text-coral transition-transform hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-on-primary/40 disabled:cursor-not-allowed disabled:hover:scale-100 md:px-6 md:py-3 md:text-[15px]"
         >
           {t('dashboard.draftCta')}
         </button>

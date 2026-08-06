@@ -72,10 +72,10 @@ export function DashboardPage() {
       </header>
 
       <div className="flex flex-col gap-6 md:flex-row md:items-stretch md:gap-8">
-        <div className="order-2 md:w-1/2">
+        <div className="order-2 md:flex md:w-1/2">
           <MoodOfTheMonth />
         </div>
-        <div className="order-1 md:w-1/2">
+        <div className="order-1 md:flex md:w-1/2">
           {hasDraft ? <DraftEntryCard /> : <EntryInspirationCard />}
         </div>
       </div>

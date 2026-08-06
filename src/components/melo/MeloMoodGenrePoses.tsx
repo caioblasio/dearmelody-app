@@ -1769,12 +1769,12 @@ export function MeloMoodGenreCard({ meta, className }: MeloMoodGenreCardProps) {
   return (
     <div
       className={[
-        'flex h-full w-full flex-col items-center justify-center gap-3 p-4 md:gap-4 md:p-6',
+        'flex h-full w-full flex-col items-center justify-center gap-4 rounded-[28px] border border-warm-border bg-card-bg p-7 shadow-sm',
         className ?? '',
       ].join(' ')}
     >
       <div
-        className="relative flex aspect-[290/274] w-full max-w-[200px] items-center justify-center overflow-hidden rounded-3xl"
+        className="relative flex aspect-[290/274] w-full max-w-[200px] items-center justify-center overflow-hidden rounded-[24px]"
         style={{ background: gradient }}
       >
         <div className="origin-center scale-[0.55] sm:scale-[0.62] md:scale-[0.72]">
