@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
+import { TypewriterText } from '@/components/TypewriterText'
 import { VerticalAutoSlider } from '@/components/VerticalAutoSlider'
 import { useMelodyGeneration } from '@/lib/melody-generation/use-melody-generation'
 import { cn } from '@/lib/utils'
@@ -45,11 +46,12 @@ export function EntryInspirationCard() {
             items={titles}
             activeIndex={activeIndex}
             onActiveIndexChange={setActiveIndex}
+            intervalMs={5000}
             infinite
             getItemKey={(title) => title}
             viewportClassName="h-16 md:h-[4.5rem]"
             slideClassName="flex h-16 items-center md:h-[4.5rem]"
-            renderSlide={(title) => (
+            renderSlide={(title, index) => (
               <button
                 type="button"
                 onClick={() => goToNewEntry(title)}
@@ -62,7 +64,9 @@ export function EntryInspirationCard() {
                 )}
                 aria-label={`${t('dashboard.inspirationCta')}: ${title}`}
               >
-                &ldquo;{title}&rdquo;
+                &ldquo;
+                <TypewriterText text={title} active={index === activeIndex} />
+                &rdquo;
               </button>
             )}
           />
