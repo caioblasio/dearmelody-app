@@ -162,6 +162,7 @@
     "moodOfTheMonthPrefix": "Melo says your month is ",
     "weeklyMeloLoading": "Loading Melo’s weekly mood…",
     "weeklyMeloOfficial": "Hi, I'm Melo",
+    "weeklyMeloEmpty": "Melo is not feeling anything. Write a melody today!",
     "weeklyMeloMood": "Your week’s mood is {{mood}}",
     "weeklyMeloGenre": "Your week’s genre is {{genre}}",
     "inspirationLabel": "Need inspiration?",
