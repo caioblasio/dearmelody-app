@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router-dom'
 
 import { useGetDiary } from '@/api/diary/use-get-diary'
 import { CalendarDayEntries } from '@/components/calendar/CalendarDayEntries'
@@ -18,6 +19,7 @@ import { formatLocalDateYmd } from '@/lib/diary-date-range'
 
 export function MyMelodiesPage() {
   const { t, i18n } = useTranslation()
+  const navigate = useNavigate()
   const today = useMemo(() => new Date(), [])
   const todayKey = useMemo(() => formatLocalDateYmd(today), [today])
 
@@ -78,7 +80,13 @@ export function MyMelodiesPage() {
                 if (!canGoNext) return
                 goToMonth(addMonths(currentMonth, 1))
               }}
-              onSelectDay={setSelectedDayKey}
+              onSelectDay={(dayKey) => {
+                if (dayKey === todayKey && !(entriesByDay.get(todayKey)?.length)) {
+                  navigate('/new-entry')
+                  return
+                }
+                setSelectedDayKey(dayKey)
+              }}
             />
           </div>
 
