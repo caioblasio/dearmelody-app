@@ -122,44 +122,46 @@ export function DiaryEntryRow({
         </div>
       </Link>
 
-      <div className="flex shrink-0 items-center gap-2">
+      <div className="flex shrink-0 flex-col items-end gap-1">
         {melodyStatus.ready && entry.music ? (
           <>
             {showSongName ? (
-              <p className={cn('max-w-[9rem] truncate text-[13px] font-semibold', melodyStatus.className)}>
+              <p className={cn('max-w-[9rem] truncate text-right text-[13px] font-semibold', melodyStatus.className)}>
                 {entry.music.title}
               </p>
             ) : null}
-            <MusicFavoriteButton
-              musicId={entry.music.id}
-              isFavorited={entry.music.isFavorited}
-              variant="row"
-            />
-            <button
-              type="button"
-              className={cn(
-                'rounded-full p-0.5 transition-opacity outline-none focus-visible:ring-2 focus-visible:ring-coral/35',
-                'disabled:opacity-60',
-                theme.play,
-              )}
-              onClick={(e) => void handlePlayClick(e)}
-              disabled={isRowLoading}
-              aria-label={
-                isRowLoading
-                  ? t('entry.player.loading')
-                  : showPause
-                    ? t('entry.player.pause')
-                    : t('pastMelodies.playTrack', { title: entry.music.title })
-              }
-            >
-              {isRowLoading ? (
-                <Loader2 className="size-7 animate-spin" aria-hidden />
-              ) : showPause ? (
-                <PauseCircle className="size-7" aria-hidden />
-              ) : (
-                <PlayCircle className="size-7" aria-hidden />
-              )}
-            </button>
+            <div className="flex items-center gap-2">
+              <MusicFavoriteButton
+                musicId={entry.music.id}
+                isFavorited={entry.music.isFavorited}
+                variant="row"
+              />
+              <button
+                type="button"
+                className={cn(
+                  'rounded-full p-0.5 transition-opacity outline-none focus-visible:ring-2 focus-visible:ring-coral/35',
+                  'disabled:opacity-60',
+                  theme.play,
+                )}
+                onClick={(e) => void handlePlayClick(e)}
+                disabled={isRowLoading}
+                aria-label={
+                  isRowLoading
+                    ? t('entry.player.loading')
+                    : showPause
+                      ? t('entry.player.pause')
+                      : t('pastMelodies.playTrack', { title: entry.music.title })
+                }
+              >
+                {isRowLoading ? (
+                  <Loader2 className="size-7 animate-spin" aria-hidden />
+                ) : showPause ? (
+                  <PauseCircle className="size-7" aria-hidden />
+                ) : (
+                  <PlayCircle className="size-7" aria-hidden />
+                )}
+              </button>
+            </div>
           </>
         ) : (
           <p className={cn('text-[13px] font-semibold', melodyStatus.className)}>
