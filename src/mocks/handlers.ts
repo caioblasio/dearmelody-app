@@ -336,6 +336,18 @@ export const handlers = [
     favoritedMusicIds.delete(musicId)
     return new HttpResponse(null, { status: 204 })
   }),
+  http.post('/api/music/:id/share', async ({ params }) => {
+    await delay(200)
+    const musicId = Number.parseInt(String(params.id), 10)
+    const music = Number.isFinite(musicId) ? findMusicById(musicId) : undefined
+    if (!music) {
+      return HttpResponse.json({ error: 'Not found' }, { status: 404 })
+    }
+    if (!music.shareToken) {
+      music.shareToken = MOCK_SHARE_TOKEN
+    }
+    return HttpResponse.json({ shareToken: music.shareToken })
+  }),
   http.get('/api/music/share/:token/stream', async ({ params }) => {
     await delay(400)
     if (String(params.token) !== MOCK_SHARE_TOKEN) {

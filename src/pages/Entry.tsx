@@ -1,4 +1,4 @@
-import { ChevronLeft, Download, Share2 } from 'lucide-react'
+import { ChevronLeft, Download } from 'lucide-react'
 import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
@@ -8,6 +8,7 @@ import { getMusic } from '@/api/music/get-music'
 import { useGetDiaryEntry } from '@/api/diary/use-get-diary-entry'
 import { ComposingHeroLoaderCalm } from '@/components/loading/composing-loaders'
 import { MusicFavoriteButton } from '@/components/MusicFavoriteButton'
+import { MusicShareButton } from '@/components/MusicShareButton'
 import { PlayerHero } from '@/components/player/PlayerHero'
 import { Alert } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
@@ -104,36 +105,17 @@ export function EntryPage() {
     }
   }
 
-  async function onShare() {
-    const shareData = {
-      title: data?.title,
-      text: data?.entry?.slice(0, 280),
-      url: window.location.href,
-    }
-    try {
-      if (navigator.share) {
-        await navigator.share(shareData)
-      } else if (navigator.clipboard?.writeText) {
-        await navigator.clipboard.writeText(window.location.href)
-      }
-    } catch {
-      /* user cancelled or clipboard denied */
-    }
-  }
-
   const toolbar =
     musicFailed || !data ? null : (
       <>
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
-          className="gap-2 border-player-ink/30 bg-card-bg/50 text-player-ink"
-          onClick={onShare}
-        >
-          <Share2 className="size-4" aria-hidden />
-          <span className="hidden sm:inline">{t('entry.share')}</span>
-        </Button>
+        {primaryMusic ? (
+          <MusicShareButton
+            musicId={primaryMusic.id}
+            shareToken={primaryMusic.shareToken}
+            title={primaryMusic.title || data.title}
+            disabled={!musicReady || musicLoading}
+          />
+        ) : null}
         <Button
           type="button"
           variant="outline"
