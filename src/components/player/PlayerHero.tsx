@@ -121,6 +121,11 @@ type PlayerHeroProps = {
    */
   lyricsMode?: 'below' | 'flip' | 'hidden'
   compact?: boolean
+  /**
+   * Stretch the player to the viewport on mobile (entry immersive layout).
+   * Disable on share so banner / extras can sit below without a full-screen gap.
+   */
+  fillViewport?: boolean
   /** Show immersive mobile back control linking to Past Melodies. */
   showBackLink?: boolean
   /** Overrides the default “Now playing · from DATE” eyebrow. */
@@ -139,6 +144,7 @@ export function PlayerHero({
   className,
   lyricsMode = 'below',
   compact = false,
+  fillViewport = true,
   showBackLink = false,
   eyebrow,
   onActivate: onActivateProp,
@@ -311,13 +317,14 @@ export function PlayerHero({
     <div className={cn('space-y-6', className)}>
       <section
         className={cn(
-          'player-gradient relative flex flex-col',
-          /* Mobile: full-bleed gradient; pad content above fixed bottom chrome */
-          'min-h-[100dvh] rounded-none px-5 pt-4 sm:px-8',
-          'pb-28',
-          showMiniBar && !showGenerationBar && 'pb-[11.5rem]',
-          showGenerationBar && !showMiniBar && 'pb-[11.5rem]',
-          showGenerationBar && showMiniBar && 'pb-[15rem]',
+          'player-gradient relative flex flex-col rounded-none px-5 pt-4 sm:px-8',
+          /* Mobile immersive: full-bleed gradient; pad above fixed bottom chrome */
+          fillViewport && 'min-h-[100dvh] pb-28',
+          fillViewport && showMiniBar && !showGenerationBar && 'pb-[11.5rem]',
+          fillViewport && showGenerationBar && !showMiniBar && 'pb-[11.5rem]',
+          fillViewport && showGenerationBar && showMiniBar && 'pb-[15rem]',
+          /* Share / contained: hug content so extras can sit below on mobile */
+          !fillViewport && 'pb-8',
           /* Desktop: contained card */
           'lg:min-h-0 lg:rounded-[28px] lg:px-12 lg:pb-12 lg:pt-12'
         )}
@@ -338,6 +345,10 @@ export function PlayerHero({
             )}
             <div className="flex size-10 shrink-0 items-center justify-center">{headerActions}</div>
           </div>
+        ) : null}
+
+        {eyebrow ? (
+          <p className="mb-6 label-caps text-player-brown lg:hidden">{eyebrow}</p>
         ) : null}
 
         <div
@@ -363,10 +374,6 @@ export function PlayerHero({
               )}
               <div className="flex shrink-0 items-center gap-1.5">{headerActions}</div>
             </div>
-
-            {eyebrow ? (
-              <p className="label-caps text-player-brown lg:hidden">{eyebrow}</p>
-            ) : null}
 
             {musicLoading ? (
               <Skeleton className="h-12 w-3/4 max-w-lg" aria-hidden />

@@ -20,7 +20,7 @@ function SharedMelodySkeleton() {
 
   return (
     <div
-      className="player-gradient relative flex min-h-[100dvh] flex-col px-5 pb-28 pt-4 sm:px-8 lg:min-h-0 lg:rounded-[28px] lg:px-12 lg:py-12"
+      className="player-gradient relative flex flex-col px-5 pb-8 pt-4 sm:px-8 lg:rounded-[28px] lg:px-12 lg:py-12"
       aria-busy="true"
       aria-live="polite"
       aria-label={t('shareMelody.loading')}
@@ -74,6 +74,7 @@ export function SharedMelodyPage() {
       <PlayerHero
         track={track}
         lyricsMode="flip"
+        fillViewport={false}
         eyebrow={t('shareMelody.attribution', { firstName: data.firstName })}
         onActivate={() => playFromShare(data, shareToken)}
       />
