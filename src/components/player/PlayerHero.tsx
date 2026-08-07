@@ -123,6 +123,10 @@ type PlayerHeroProps = {
   compact?: boolean
   /** Show immersive mobile back control linking to Past Melodies. */
   showBackLink?: boolean
+  /** Overrides the default “Now playing · from DATE” eyebrow. */
+  eyebrow?: string
+  /** Used when there is no `entryDetail` (e.g. public share playback). */
+  onActivate?: () => void | Promise<void>
 }
 
 export function PlayerHero({
@@ -136,11 +140,14 @@ export function PlayerHero({
   lyricsMode = 'below',
   compact = false,
   showBackLink = false,
+  eyebrow,
+  onActivate: onActivateProp,
 }: PlayerHeroProps) {
   const { t, i18n } = useTranslation()
   const prefersReducedMotion = usePrefersReducedMotion()
   const { track: contextTrack, playFromDetail } = usePlayer()
   const entryMatch = useMatch('/melodies/:entryId')
+  const shareMatch = useMatch('/melodies/share/:shareToken')
   const showGenerationBar = useMelodyGenerationBarVisible()
 
   const track = trackProp ?? (entryDetail ? null : contextTrack)
@@ -171,10 +178,12 @@ export function PlayerHero({
   const canFlipToLyrics =
     lyricsMode === 'flip' && Boolean(lyricsText) && !musicLoading && !musicFailed
 
-  /** Mini bar shows when another track is playing (not this entry). */
-  const showMiniBar =
-    Boolean(contextTrack) &&
-    !(entryMatch?.params.entryId && contextTrack?.entryId === entryMatch.params.entryId)
+  /** Mini bar shows when another track is playing (not this entry / share). */
+  const isViewingCurrentTrack =
+    (entryMatch?.params.entryId && contextTrack?.entryId === entryMatch.params.entryId) ||
+    (shareMatch?.params.shareToken &&
+      contextTrack?.entryId === `share:${shareMatch.params.shareToken}`)
+  const showMiniBar = Boolean(contextTrack) && !isViewingCurrentTrack
 
   /** When set to the current entry id, the user has chosen the cover face. Lyrics are the default. */
   const [coverFaceEntryId, setCoverFaceEntryId] = useState<string | null>(null)
@@ -183,8 +192,12 @@ export function PlayerHero({
   async function handleActivate() {
     if (entryDetail) {
       await playFromDetail(entryDetail)
+      return
     }
+    await onActivateProp?.()
   }
+
+  const canActivate = Boolean(entryDetail || onActivateProp)
 
   const artFace = musicFailed ? (
     <AlbumArtPlaceholder failed />
@@ -337,7 +350,9 @@ export function PlayerHero({
 
           <div className="flex min-w-0 flex-1 flex-col gap-5">
             <div className="hidden items-start justify-between gap-3 lg:flex">
-              {recordedDate ? (
+              {eyebrow ? (
+                <p className="label-caps text-player-brown">{eyebrow}</p>
+              ) : recordedDate ? (
                 <p className="label-caps text-player-brown">
                   {t('entry.nowPlaying', {
                     date: formatRecordedCaps(recordedDate, i18n.language),
@@ -348,6 +363,10 @@ export function PlayerHero({
               )}
               <div className="flex shrink-0 items-center gap-1.5">{headerActions}</div>
             </div>
+
+            {eyebrow ? (
+              <p className="label-caps text-player-brown lg:hidden">{eyebrow}</p>
+            ) : null}
 
             {musicLoading ? (
               <Skeleton className="h-12 w-3/4 max-w-lg" aria-hidden />
@@ -404,7 +423,7 @@ export function PlayerHero({
                 transport="playOnly"
                 trailingActions={trailingActions}
                 entryId={entryId}
-                onActivate={entryDetail ? handleActivate : undefined}
+                onActivate={canActivate ? handleActivate : undefined}
               />
             ) : null}
 

@@ -12,6 +12,9 @@ import { PAST_MELODIES_MOCK } from '@/mocks/past-melodies-mock'
 const MOCK_SAMPLE_AUDIO_URL =
   'https://interactive-examples.mdn.mozilla.net/media/cc0-audio/tango.mp3'
 
+/** Demo share token for local MSW — open `/melodies/share/{token}`. */
+const MOCK_SHARE_TOKEN = 'aZ3kP9mQxT1vL8wR2nB6cD4fG7hJ0sYe'
+
 function toLocalDateYmd(iso: string): string {
   const parsed = new Date(iso)
   return Number.isNaN(parsed.getTime()) ? '' : formatLocalDateYmd(parsed)
@@ -332,6 +335,37 @@ export const handlers = [
     }
     favoritedMusicIds.delete(musicId)
     return new HttpResponse(null, { status: 204 })
+  }),
+  http.get('/api/music/share/:token/stream', async ({ params }) => {
+    await delay(400)
+    if (String(params.token) !== MOCK_SHARE_TOKEN) {
+      return HttpResponse.json({ error: 'Not found' }, { status: 404 })
+    }
+    const buffer = await fetchMockSampleAudio()
+    if (!buffer) {
+      return HttpResponse.json({ error: 'Not found' }, { status: 404 })
+    }
+    return HttpResponse.arrayBuffer(buffer, {
+      headers: {
+        'Content-Type': 'audio/mpeg',
+        'Content-Length': String(buffer.byteLength),
+      },
+    })
+  }),
+  http.get('/api/music/share/:token', async ({ params }) => {
+    await delay(300)
+    if (String(params.token) !== MOCK_SHARE_TOKEN) {
+      return HttpResponse.json({ error: 'Not found' }, { status: 404 })
+    }
+    return HttpResponse.json({
+      firstName: 'Ada',
+      createdAt: '2026-05-01T10:05:00+00:00',
+      imageLocation:
+        'https://lh3.googleusercontent.com/aida-public/AB6AXuC35UzBQIhWusSQVfgBVzObl4Jo3W1gpuJdjAHcBTJJPC9FvP1mtkj6bRLAWfZBkzn8x4Mx4G7twDGCjXtYQ2KxIZ8FWQE5-5b4bXZ9kBiIsKB3qZQiHVOfGxBDwfqI2O3NHJPVbw5XxspjNrsb7XG-Dr8CycyfpYf3PDm7HYXjtZDXZgaDakATkePEDyut0yaxlLjlcWOwlw9Vp390Aa2kQ0CiKtrHjj48OpEnpJdsk7x648TTTDSJ0Gt3IxuNscsS62COTRscIYY',
+      lyrics:
+        'We walked along the canal after the rain stopped.\n\nEverything smelled green\nand the city felt quiet.\n\nGreen light on the water\nsoft as a held note.',
+      title: 'Green Light',
+    })
   }),
   http.get('/api/music/:id/stream', async () => {
     await delay(400)

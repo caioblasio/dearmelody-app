@@ -16,15 +16,20 @@ import { cn } from '@/lib/utils'
 
 export { AUTH_SHELL_CLASS }
 
-function AppLayoutShell() {
+/** Authenticated chrome (sidebar + docks). Assumes PlayerProvider + MelodyGenerationProvider ancestors. */
+export function AuthenticatedAppShell() {
   const entryMatch = useMatch('/melodies/:entryId')
-  const isEntryPage = Boolean(entryMatch)
+  const shareMatch = useMatch('/melodies/share/:shareToken')
+  const isImmersivePlayerPage = Boolean(entryMatch || shareMatch)
   const { track } = usePlayer()
   const showGenerationBar = useMelodyGenerationBarVisible()
 
-  const showMiniBar =
-    Boolean(track) &&
-    !(entryMatch?.params.entryId && track?.entryId === entryMatch.params.entryId)
+  const isViewingCurrentTrack =
+    (entryMatch?.params.entryId && track?.entryId === entryMatch.params.entryId) ||
+    (shareMatch?.params.shareToken &&
+      track?.entryId === `share:${shareMatch.params.shareToken}`)
+
+  const showMiniBar = Boolean(track) && !isViewingCurrentTrack
 
   return (
     <div className="flex min-h-screen bg-surface">
@@ -35,7 +40,7 @@ function AppLayoutShell() {
           <div
             className={cn(
               AUTH_SHELL_CLASS,
-              isEntryPage
+              isImmersivePlayerPage
                 ? 'px-0 py-0 sm:px-0 lg:px-8 lg:py-8'
                 : cn(
                     'py-6 sm:py-8',
@@ -77,7 +82,7 @@ export function AppLayout() {
   return (
     <PlayerProvider>
       <MelodyGenerationProvider>
-        <AppLayoutShell />
+        <AuthenticatedAppShell />
       </MelodyGenerationProvider>
     </PlayerProvider>
   )

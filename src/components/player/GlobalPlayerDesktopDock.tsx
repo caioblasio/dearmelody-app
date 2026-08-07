@@ -4,24 +4,34 @@ import { useTranslation } from 'react-i18next'
 
 import { NewEntryFab } from '@/components/NewEntryFab'
 import { usePlayer } from '@/lib/player/use-player'
+import { playerTrackHref, isViewingPlayerTrack } from '@/lib/player/player-track-route'
+
+type GlobalPlayerDesktopDockProps = {
+  /** When false, hides the new-entry FAB (e.g. public share guests). Default true. */
+  showNewEntryFab?: boolean
+}
 
 /** Desktop floating dock: mini player (left) + new-entry FAB (right). */
-export function GlobalPlayerDesktopDock() {
+export function GlobalPlayerDesktopDock({ showNewEntryFab = true }: GlobalPlayerDesktopDockProps) {
   const { t } = useTranslation()
   const { track, isPlaying, isLoading, togglePlay, stop } = usePlayer()
 
   const entryMatch = useMatch('/melodies/:entryId')
-  const isOnCurrentEntryPage =
-    Boolean(track && entryMatch?.params.entryId === track.entryId)
+  const shareMatch = useMatch('/melodies/share/:shareToken')
+  const isOnCurrentTrackPage = isViewingPlayerTrack(
+    track,
+    entryMatch?.params.entryId,
+    shareMatch?.params.shareToken
+  )
 
-  const showMiniPlayer = Boolean(track) && !isOnCurrentEntryPage
+  const showMiniPlayer = Boolean(track) && !isOnCurrentTrackPage
 
   return (
     <div className="fixed bottom-6 right-6 z-50 hidden items-center gap-3 md:flex">
       {showMiniPlayer && track ? (
         <div className="flex max-w-sm items-center gap-3 rounded-full border border-warm-border bg-card-bg/95 py-2 pl-2 pr-3 shadow-lg backdrop-blur-md">
           <Link
-            to={`/melodies/${track.entryId}`}
+            to={playerTrackHref(track)}
             className="flex min-w-0 flex-1 items-center gap-3 text-left outline-none focus-visible:ring-2 focus-visible:ring-coral/35"
             aria-label={t('player.openEntry', { title: track.title })}
           >
@@ -75,7 +85,7 @@ export function GlobalPlayerDesktopDock() {
         </div>
       ) : null}
 
-      <NewEntryFab />
+      {showNewEntryFab ? <NewEntryFab /> : null}
     </div>
   )
 }

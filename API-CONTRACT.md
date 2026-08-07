@@ -39,6 +39,18 @@ Access tokens expire after 15 minutes (`JWT_TOKEN_TTL`).
 
 ---
 
+### Google Sign-In
+
+**Auth:** Public
+
+Full OAuth2 redirect flow, not `fetch`-callable — separate doc: [`google-sign-in.md`](./google-sign-in.md). Covers flow, frontend integration steps, error reasons.
+
+Frontend calls only `GET /api/auth/google` (real navigation, kicks off flow). `GET /api/auth/google/callback` is Google-only redirect target, never called by frontend directly. On success browser lands on `FRONTEND_URL?token=<jwt>` (+ refresh cookie set); on failure `FRONTEND_ERROR_URL?error=<reason>`.
+
+`GET /api/auth/google` accepts optional `?invite_code=` — same invite-gate as `POST /api/register`, but only matters for brand-new accounts. Existing/linked accounts ignore it entirely, so frontend can always pass it when available (e.g. user arrived via invite link) with no need to know upfront if the Google account is new.
+
+---
+
 ### `POST /api/token/refresh`
 
 **Auth:** Refresh-token cookie (`refresh_token`, set by `POST /api/auth`)
@@ -450,6 +462,42 @@ Makes a music track owned by the authenticated user publicly accessible by minti
 `shareToken` is 32 characters, drawn from `[0-9A-Za-z]` (base62) — safe to embed in a URL with no escaping.
 
 **Response `404 Not Found`** — music does not exist or is not owned by the authenticated user (the two cases are not distinguished).
+
+```json
+{
+  "error": "Not found"
+}
+```
+
+---
+
+### `GET /api/music/share/{token}`
+
+**Auth:** Public — no JWT required.
+
+Returns metadata about a music track that has been made public via `POST /api/music/{id}/share`, keyed by share token. Does not include the audio itself — use `GET /api/music/share/{token}/stream` for that.
+
+**Path parameters**
+
+| Parameter | Type   | Notes                                                             |
+| --------- | ------ | ----------------------------------------------------------------- |
+| `token`   | string | 32-character share token returned by `POST /api/music/{id}/share` |
+
+**Response `200 OK`**
+
+```json
+{
+  "firstName": "Ada",
+  "createdAt": "2026-05-01T10:05:00+00:00",
+  "imageLocation": "https://...",
+  "lyrics": "Verse 1 ...",
+  "title": "Song Title"
+}
+```
+
+`firstName` is the first name of the user who owns the track. `lyrics` has structure markers (e.g. `[intro]`, `[verse]`, `[chorus]`) stripped, same as `GET /api/diary/{id}`.
+
+**Response `404 Not Found`** — unknown token, or the track's generation is not yet `done`.
 
 ```json
 {

@@ -11,11 +11,16 @@ import { useTranslation } from 'react-i18next'
 
 import type { DiaryEntryDetail } from '@/api/diary/diary-entry-detail'
 import { getDiaryEntry } from '@/api/diary/get-diary-entry'
+import { getMusicShareStream } from '@/api/music/get-music-share-stream'
 import { getMusicStream } from '@/api/music/get-music-stream'
+import type { MusicShare } from '@/api/music/music-share'
 import { ApiError } from '@/lib/api-request'
 import {
+  isSamePlayerTrack,
   PlayerContext,
+  trackAudioKey,
   trackFromDetail,
+  trackFromShare,
   type PlayerContextValue,
   type PlayerTrack,
 } from '@/lib/player/player-context'
@@ -51,7 +56,7 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const objectUrlRef = useRef<string | null>(null)
   const isScrubbingRef = useRef(false)
-  const loadedMusicIdRef = useRef<number | null>(null)
+  const loadedKeyRef = useRef<string | null>(null)
 
   const [track, setTrack] = useState<PlayerTrack | null>(null)
   const [isPlaying, setIsPlaying] = useState(false)
@@ -72,7 +77,7 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
       URL.revokeObjectURL(objectUrlRef.current)
       objectUrlRef.current = null
     }
-    loadedMusicIdRef.current = null
+    loadedKeyRef.current = null
   }, [])
 
   const resetPlaybackTimers = useCallback(() => {
@@ -125,19 +130,24 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
   }, [volume])
 
   const ensureAudioLoaded = useCallback(
-    async (musicId: number): Promise<boolean> => {
+    async (next: PlayerTrack): Promise<boolean> => {
       const audio = audioRef.current
       if (!audio) return false
-      if (objectUrlRef.current && loadedMusicIdRef.current === musicId) return true
+
+      const key = trackAudioKey(next)
+      if (!key) return false
+      if (objectUrlRef.current && loadedKeyRef.current === key) return true
 
       setIsLoading(true)
       setError(null)
       try {
         revokeObjectUrl()
-        const blob = await getMusicStream(musicId)
+        const blob = next.shareToken
+          ? await getMusicShareStream(next.shareToken)
+          : await getMusicStream(next.musicId!)
         const url = URL.createObjectURL(blob)
         objectUrlRef.current = url
-        loadedMusicIdRef.current = musicId
+        loadedKeyRef.current = key
         audio.src = url
         await waitForAudioMetadata(audio)
         setDuration(audio.duration || 0)
@@ -157,7 +167,7 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
       const audio = audioRef.current
       if (!audio) return
 
-      const isSameTrack = track?.musicId === next.musicId && track?.entryId === next.entryId
+      const isSameTrack = track ? isSamePlayerTrack(track, next) : false
 
       setTrack(next)
       setError(null)
@@ -179,7 +189,7 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
       audio.removeAttribute('src')
       audio.load()
 
-      const loaded = await ensureAudioLoaded(next.musicId)
+      const loaded = await ensureAudioLoaded(next)
       if (!loaded) return
 
       try {
@@ -188,7 +198,7 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
         setError(t('entry.player.loadError'))
       }
     },
-    [ensureAudioLoaded, resetPlaybackTimers, revokeObjectUrl, t, track?.entryId, track?.musicId],
+    [ensureAudioLoaded, resetPlaybackTimers, revokeObjectUrl, t, track],
   )
 
   const playFromDetail = useCallback(
@@ -201,6 +211,13 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
       await startTrack(next)
     },
     [startTrack, t],
+  )
+
+  const playFromShare = useCallback(
+    async (share: MusicShare, token: string) => {
+      await startTrack(trackFromShare(share, token))
+    },
+    [startTrack],
   )
 
   const playEntry = useCallback(
@@ -238,7 +255,7 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
       return
     }
 
-    const loaded = await ensureAudioLoaded(track.musicId)
+    const loaded = await ensureAudioLoaded(track)
     if (!loaded) return
 
     try {
@@ -262,7 +279,7 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
       isScrubbingRef.current = false
       setIsScrubbing(false)
 
-      const loaded = await ensureAudioLoaded(track.musicId)
+      const loaded = await ensureAudioLoaded(track)
       if (!loaded) return
 
       const clampedTime = Math.max(0, Math.min(time, audio.duration || time))
@@ -314,6 +331,7 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
       displayedTime,
       playEntry,
       playFromDetail,
+      playFromShare,
       togglePlay,
       seek,
       beginScrub,
@@ -336,6 +354,7 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
       displayedTime,
       playEntry,
       playFromDetail,
+      playFromShare,
       togglePlay,
       seek,
       beginScrub,

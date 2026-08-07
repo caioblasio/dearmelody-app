@@ -341,5 +341,44 @@
     "createBlocked": "A melody is still composing. Wait for it to finish before writing a new entry.",
     "createBlockedLink": "Back to your melody",
     "newEntryDisabled": "Unavailable while a melody is composing"
+  },
+  "shareMelody": {
+    "documentTitle": "Shared melody",
+    "loading": "Loading this shared melody…",
+    "error": "Could not load this shared melody. Please try again.",
+    "notFound": "This shared melody could not be found.",
+    "attribution": "{{firstName}} made this from a day they had",
+    "header": {
+      "login": "Log in",
+      "startFree": "Start free"
+    },
+    "banner": {
+      "headline": "What would your day sound like?",
+      "ghostLine": "Today felt lighter than it had any right to…",
+      "cta": "Start free — write mine",
+      "caption": "{{firstName}} kept the diary entry behind this song private.",
+      "benefits": {
+        "journaling": {
+          "title": "Journaling is free forever",
+          "body": "Your first melody is free too, no card required"
+        },
+        "realLife": {
+          "title": "Not a prompt — your real life",
+          "body": "Every song starts as a genuine entry, not a text box"
+        },
+        "private": {
+          "title": "Private by default",
+          "body": "Nothing is shared unless you choose to share it"
+        },
+        "writer": {
+          "title": "You don't need to be a writer",
+          "body": "A few honest lines is all it takes"
+        }
+      }
+    },
+    "moods": {
+      "heading": "Pick how today felt",
+      "tryNow": "Try now →"
+    }
   }
 }

@@ -3,6 +3,7 @@ import { Link, useMatch } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
 import { usePlayer } from '@/lib/player/use-player'
+import { isViewingPlayerTrack, playerTrackHref } from '@/lib/player/player-track-route'
 
 /** Mobile mini player strip — sits above the bottom nav in AppLayout. */
 export function GlobalPlayerMiniBar() {
@@ -10,10 +11,14 @@ export function GlobalPlayerMiniBar() {
   const { track, isPlaying, isLoading, togglePlay, stop } = usePlayer()
 
   const entryMatch = useMatch('/melodies/:entryId')
-  const isOnCurrentEntryPage =
-    Boolean(track && entryMatch?.params.entryId === track.entryId)
+  const shareMatch = useMatch('/melodies/share/:shareToken')
+  const isOnCurrentTrackPage = isViewingPlayerTrack(
+    track,
+    entryMatch?.params.entryId,
+    shareMatch?.params.shareToken
+  )
 
-  if (!track || isOnCurrentEntryPage) {
+  if (!track || isOnCurrentTrackPage) {
     return null
   }
 
@@ -21,7 +26,7 @@ export function GlobalPlayerMiniBar() {
     <div className="border-t border-warm-border bg-card-bg/95 backdrop-blur-md">
       <div className="flex items-center gap-3 px-3 pb-7 pt-2">
         <Link
-          to={`/melodies/${track.entryId}`}
+          to={playerTrackHref(track)}
           className="flex min-w-0 flex-1 items-center gap-3 text-left outline-none focus-visible:ring-2 focus-visible:ring-coral/35"
           aria-label={t('player.openEntry', { title: track.title })}
         >

@@ -9,9 +9,11 @@ import { MyMelodiesPage } from '@/pages/MyMelodies'
 import { NewEntryPage } from '@/pages/NewEntry'
 import { ProfilePage } from '@/pages/Profile'
 import { SettingsPage } from '@/pages/Settings'
+import { SharedMelodyPage } from '@/pages/SharedMelody'
 import { SignUpPage } from '@/pages/SignUp'
 import { ProtectedRoute } from './protected-route'
 import { PublicRoute } from './public-route'
+import { SharedMelodyRoute } from './shared-melody-route'
 
 export const router = createBrowserRouter([
   {
@@ -24,6 +26,17 @@ export const router = createBrowserRouter([
       {
         path: '/signup',
         element: <SignUpPage />,
+      },
+    ],
+  },
+  {
+    path: '/melodies/share/:shareToken',
+    element: <SharedMelodyRoute />,
+    children: [
+      {
+        index: true,
+        element: <SharedMelodyPage />,
+        handle: { title: 'shareMelody.documentTitle' },
       },
     ],
   },

@@ -1,10 +1,14 @@
 import { createContext } from 'react'
 
 import type { DiaryEntryDetail } from '@/api/diary/diary-entry-detail'
+import type { MusicShare } from '@/api/music/music-share'
 
 export type PlayerTrack = {
   entryId: string
-  musicId: number
+  /** Present for owned diary tracks. Absent for public share playback. */
+  musicId?: number
+  /** Present when playing a public shared track. */
+  shareToken?: string
   title: string
   entryTitle: string
   imageLocation: string | null
@@ -28,6 +32,7 @@ export type PlayerContextValue = {
   displayedTime: number
   playEntry: (entryId: string) => Promise<void>
   playFromDetail: (detail: DiaryEntryDetail) => Promise<void>
+  playFromShare: (share: MusicShare, token: string) => Promise<void>
   togglePlay: () => Promise<void>
   seek: (time: number) => Promise<void>
   beginScrub: (time: number) => void
@@ -37,6 +42,12 @@ export type PlayerContextValue = {
 }
 
 export const PlayerContext = createContext<PlayerContextValue | null>(null)
+
+export function trackAudioKey(track: PlayerTrack): string | null {
+  if (track.shareToken) return `share:${track.shareToken}`
+  if (track.musicId != null) return `music:${track.musicId}`
+  return null
+}
 
 export function trackFromDetail(detail: DiaryEntryDetail): PlayerTrack | null {
   const music = detail.musics?.[0]
@@ -52,4 +63,23 @@ export function trackFromDetail(detail: DiaryEntryDetail): PlayerTrack | null {
     mood: detail.mood,
     createdAt: detail.createdAt,
   }
+}
+
+export function trackFromShare(share: MusicShare, token: string): PlayerTrack {
+  return {
+    entryId: `share:${token}`,
+    shareToken: token,
+    title: share.title,
+    entryTitle: share.title,
+    imageLocation: share.imageLocation,
+    lyrics: share.lyrics,
+    mood: null,
+    createdAt: share.createdAt,
+  }
+}
+
+export function isSamePlayerTrack(a: PlayerTrack, b: PlayerTrack): boolean {
+  if (a.entryId !== b.entryId) return false
+  if (a.shareToken || b.shareToken) return a.shareToken === b.shareToken
+  return a.musicId === b.musicId
 }
