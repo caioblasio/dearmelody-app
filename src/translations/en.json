@@ -50,7 +50,8 @@
     "languageHelp": "Melo writes your lyrics in this language.",
     "locales": {
       "en": "English",
-      "pt": "Portuguese"
+      "pt": "Portuguese",
+      "de": "German"
     }
   },
   "profile": {

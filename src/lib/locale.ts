@@ -1,6 +1,6 @@
 export const APP_LOCALE_STORAGE_KEY = 'dearmelody.locale'
 
-export const SUPPORTED_LOCALES = ['en', 'pt'] as const
+export const SUPPORTED_LOCALES = ['en', 'pt', 'de'] as const
 
 export type AppLocale = (typeof SUPPORTED_LOCALES)[number]
 
@@ -12,7 +12,7 @@ export function isAppLocale(value: string): value is AppLocale {
 export function normalizeLocale(tag: string | null | undefined): AppLocale | null {
   if (!tag) return null
   const base = tag.trim().toLowerCase().split(/[-_]/)[0]
-  if (base === 'en' || base === 'pt') return base
+  if (base === 'en' || base === 'pt' || base === 'de') return base
   return null
 }
 

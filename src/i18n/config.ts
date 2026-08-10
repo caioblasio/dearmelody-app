@@ -3,6 +3,7 @@ import { initReactI18next } from 'react-i18next'
 
 import en from '@/translations/en.json'
 import pt from '@/translations/pt.json'
+import de from '@/translations/de.json'
 import {
   isAppLocale,
   persistAppLocale,
@@ -14,6 +15,7 @@ void i18n.use(initReactI18next).init({
   resources: {
     en: { translation: en },
     pt: { translation: pt },
+    de: { translation: de },
   },
   lng: resolveAppLocale(),
   fallbackLng: 'en',

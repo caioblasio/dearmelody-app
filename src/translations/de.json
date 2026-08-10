@@ -1,0 +1,507 @@
+{
+  "app": {
+    "documentTitle": "Dear Melody"
+  },
+  "common": {
+    "loading": "Wird geladen..."
+  },
+  "nav": {
+    "home": "Start",
+    "dashboard": "Übersicht",
+    "songDiary": "Liedertagebuch",
+    "newEntry": "Neuer Eintrag",
+    "newDiaryEntry": "Neuer Tagebucheintrag",
+    "pastMelodies": "Mein Tagebuch",
+    "collections": "Sammlungen",
+    "me": "Ich",
+    "settings": "Profil",
+    "logout": "Abmelden"
+  },
+  "layout": {
+    "footerLead": "Halte deine musikalischen Erinnerungen fest.",
+    "footerRights": "© 2026"
+  },
+  "aria": {
+    "mobileNav": "Hauptnavigation",
+    "sidebarNav": "Hauptnavigation",
+    "profileMenu": "Profilmenü",
+    "settings": "Profil",
+    "searchMelodies": "Melodien suchen",
+    "recordMemory": "Eine neue Erinnerung aufnehmen",
+    "hidePassword": "Passwort verbergen",
+    "showPassword": "Passwort anzeigen"
+  },
+  "collections": {
+    "title": "Sammlungen",
+    "subtitle": "Demnächst — gruppiere dein Tagebuch in Lebenskapitel und Alben."
+  },
+  "settings": {
+    "title": "Profil",
+    "subtitle": "Dein Konto und wie DearMelody mit dir spricht.",
+    "profile": "Profil",
+    "preferences": "Einstellungen",
+    "firstName": "Name",
+    "lastName": "Nachname",
+    "email": "E-Mail",
+    "verified": "Verifiziert",
+    "contactSupportToChange": "Support kontaktieren, um zu ändern",
+    "contactSupport": "Support kontaktieren",
+    "language": "Sprache",
+    "languageHelp": "Melo schreibt deine Texte in dieser Sprache.",
+    "locales": {
+      "en": "Englisch",
+      "pt": "Portugiesisch",
+      "de": "Deutsch"
+    }
+  },
+  "profile": {
+    "title": "Profil"
+  },
+  "authHeader": {
+    "about": "Über uns",
+    "journalingGuide": "Journaling-Guide",
+    "signUp": "Registrieren"
+  },
+  "authFooter": {
+    "rights": "© 2026. Kuratiert für deine Erinnerungen.",
+    "privacyPolicy": "Datenschutz",
+    "termsOfUse": "Nutzungsbedingungen",
+    "support": "Support"
+  },
+  "social": {
+    "google": "Mit Google fortfahren",
+    "googleSignUp": "Mit Google registrieren"
+  },
+  "login": {
+    "heading": "Anmelden",
+    "subheading": "Willkommen zurück — knüpfe dort an, wo du aufgehört hast.",
+    "emailLabel": "E-Mail",
+    "passwordLabel": "Passwort",
+    "emailPlaceholder": "du@email.com",
+    "passwordPlaceholder": "Dein Passwort",
+    "forgotPassword": "Passwort vergessen?",
+    "submitIdle": "Anmelden",
+    "submitPending": "Anmeldung…",
+    "orContinueWith": "oder fortfahren mit",
+    "ctaLead": "Neu bei DearMelody?",
+    "ctaLink": "Konto erstellen",
+    "registeredSuccess": "Konto erstellt. Du kannst dich jetzt anmelden.",
+    "brand": {
+      "headlineLine1": "Willkommen zurück.",
+      "headlineLine2": "Dein Tagebuch hat dich vermisst.",
+      "body": "Knüpfe dort an, wo du aufgehört hast. Melo hat deine Serie warm gehalten und deine Melodien genau dort gelassen, wo du sie gespeichert hast.",
+      "proofBadge": "4,9 · geliebt von über 40.000 Journalern"
+    },
+    "mobile": {
+      "headline": "Willkommen zurück",
+      "subheadline": "Dein Tagebuch hat dich vermisst."
+    },
+    "tryAgainIn": "Erneut versuchen in {{seconds}}s.",
+    "errors": {
+      "lockedOut": "Zu viele Versuche. Bitte warte, bevor du es erneut versuchst.",
+      "invalidCredentials": "Falsche E-Mail oder Passwort.",
+      "generic": "Etwas ist schiefgelaufen. Bitte versuche es erneut."
+    },
+    "validation": {
+      "email": "Bitte gib eine gültige E-Mail-Adresse ein.",
+      "passwordMin": "Das Passwort muss mindestens 8 Zeichen enthalten."
+    }
+  },
+  "signup": {
+    "heading": "Konto erstellen",
+    "subheading": "Deine erste Melodie geht auf uns. Das dauert etwa eine Minute.",
+    "firstNameLabel": "Vorname",
+    "firstNamePlaceholder": "Wie soll Melo dich nennen?",
+    "lastNameLabel": "Nachname",
+    "lastNamePlaceholder": "Dein Nachname",
+    "emailLabel": "E-Mail",
+    "emailPlaceholder": "du@email.com",
+    "passwordLabel": "Passwort",
+    "passwordPlaceholder": "Mindestens 12 Zeichen",
+    "inviteCodeLabel": "Einladungscode",
+    "inviteCodePlaceholder": "Dein Einladungscode",
+    "agreeLead": "Ich stimme den",
+    "termsLink": "Nutzungsbedingungen",
+    "agreeAnd": "und der",
+    "privacyLink": "Datenschutzerklärung",
+    "agreeTrail": " zu. Mein Tagebuch bleibt standardmäßig privat.",
+    "submitIdle": "Konto erstellen — kostenlos",
+    "submitPending": "Konto wird erstellt…",
+    "submitMobile": "Konto erstellen",
+    "orSignUpWith": "oder registrieren mit",
+    "reassurance": "Kostenlos starten · keine Karte nötig · privat standardmäßig",
+    "ctaLead": "Schon ein Konto?",
+    "ctaLink": "Anmelden",
+    "brand": {
+      "headlineLine1": "Jede Erinnerung",
+      "headlineLine2": "hat eine Melodie.",
+      "perks": [
+        "Dein erstes Lied, kostenlos",
+        "Privat standardmäßig — du besitzt es",
+        "Jederzeit kündigen, deine Worte behalten"
+      ]
+    },
+    "mobile": {
+      "headline": "Heute Abend kostenlos starten",
+      "subheadline": "Deine erste Melodie geht auf uns."
+    },
+    "strength": {
+      "weak": "Schwach",
+      "fair": "Mittel",
+      "strong": "Stark"
+    },
+    "errors": {
+      "conflict": "Diese E-Mail oder dieser Einladungscode kann nicht verwendet werden.",
+      "rateLimited": "Zu viele Registrierungsversuche. Bitte versuche es später erneut.",
+      "generic": "Etwas ist schiefgelaufen. Bitte versuche es erneut.",
+      "mustAgree": "Bitte stimme den Nutzungsbedingungen und der Datenschutzerklärung zu."
+    },
+    "validation": {
+      "firstName": "Bitte gib deinen Vornamen ein.",
+      "lastName": "Bitte gib deinen Nachnamen ein.",
+      "email": "Bitte gib eine gültige E-Mail-Adresse ein.",
+      "passwordMin": "Das Passwort muss mindestens 12 Zeichen enthalten.",
+      "inviteCode": "Bitte gib deinen Einladungscode ein."
+    }
+  },
+  "dashboard": {
+    "title": "Authentifiziert",
+    "goodMorning": "Guten Morgen, {{name}}",
+    "goodAfternoon": "Guten Tag, {{name}}",
+    "goodEvening": "Guten Abend, {{name}}",
+    "streak": "{{days}}-Tage-Serie",
+    "recentEntries": "Letzte Einträge",
+    "recentEntriesLoading": "Letzte Einträge werden geladen…",
+    "recentEntriesError": "Einträge konnten nicht geladen werden. Bitte versuche es erneut.",
+    "recentEntriesEmpty": "Keine Einträge in den letzten 7 Tagen. Tippe auf +, um einen zu schreiben.",
+    "melodyReady": "♪ {{title}}",
+    "noMelodyYet": "Noch keine Melodie · Generieren ♪",
+    "melodyGenerating": "Melodie wird erzeugt…",
+    "moodOfTheMonth": "Melo sagt, dein Monat ist {{mood}}",
+    "moodOfTheMonthPrefix": "Melo sagt, dein Monat ist ",
+    "weeklyMeloLoading": "Melos wöchentliche Stimmung wird geladen…",
+    "weeklyMeloOfficial": "Hi, ich bin Melo",
+    "weeklyMeloEmpty": "Melo fühlt gerade nichts. Schreib heute eine Melodie!",
+    "weeklyMeloMood": "Die Stimmung deiner Woche ist {{mood}}",
+    "weeklyMeloGenre": "Das Genre deiner Woche ist {{genre}}",
+    "inspirationLabel": "Brauchst du Inspiration?",
+    "inspirationCta": "Schreiben beginnen",
+    "draftLabel": "Entwurf fortsetzen",
+    "draftCta": "Schreiben fortsetzen",
+    "draftEmptyPreview": "Knüpfe dort an, wo du aufgehört hast…",
+    "progress": {
+      "streakTitle": "Du bist im Flow, {{name}}!",
+      "streakSubtitle": "Schreib jeden Tag einen Eintrag, um deine Serie am Leben zu halten. Melo wächst mit.",
+      "streakLoading": "Serie wird geladen…",
+      "daysLabel": "TAGE",
+      "milestonesTitle": "Meilensteine",
+      "milestonesLoading": "Meilensteine werden geladen…",
+      "soundRewards": "Serien schalten <strong>Klangbelohnungen</strong> frei: neue Instrumente, Genres und Melo-Outfits — nie Druck, immer Geschenke.",
+      "meloLevel1": "Melo · Level 1 — Einfach Melo",
+      "meloLevel2": "Melo · Level 2 — Kopfhörer",
+      "meloLevel3": "Melo · Level 3 — Pfeifen",
+      "meloLevel4": "Melo · Level 4 — Schlagzeug",
+      "meloLevel5": "Melo · Level 5 — Opernsänger",
+      "meloNext1": "Nach 7 Tagen bekommt er Kopfhörer. Nach 14 lernt er zu pfeifen.",
+      "meloNext2": "Nach 14 Tagen lernt er zu pfeifen. Nach 30 gründet er eine Band.",
+      "meloNext3": "Nach 30 Tagen gründet er eine Band. Nach 60 wird er Opernsänger.",
+      "meloNext4": "Nach 60 Tagen wird Melo Opernsänger. Halte den Rhythmus!",
+      "meloNext5": "Melo ist ausgewachsen. Deine Soundbibliothek wächst weiter."
+    },
+    "inspirationTitles": [
+      "Der Tag, an dem wir Ja gesagt haben...",
+      "Unser erster Tanz als Ehepaar...",
+      "Abschied von allem Vertrauten...",
+      "Erster Morgen in einem neuen Land...",
+      "Dich das erste Mal spüren...",
+      "Neun Monate auf dem Weg zum Elternsein...",
+      "Der Tag, an dem ich gekündigt habe, um das hier zu bauen...",
+      "Unser erster Kunde kam durch die Tür...",
+      "Über die Bühne gehen...",
+      "Der letzte Tag im Abschlussjahr...",
+      "Was ich endlich laut gesagt habe...",
+      "Ein Durchbruch, den ich nie kommen sah...",
+      "Neustart, zu meinen eigenen Bedingungen...",
+      "Der Tag, an dem sich alles drehte..."
+    ]
+  },
+  "newEntry": {
+    "badge": "Neuer Eintrag",
+    "heading": "Wie war dein Tag?",
+    "subheading": "Halte deine Gefühle fest und lass Melody AI daraus deinen täglichen Soundtrack machen.",
+    "textareaPlaceholder": "Heute fühlte sich an wie ein langsamer, regnerischer Nachmittag mit einem hoffnungsvollen Ende...",
+    "soundLabel": "Sound",
+    "generate": "Eintrag mit Melodie erstellen",
+    "generating": "Wird erzeugt...",
+    "clear": "Löschen",
+    "validation": {
+      "entryMin": "Schreib mindestens ein paar Zeilen über deinen Tag.",
+      "entryMax": "Bleib unter 2000 Zeichen.",
+      "musicStyleRequired": "Wähle ein Genre für dein Lied."
+    },
+    "inspiration": {
+      "label": "Inspiration",
+      "title": "Atmosphärischer Indie-Folk",
+      "description": "Die KI deutet deine Stimmung in einen musikalischen Eintrag mit warmen Texturen und nachdenklichen Melodien."
+    },
+    "genrePicker": {
+      "placeholder": "Genre wählen",
+      "chooseGenreTitle": "Genre wählen",
+      "chooseSubgenreTitle": "Stil wählen",
+      "back": "Zurück"
+    }
+  },
+  "pastMelodies": {
+    "title": "Mein Tagebuch",
+    "subtitle": "Eine chronologische Reise durch deine musikalische Seele.",
+    "searchPlaceholder": "Melodien suchen...",
+    "error": "Tagebucheinträge konnten nicht geladen werden. Bitte versuche es erneut.",
+    "empty": "Keine Melodien passen zu deinen Filtern.",
+    "recordMemory": "Eine neue Erinnerung aufnehmen",
+    "mixedMood": "Gemischt",
+    "weekLabel": "Woche vom {{start}} - {{end}}, {{year}}",
+    "filters": {
+      "all": "Gesamte Zeit",
+      "thisMonth": "Dieser Monat",
+      "favorites": "Favoriten",
+      "melancholy": "Melancholie"
+    },
+    "aggregation": {
+      "week": "Nach Woche",
+      "month": "Nach Monat"
+    },
+    "group": {
+      "entryCount_one": "{{count}} Melodie",
+      "entryCount_other": "{{count}} Melodien",
+      "topMood": "Top-Stimmung: {{mood}}"
+    },
+    "calendar": {
+      "prevMonth": "Vorheriger Monat",
+      "nextMonth": "Nächster Monat",
+      "entryCount_one": "{{count}} Eintrag in diesem Monat",
+      "entryCount_other": "{{count}} Einträge in diesem Monat",
+      "topMoodPrefix": "Top-Stimmung:",
+      "selectDayPrompt": "Wähle einen Tag, um seine Einträge zu sehen.",
+      "dayEmpty": "Keine Einträge an diesem Tag.",
+      "dayAriaLabel_one": "{{day}}, {{count}} Eintrag",
+      "dayAriaLabel_other": "{{day}}, {{count}} Einträge",
+      "loading": "Kalender wird geladen…",
+      "error": "Tagebucheinträge konnten nicht geladen werden. Bitte versuche es erneut."
+    },
+    "playTrack": "{{title}} abspielen",
+    "openEntry": "Eintrag öffnen: {{title}}",
+    "diary": {
+      "entriesStamp": "{{count}}",
+      "sectionToggle": "Einträge für {{label}} ein- oder ausblenden",
+      "soundtrack": "Soundtrack",
+      "favorite": "Gespeicherte Erinnerung",
+      "groupBy": "Einträge gruppieren nach"
+    }
+  },
+  "entry": {
+    "documentTitle": "Deine Melodie",
+    "backToArchive": "Vergangene Melodien",
+    "backAria": "Zurück zu Vergangene Melodien",
+    "loading": "Diese Melodie wird geladen…",
+    "error": "Dieser Eintrag konnte nicht geladen werden. Bitte versuche es erneut.",
+    "notFound": "Diese Melodie konnte nicht gefunden werden.",
+    "contextLabel": "Song-Visualisierung",
+    "recorded": "Aufgenommen {{date}}",
+    "nowPlaying": "Läuft gerade · vom {{date}}",
+    "subtitle": "{{month}} · {{duration}}",
+    "favorite": "Zu Favoriten speichern",
+    "unfavorite": "Aus Favoriten entfernen",
+    "share": "Teilen",
+    "sharing": "Wird geteilt…",
+    "shareLink": "Link teilen",
+    "shareMessage": "{{first_name}} möchte eine mit dearmelody erstellte Melodie teilen. Schau mal rein!",
+    "copyLink": "Kopieren",
+    "copied": "Kopiert",
+    "shareError": "Teilen-Link konnte nicht erstellt werden. Bitte versuche es erneut.",
+    "lyricsHeading": "Text",
+    "originalEntry": "Dein Tagebucheintrag",
+    "generationFailed": "Musikerzeugung fehlgeschlagen. Bitte versuche es später erneut.",
+    "generationLoading": "Deine Melodie wird erzeugt…",
+    "editLyrics": "Text bearbeiten",
+    "download": "Herunterladen",
+    "downloadError": "Dieser Track konnte nicht heruntergeladen werden. Bitte versuche es erneut.",
+    "downloading": "Wird heruntergeladen…",
+    "snippet": {
+      "fromEntry": "Aus deinem Eintrag:",
+      "readBehind": "Den Eintrag hinter diesem Song lesen",
+      "readEntry": "Eintrag lesen →",
+      "hideEntry": "Eintrag ausblenden",
+      "drawerDescription": "Vollständiger Tagebucheintrag für diese Melodie"
+    },
+    "player": {
+      "shuffle": "Zufall",
+      "previous": "Vorheriger Track",
+      "play": "Abspielen",
+      "pause": "Pause",
+      "next": "Nächster Track",
+      "repeat": "Wiederholen",
+      "progress": "Wiedergabeposition",
+      "volume": "Lautstärke",
+      "loading": "Audio wird geladen…",
+      "loadError": "Dieser Track konnte nicht geladen werden. Bitte versuche es erneut."
+    }
+  },
+  "player": {
+    "nowPlaying": "Läuft gerade",
+    "openEntry": "{{title}} öffnen",
+    "stop": "Stoppen und Player schließen",
+    "showLyrics": "Text",
+    "showCover": "Cover"
+  },
+  "melodyGeneration": {
+    "composing": "Deine Melodie wird komponiert",
+    "composingSubtitle": "Aus dem heutigen Eintrag wird ein Song. Meistens etwa 30 Sekunden.",
+    "drumming": "Deine Melodie wird eingetrommelt",
+    "drummingSubtitle": "Eine etwas peppigere Wartezeit — Melo legt den Beat, während es gerendert wird.",
+    "readyCta": "Deine Melodie ist fertig — tippe, um sie zu sehen",
+    "createBlocked": "Eine Melodie wird noch komponiert. Warte, bis sie fertig ist, bevor du einen neuen Eintrag schreibst.",
+    "createBlockedLink": "Zurück zu deiner Melodie",
+    "newEntryDisabled": "Nicht verfügbar, während eine Melodie komponiert wird"
+  },
+  "shareMelody": {
+    "documentTitle": "Geteilte Melodie",
+    "loading": "Diese geteilte Melodie wird geladen…",
+    "error": "Diese geteilte Melodie konnte nicht geladen werden. Bitte versuche es erneut.",
+    "notFound": "Diese geteilte Melodie konnte nicht gefunden werden.",
+    "attribution": "{{firstName}} hat das aus einem Tag gemacht, den er oder sie hatte",
+    "header": {
+      "login": "Anmelden",
+      "startFree": "Kostenlos starten"
+    },
+    "banner": {
+      "headline": "Wie würde dein Tag klingen?",
+      "ghostLine": "Heute fühlte sich leichter an, als es hätte sein dürfen…",
+      "cta": "Kostenlos starten — meins schreiben",
+      "caption": "{{firstName}} hat den Tagebucheintrag hinter diesem Song privat gehalten.",
+      "benefits": {
+        "journaling": {
+          "title": "Journaling ist für immer kostenlos",
+          "body": "Deine erste Melodie ist auch kostenlos, keine Karte nötig"
+        },
+        "realLife": {
+          "title": "Kein Prompt — dein echtes Leben",
+          "body": "Jeder Song beginnt als echter Eintrag, nicht als Textfeld"
+        },
+        "private": {
+          "title": "Privat standardmäßig",
+          "body": "Nichts wird geteilt, außer du entscheidest dich dafür"
+        },
+        "writer": {
+          "title": "Du musst kein Schriftsteller sein",
+          "body": "Ein paar ehrliche Zeilen reichen"
+        }
+      }
+    },
+    "moods": {
+      "heading": "Wähle, wie sich heute anfühlte",
+      "tryNow": "Jetzt ausprobieren →"
+    }
+  },
+  "melo": {
+    "kind": {
+      "mood": "Stimmung",
+      "genre": "Genre"
+    },
+    "official": {
+      "title": "Hi, ich bin Melo",
+      "saying": "Winkt hallo. Kopfhörer immer um den Hals — bereit zuzuhören."
+    },
+    "moods": {
+      "happy": {
+        "title": "Glücklich",
+        "saying": "Großes Lächeln, größerer Tag — lass uns daraus ein Lied machen!"
+      },
+      "reflexive": {
+        "title": "Nachdenklich",
+        "saying": "Dreh es im Kopf hin und her — gib mir einen Beat zum Nachdenken."
+      },
+      "sad": {
+        "title": "Traurig",
+        "saying": "Ein bisschen Regen heute. Lass uns etwas Sanftes daraus schreiben."
+      },
+      "nostalgic": {
+        "title": "Nostalgisch",
+        "saying": "Erinnerst du dich? Lass uns das in Musik setzen."
+      },
+      "dreamy": {
+        "title": "Verträumt",
+        "saying": "Halb hier, halb in einem Tagtraum."
+      },
+      "cozy": {
+        "title": "Gemütlich",
+        "saying": "Decke drüber, Tasse warm, Melodie lädt."
+      },
+      "productive": {
+        "title": "Produktiv",
+        "saying": "Dinge abhaken — lass uns einen Soundtrack draus machen."
+      },
+      "outgoing": {
+        "title": "Gesellig",
+        "saying": "Sag weniger — lass uns Lärm machen!"
+      },
+      "introspective": {
+        "title": "Introspektiv",
+        "saying": "Draußen ruhig, innen läuft viel."
+      },
+      "relaxed": {
+        "title": "Entspannt",
+        "saying": "Nirgendwo hinmüssen. Lass die Melodie treiben."
+      },
+      "inspiring": {
+        "title": "Inspirierend",
+        "saying": "Aha-Moment — lass uns danach jagen."
+      }
+    },
+    "genres": {
+      "pop": {
+        "title": "Pop",
+        "saying": "Eingängig, glänzend, bleibt im Kopf."
+      },
+      "rock": {
+        "title": "Rock",
+        "saying": "Dreh auf — dieses Gefühl will ein Gitarrensolo!"
+      },
+      "metal": {
+        "title": "Metal",
+        "saying": "Schwerere Riffs, lautere Gefühle."
+      },
+      "hip-hop": {
+        "title": "Hip-Hop",
+        "saying": "Direkt vom Block zum Beat."
+      },
+      "r&b": {
+        "title": "R&B",
+        "saying": "Sanft, seelenvoll, direkt aus dem Herzen."
+      },
+      "folk": {
+        "title": "Folk",
+        "saying": "Einfache Saiten, ehrliche Worte."
+      },
+      "electronic": {
+        "title": "Electronic",
+        "saying": "Schaltkreise und Basslines im Takt."
+      },
+      "latin": {
+        "title": "Latin",
+        "saying": "Hüften lügen nicht — und dieser Beat auch nicht."
+      },
+      "asian": {
+        "title": "Asian",
+        "saying": "Neue Tonleitern, vertraute Wärme."
+      },
+      "classic": {
+        "title": "Classic",
+        "saying": "Zeitlose Noten, immer im Einklang."
+      },
+      "jazz": {
+        "title": "Jazz",
+        "saying": "Glatt und ein bisschen rauchig — lass das Sax reden."
+      }
+    }
+  }
+}
