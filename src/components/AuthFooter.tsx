@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 
 import { DearMelodyWordmark } from '@/components/DearMelodyWordmark'
+import { SUPPORT_WHATSAPP_URL } from '@/lib/support'
 
 export function AuthFooter() {
   const { t } = useTranslation()
@@ -19,7 +20,12 @@ export function AuthFooter() {
           <a className="text-muted transition-colors hover:text-coral" href="#">
             {t('authFooter.termsOfUse')}
           </a>
-          <a className="text-muted transition-colors hover:text-coral" href="#">
+          <a
+            className="text-muted transition-colors hover:text-coral"
+            href={SUPPORT_WHATSAPP_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             {t('authFooter.support')}
           </a>
         </nav>

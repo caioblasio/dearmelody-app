@@ -1,4 +1,4 @@
-import { ChevronDown } from 'lucide-react'
+import { ChevronDown, ChevronRight } from 'lucide-react'
 import type { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -22,6 +22,7 @@ import {
 } from '@/components/ui/item'
 import { setAppLocale } from '@/i18n/config'
 import { normalizeLocale, SUPPORTED_LOCALES, type AppLocale } from '@/lib/locale'
+import { SUPPORT_WHATSAPP_URL } from '@/lib/support'
 import { cn } from '@/lib/utils'
 
 const AVATAR_SIZE_CLASS = 'size-14'
@@ -97,9 +98,14 @@ export function ProfilePage() {
                 </div>
               </ItemContent>
               <ItemActions>
-                <span className="text-right text-xs leading-snug text-muted">
+                <a
+                  href={SUPPORT_WHATSAPP_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-right text-xs leading-snug text-coral transition-colors hover:text-[#E0603F] hover:underline"
+                >
                   {t('settings.contactSupportToChange')}
-                </span>
+                </a>
               </ItemActions>
             </Item>
           </ItemGroup>
@@ -142,6 +148,23 @@ export function ProfilePage() {
                   </DropdownMenuContent>
                 </DropdownMenu>
               </ItemActions>
+            </Item>
+          </ItemGroup>
+        </section>
+
+        <section className="overflow-hidden rounded-lg border border-warm-border bg-card-bg">
+          <ItemGroup>
+            <Item asChild className="items-center gap-4 px-6 py-5">
+              <a href={SUPPORT_WHATSAPP_URL} target="_blank" rel="noopener noreferrer">
+                <ItemContent>
+                  <ItemTitle className="text-[1.0625rem] font-semibold text-ink">
+                    {t('settings.contactSupport')}
+                  </ItemTitle>
+                </ItemContent>
+                <ItemActions>
+                  <ChevronRight className="size-4 text-muted" aria-hidden />
+                </ItemActions>
+              </a>
             </Item>
           </ItemGroup>
         </section>
