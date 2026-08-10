@@ -299,6 +299,7 @@
     "share": "Share",
     "sharing": "Sharing…",
     "shareLink": "Share link",
+    "shareMessage": "{{first_name}} would like to share a melody created with dearmelody. Check it out!",
     "copyLink": "Copy",
     "copied": "Copied",
     "shareError": "Could not create a share link. Please try again.",

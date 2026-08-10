@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { useShareMusic } from '@/api/music/use-share-music'
+import { useUserInfo } from '@/api/user/use-user-info'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Popover, PopoverAnchor, PopoverContent } from '@/components/ui/popover'
@@ -33,6 +34,7 @@ export function MusicShareButton({
 }: MusicShareButtonProps) {
   const { t } = useTranslation()
   const { mutateAsync, isPending } = useShareMusic()
+  const { data: user } = useUserInfo()
 
   const [open, setOpen] = useState(false)
   const [link, setLink] = useState<string | null>(null)
@@ -56,7 +58,11 @@ export function MusicShareButton({
   async function tryNativeShare(url: string): Promise<boolean> {
     if (typeof navigator.share !== 'function') return false
     try {
-      await navigator.share({ title, url })
+      await navigator.share({
+        title,
+        text: t('entry.shareMessage', { first_name: user?.first_name ?? '' }),
+        url,
+      })
       return true
     } catch (err) {
       if (isAbortError(err)) return true
