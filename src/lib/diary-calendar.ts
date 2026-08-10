@@ -35,9 +35,12 @@ export function addMonths(date: Date, delta: number): Date {
   return next
 }
 
-/** Locale-correct short weekday labels, Monday-first. Uses Jan 1 2024 (a Monday) as reference. */
-export function getWeekdayLabels(locale: string): string[] {
-  const formatter = new Intl.DateTimeFormat(locale, { weekday: 'short' })
+/** Locale-correct weekday labels, Monday-first. Uses Jan 1 2024 (a Monday) as reference. */
+export function getWeekdayLabels(
+  locale: string,
+  weekday: 'short' | 'narrow' = 'short',
+): string[] {
+  const formatter = new Intl.DateTimeFormat(locale, { weekday })
   const labels: string[] = []
   for (let i = 0; i < 7; i++) {
     const d = new Date(2024, 0, 1 + i)

@@ -197,6 +197,32 @@
       "milestonesTitle": "Meilensteine",
       "milestonesLoading": "Meilensteine werden geladen…",
       "soundRewards": "Serien schalten <strong>Klangbelohnungen</strong> frei: neue Instrumente, Genres und Melo-Outfits — nie Druck, immer Geschenke.",
+      "achievements": {
+        "first_song": {
+          "name": "Erster Song",
+          "description": "Erstelle deinen ersten Tagebucheintrag."
+        },
+        "one_week": {
+          "name": "Eine Woche",
+          "description": "Halte eine 7-Tage-Tagebuchserie."
+        },
+        "night_owl": {
+          "name": "Nachteule",
+          "description": "Schreibe 5 Tagebucheinträge zwischen 22 und 5 Uhr."
+        },
+        "one_month": {
+          "name": "Ein Monat",
+          "description": "Halte eine 30-Tage-Tagebuchserie."
+        },
+        "full_spectrum": {
+          "name": "Volles Spektrum",
+          "description": "Erzeuge einen Song in jeder kuratierten Stilfamilie."
+        },
+        "renaissance_composer": {
+          "name": "Renaissance-Komponist",
+          "description": "Erzeuge einen Song in jeder kuratierten Substil-Variante."
+        }
+      },
       "meloLevel1": "Melo · Level 1 — Einfach Melo",
       "meloLevel2": "Melo · Level 2 — Kopfhörer",
       "meloLevel3": "Melo · Level 3 — Pfeifen",

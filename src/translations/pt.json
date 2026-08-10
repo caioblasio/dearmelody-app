@@ -197,6 +197,32 @@
       "milestonesTitle": "Conquistas",
       "milestonesLoading": "Carregando conquistas…",
       "soundRewards": "Sequências desbloqueiam <strong>recompensas sonoras</strong>: novos instrumentos, gêneros e looks do Melo — sem pressão, só presentes.",
+      "achievements": {
+        "first_song": {
+          "name": "Primeira Canção",
+          "description": "Crie sua primeira entrada no diário."
+        },
+        "one_week": {
+          "name": "Uma Semana",
+          "description": "Mantenha uma sequência de 7 dias no diário."
+        },
+        "night_owl": {
+          "name": "Coruja Noturna",
+          "description": "Escreva 5 entradas no diário entre 22h e 5h."
+        },
+        "one_month": {
+          "name": "Um Mês",
+          "description": "Mantenha uma sequência de 30 dias no diário."
+        },
+        "full_spectrum": {
+          "name": "Espectro Completo",
+          "description": "Gere uma música em cada família de estilo curada."
+        },
+        "renaissance_composer": {
+          "name": "Compositor Renascentista",
+          "description": "Gere uma música em cada variante de subestilo curada."
+        }
+      },
       "meloLevel1": "Melo · nível 1 — Só o Melo",
       "meloLevel2": "Melo · nível 2 — Fones",
       "meloLevel3": "Melo · nível 3 — Assobio",

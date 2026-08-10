@@ -1,5 +1,6 @@
 import type { StreakHistoryDay } from '@/api/dashboard/dashboard-metrics'
 import type { DiaryListItem } from '@/api/diary/diary-list-item'
+import { getWeekdayLabels } from '@/lib/diary-calendar'
 import { formatLocalDateYmd } from '@/lib/diary-date-range'
 import { parseDiaryCreatedAt } from '@/lib/past-melody-date'
 
@@ -59,13 +60,16 @@ export type WeekDayStatus = {
   mark: '✓' | '♪' | '·'
 }
 
-const WEEK_DAY_LABELS = ['M', 'T', 'W', 'T', 'F', 'S', 'S'] as const
-
-function buildWeekRow(entryDays: Set<string>, now = new Date()): WeekDayStatus[] {
+function buildWeekRow(
+  entryDays: Set<string>,
+  locale: string,
+  now = new Date(),
+): WeekDayStatus[] {
   const todayKey = formatLocalDateYmd(now)
   const weekStart = getWeekStartMonday(now)
+  const labels = getWeekdayLabels(locale, 'narrow')
 
-  return WEEK_DAY_LABELS.map((label, index) => {
+  return labels.map((label, index) => {
     const day = new Date(weekStart)
     day.setDate(weekStart.getDate() + index)
     const dayKey = formatLocalDateYmd(day)
@@ -87,19 +91,24 @@ function buildWeekRow(entryDays: Set<string>, now = new Date()): WeekDayStatus[]
   })
 }
 
-export function computeWeekRow(entries: DiaryListItem[], now = new Date()): WeekDayStatus[] {
-  return buildWeekRow(getEntryDayKeys(entries), now)
+export function computeWeekRow(
+  entries: DiaryListItem[],
+  locale: string,
+  now = new Date(),
+): WeekDayStatus[] {
+  return buildWeekRow(getEntryDayKeys(entries), locale, now)
 }
 
 export function computeWeekRowFromHistory(
   history: StreakHistoryDay[],
+  locale: string,
   now = new Date(),
 ): WeekDayStatus[] {
   const entryDays = new Set<string>()
   for (const day of history) {
     if (day.hasEntry) entryDays.add(day.date)
   }
-  return buildWeekRow(entryDays, now)
+  return buildWeekRow(entryDays, locale, now)
 }
 
 export type MeloLevel = 1 | 2 | 3 | 4 | 5

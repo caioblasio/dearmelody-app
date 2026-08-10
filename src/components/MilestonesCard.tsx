@@ -1,4 +1,5 @@
 import { Trans, useTranslation } from 'react-i18next'
+import type { TFunction } from 'i18next'
 
 import type { Achievement } from '@/api/dashboard/dashboard-metrics'
 import { useDashboardMetrics } from '@/api/dashboard/use-dashboard-metrics'
@@ -29,11 +30,19 @@ function formatEarnedAt(earnedAt: string, locale: string): string {
   return new Intl.DateTimeFormat(locale, { month: 'short', day: 'numeric' }).format(date)
 }
 
-function getAchievementSub(achievement: Achievement, locale: string): string {
+function getAchievementName(achievement: Achievement, t: TFunction): string {
+  return t(`dashboard.progress.achievements.${achievement.code}.name`, {
+    defaultValue: achievement.name,
+  })
+}
+
+function getAchievementSub(achievement: Achievement, t: TFunction, locale: string): string {
   if (achievement.earned && achievement.earnedAt) {
     return formatEarnedAt(achievement.earnedAt, locale)
   }
-  return achievement.description
+  return t(`dashboard.progress.achievements.${achievement.code}.description`, {
+    defaultValue: achievement.description,
+  })
 }
 
 function MilestoneSkeleton() {
@@ -97,10 +106,10 @@ export function MilestonesCard({ className }: MilestonesCardProps) {
                   </div>
                   <div className="text-center">
                     <p className="text-xs font-bold leading-tight text-ink sm:text-[13px]">
-                      {badge.name}
+                      {getAchievementName(badge, t)}
                     </p>
                     <p className="mt-0.5 text-[10px] leading-tight text-muted sm:text-[11px]">
-                      {getAchievementSub(badge, i18n.language)}
+                      {getAchievementSub(badge, t, i18n.language)}
                     </p>
                   </div>
                 </div>

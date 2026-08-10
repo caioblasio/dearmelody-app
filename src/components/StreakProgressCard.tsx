@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { useDashboardMetrics } from '@/api/dashboard/use-dashboard-metrics'
 import { MeloLevelAvatar } from '@/components/MeloLevelAvatar'
 import { Skeleton } from '@/components/ui/skeleton'
+import { getWeekdayLabels } from '@/lib/diary-calendar'
 import { computeWeekRowFromHistory, getMeloStreakCopy, type WeekDayState } from '@/lib/diary-streak'
 import { cn } from '@/lib/utils'
 
@@ -18,9 +19,13 @@ const WEEK_DAY_CIRCLE_CLASSES: Record<WeekDayState, string> = {
   pending: 'border-[3px] border-transparent bg-card-bg/35 text-butter-deep/50',
 }
 
-const WEEK_DAY_LABELS = ['M', 'T', 'W', 'T', 'F', 'S', 'S'] as const
-
-function StreakProgressCardSkeleton({ userName }: { userName: string }) {
+function StreakProgressCardSkeleton({
+  userName,
+  weekdayLabels,
+}: {
+  userName: string
+  weekdayLabels: string[]
+}) {
   const { t } = useTranslation()
 
   return (
@@ -38,7 +43,7 @@ function StreakProgressCardSkeleton({ userName }: { userName: string }) {
       </div>
 
       <div className="flex gap-2 sm:gap-2.5">
-        {WEEK_DAY_LABELS.map((label, index) => (
+        {weekdayLabels.map((label, index) => (
           <div key={`${label}-${index}`} className="flex flex-1 flex-col items-center gap-2">
             <Skeleton className="size-10 rounded-full bg-card-bg/55 sm:size-[46px]" />
             <span className="text-xs font-bold text-[#7A5A16]">{label}</span>
@@ -58,13 +63,17 @@ function StreakProgressCardSkeleton({ userName }: { userName: string }) {
 }
 
 export function StreakProgressCard({ userName, className }: StreakProgressCardProps) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const { data, isLoading } = useDashboardMetrics()
 
+  const weekdayLabels = useMemo(
+    () => getWeekdayLabels(i18n.language, 'narrow'),
+    [i18n.language]
+  )
   const streakDays = data?.streak.streak ?? 0
   const weekRow = useMemo(
-    () => computeWeekRowFromHistory(data?.streak.history ?? []),
-    [data?.streak.history]
+    () => computeWeekRowFromHistory(data?.streak.history ?? [], i18n.language),
+    [data?.streak.history, i18n.language]
   )
   const meloCopy = useMemo(() => getMeloStreakCopy(streakDays), [streakDays])
 
@@ -79,7 +88,7 @@ export function StreakProgressCard({ userName, className }: StreakProgressCardPr
       aria-label={isLoading ? t('dashboard.progress.streakLoading') : undefined}
     >
       {isLoading ? (
-        <StreakProgressCardSkeleton userName={userName} />
+        <StreakProgressCardSkeleton userName={userName} weekdayLabels={weekdayLabels} />
       ) : (
         <>
           <div className="flex items-center gap-5">

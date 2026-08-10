@@ -197,6 +197,32 @@
       "milestonesTitle": "Milestones",
       "milestonesLoading": "Loading milestones…",
       "soundRewards": "Streaks unlock <strong>sound rewards</strong>: new instruments, genres and Melo outfits — never pressure, always gifts.",
+      "achievements": {
+        "first_song": {
+          "name": "First Song",
+          "description": "Create your first diary entry."
+        },
+        "one_week": {
+          "name": "One Week",
+          "description": "Keep a 7-day diary streak."
+        },
+        "night_owl": {
+          "name": "Night Owl",
+          "description": "Write 5 diary entries between 10pm and 5am."
+        },
+        "one_month": {
+          "name": "One Month",
+          "description": "Keep a 30-day diary streak."
+        },
+        "full_spectrum": {
+          "name": "Full Spectrum",
+          "description": "Generate a song in every curated style family."
+        },
+        "renaissance_composer": {
+          "name": "Renaissance Composer",
+          "description": "Generate a song in every curated sub-style variant."
+        }
+      },
       "meloLevel1": "Melo · level 1 — Just Melo",
       "meloLevel2": "Melo · level 2 — Headphones",
       "meloLevel3": "Melo · level 3 — Whistle",
