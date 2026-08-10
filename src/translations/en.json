@@ -400,5 +400,107 @@
       "heading": "Pick how today felt",
       "tryNow": "Try now →"
     }
+  },
+  "melo": {
+    "kind": {
+      "mood": "Mood",
+      "genre": "Genre"
+    },
+    "official": {
+      "title": "Hi, I'm Melo",
+      "saying": "Waving hello. Headphones always around the neck — ready to listen."
+    },
+    "moods": {
+      "happy": {
+        "title": "Happy",
+        "saying": "Big smile, bigger day — let's turn it into a song!"
+      },
+      "reflexive": {
+        "title": "Reflexive",
+        "saying": "Turning it over in my head — give me a beat to think to."
+      },
+      "sad": {
+        "title": "Sad",
+        "saying": "A little rain today. Let's write it into something soft."
+      },
+      "nostalgic": {
+        "title": "Nostalgic",
+        "saying": "Remember this? Let's set it to music."
+      },
+      "dreamy": {
+        "title": "Dreamy",
+        "saying": "Half here, half in a daydream."
+      },
+      "cozy": {
+        "title": "Cozy",
+        "saying": "Blanket on, mug warm, melody loading."
+      },
+      "productive": {
+        "title": "Productive",
+        "saying": "Checking things off — let's make it a soundtrack."
+      },
+      "outgoing": {
+        "title": "Outgoing",
+        "saying": "Say less — let's make some noise!"
+      },
+      "introspective": {
+        "title": "Introspective",
+        "saying": "Quiet on the outside, a lot going on inside."
+      },
+      "relaxed": {
+        "title": "Relaxed",
+        "saying": "Nowhere to be. Let the melody drift."
+      },
+      "inspiring": {
+        "title": "Inspiring",
+        "saying": "Lightbulb moment — let's chase it."
+      }
+    },
+    "genres": {
+      "pop": {
+        "title": "Pop",
+        "saying": "Catchy, shiny, stuck-in-your-head good."
+      },
+      "rock": {
+        "title": "Rock",
+        "saying": "Turn it up — this feeling wants a guitar solo!"
+      },
+      "metal": {
+        "title": "Metal",
+        "saying": "Heavier riffs, louder feelings."
+      },
+      "hip-hop": {
+        "title": "Hip-Hop",
+        "saying": "Straight from the block to the beat."
+      },
+      "r&b": {
+        "title": "R&B",
+        "saying": "Smooth, soulful, straight from the heart."
+      },
+      "folk": {
+        "title": "Folk",
+        "saying": "Simple strings, honest words."
+      },
+      "electronic": {
+        "title": "Electronic",
+        "saying": "Circuits and basslines, syncing up."
+      },
+      "latin": {
+        "title": "Latin",
+        "saying": "Hips don't lie, and neither does this beat."
+      },
+      "asian": {
+        "title": "Asian",
+        "saying": "New scales, familiar warmth."
+      },
+      "classic": {
+        "title": "Classic",
+        "saying": "Timeless notes, always in tune."
+      },
+      "jazz": {
+        "title": "Jazz",
+        "saying": "Smooth and a little smoky — let the sax do the talking."
+      }
+    }
   }
 }

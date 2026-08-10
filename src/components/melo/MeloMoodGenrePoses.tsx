@@ -1,4 +1,5 @@
 import type { ComponentType, CSSProperties } from 'react'
+import { useTranslation } from 'react-i18next'
 
 export type MeloCardKind = 'mood' | 'genre' | 'official'
 
@@ -36,8 +37,6 @@ type MeloPoseProps = {
 export type MeloCardMeta = {
   kind: MeloCardKind
   key: MeloMoodKey | MeloGenreKey | 'official'
-  title: string
-  saying: string
   gradient: string
   eyebrowColor: string
   Pose: ComponentType<MeloPoseProps>
@@ -1535,8 +1534,6 @@ export const MELO_MOOD_CARDS: Record<MeloMoodKey, MeloCardMeta> = {
   'happy': {
     kind: 'mood',
     key: 'happy',
-    title: "Happy",
-    saying: "Big smile, bigger day \u2014 let's turn it into a song!",
     gradient: "linear-gradient(170deg,#FFF3D6,#FFD9B8)",
     eyebrowColor: "#C97B4A",
     Pose: MeloMoodHappy,
@@ -1544,8 +1541,6 @@ export const MELO_MOOD_CARDS: Record<MeloMoodKey, MeloCardMeta> = {
   'reflexive': {
     kind: 'mood',
     key: 'reflexive',
-    title: "Reflexive",
-    saying: "Turning it over in my head \u2014 give me a beat to think to.",
     gradient: "linear-gradient(170deg,#EDE6F3,#DCCBEA)",
     eyebrowColor: "#7A5A9A",
     Pose: MeloMoodReflexive,
@@ -1553,8 +1548,6 @@ export const MELO_MOOD_CARDS: Record<MeloMoodKey, MeloCardMeta> = {
   'sad': {
     kind: 'mood',
     key: 'sad',
-    title: "Sad",
-    saying: "A little rain today. Let's write it into something soft.",
     gradient: "linear-gradient(170deg,#E4E9F5,#CBD6EC)",
     eyebrowColor: "#5B6B8C",
     Pose: MeloMoodSad,
@@ -1562,8 +1555,6 @@ export const MELO_MOOD_CARDS: Record<MeloMoodKey, MeloCardMeta> = {
   'nostalgic': {
     kind: 'mood',
     key: 'nostalgic',
-    title: "Nostalgic",
-    saying: "Remember this? Let's set it to music.",
     gradient: "linear-gradient(170deg,#F4E8D6,#E8CDA0)",
     eyebrowColor: "#8B6A3A",
     Pose: MeloMoodNostalgic,
@@ -1571,8 +1562,6 @@ export const MELO_MOOD_CARDS: Record<MeloMoodKey, MeloCardMeta> = {
   'dreamy': {
     kind: 'mood',
     key: 'dreamy',
-    title: "Dreamy",
-    saying: "Half here, half in a daydream.",
     gradient: "linear-gradient(170deg,#DCD6F0,#C3B8E8)",
     eyebrowColor: "#6B5B9A",
     Pose: MeloMoodDreamy,
@@ -1580,8 +1569,6 @@ export const MELO_MOOD_CARDS: Record<MeloMoodKey, MeloCardMeta> = {
   'cozy': {
     kind: 'mood',
     key: 'cozy',
-    title: "Cozy",
-    saying: "Blanket on, mug warm, melody loading.",
     gradient: "linear-gradient(170deg,#F5E3D0,#E8C7A0)",
     eyebrowColor: "#A07040",
     Pose: MeloMoodCozy,
@@ -1589,8 +1576,6 @@ export const MELO_MOOD_CARDS: Record<MeloMoodKey, MeloCardMeta> = {
   'productive': {
     kind: 'mood',
     key: 'productive',
-    title: "Productive",
-    saying: "Checking things off \u2014 let's make it a soundtrack.",
     gradient: "linear-gradient(170deg,#D8F0E4,#B8E4D0)",
     eyebrowColor: "#3A7A5A",
     Pose: MeloMoodProductive,
@@ -1598,8 +1583,6 @@ export const MELO_MOOD_CARDS: Record<MeloMoodKey, MeloCardMeta> = {
   'outgoing': {
     kind: 'mood',
     key: 'outgoing',
-    title: "Outgoing",
-    saying: "Say less \u2014 let's make some noise!",
     gradient: "linear-gradient(170deg,#FFE0C2,#FF9A6B)",
     eyebrowColor: "#C95A30",
     Pose: MeloMoodOutgoing,
@@ -1607,8 +1590,6 @@ export const MELO_MOOD_CARDS: Record<MeloMoodKey, MeloCardMeta> = {
   'introspective': {
     kind: 'mood',
     key: 'introspective',
-    title: "Introspective",
-    saying: "Quiet on the outside, a lot going on inside.",
     gradient: "linear-gradient(170deg,#E6DCE8,#D0BFD6)",
     eyebrowColor: "#6A5070",
     Pose: MeloMoodIntrospective,
@@ -1616,8 +1597,6 @@ export const MELO_MOOD_CARDS: Record<MeloMoodKey, MeloCardMeta> = {
   'relaxed': {
     kind: 'mood',
     key: 'relaxed',
-    title: "Relaxed",
-    saying: "Nowhere to be. Let the melody drift.",
     gradient: "linear-gradient(170deg,#DCEEE8,#C2E4D6)",
     eyebrowColor: "#3A7A6A",
     Pose: MeloMoodRelaxed,
@@ -1625,8 +1604,6 @@ export const MELO_MOOD_CARDS: Record<MeloMoodKey, MeloCardMeta> = {
   'inspiring': {
     kind: 'mood',
     key: 'inspiring',
-    title: "Inspiring",
-    saying: "Lightbulb moment \u2014 let's chase it.",
     gradient: "linear-gradient(170deg,#FFF0C4,#FFD27A)",
     eyebrowColor: "#B07A20",
     Pose: MeloMoodInspiring,
@@ -1637,8 +1614,6 @@ export const MELO_GENRE_CARDS: Record<MeloGenreKey, MeloCardMeta> = {
   'pop': {
     kind: 'genre',
     key: 'pop',
-    title: "Pop",
-    saying: "Catchy, shiny, stuck-in-your-head good.",
     gradient: "linear-gradient(170deg,#FFD6EC,#FF8FCB)",
     eyebrowColor: "#C04080",
     Pose: MeloGenrePop,
@@ -1646,8 +1621,6 @@ export const MELO_GENRE_CARDS: Record<MeloGenreKey, MeloCardMeta> = {
   'rock': {
     kind: 'genre',
     key: 'rock',
-    title: "Rock",
-    saying: "Turn it up \u2014 this feeling wants a guitar solo!",
     gradient: "linear-gradient(160deg,#3A2530,#20141C)",
     eyebrowColor: "#E06060",
     Pose: MeloGenreRock,
@@ -1655,8 +1628,6 @@ export const MELO_GENRE_CARDS: Record<MeloGenreKey, MeloCardMeta> = {
   'metal': {
     kind: 'genre',
     key: 'metal',
-    title: "Metal",
-    saying: "Heavier riffs, louder feelings.",
     gradient: "linear-gradient(160deg,#241417,#120A0C)",
     eyebrowColor: "#E08040",
     Pose: MeloGenreMetal,
@@ -1664,8 +1635,6 @@ export const MELO_GENRE_CARDS: Record<MeloGenreKey, MeloCardMeta> = {
   'hip-hop': {
     kind: 'genre',
     key: 'hip-hop',
-    title: "Hip-Hop",
-    saying: "Straight from the block to the beat.",
     gradient: "linear-gradient(170deg,#FFE9B0,#F0B84D)",
     eyebrowColor: "#A07020",
     Pose: MeloGenreHipHop,
@@ -1673,8 +1642,6 @@ export const MELO_GENRE_CARDS: Record<MeloGenreKey, MeloCardMeta> = {
   'r&b': {
     kind: 'genre',
     key: 'r&b',
-    title: "R&B",
-    saying: "Smooth, soulful, straight from the heart.",
     gradient: "linear-gradient(170deg,#3D2A52,#5B3B7A)",
     eyebrowColor: "#C090D0",
     Pose: MeloGenreRnB,
@@ -1682,8 +1649,6 @@ export const MELO_GENRE_CARDS: Record<MeloGenreKey, MeloCardMeta> = {
   'folk': {
     kind: 'genre',
     key: 'folk',
-    title: "Folk",
-    saying: "Simple strings, honest words.",
     gradient: "linear-gradient(170deg,#E8DCC0,#C9B98C)",
     eyebrowColor: "#7A6A40",
     Pose: MeloGenreFolk,
@@ -1691,8 +1656,6 @@ export const MELO_GENRE_CARDS: Record<MeloGenreKey, MeloCardMeta> = {
   'electronic': {
     kind: 'genre',
     key: 'electronic',
-    title: "Electronic",
-    saying: "Circuits and basslines, syncing up.",
     gradient: "linear-gradient(160deg,#1B1740,#241E52)",
     eyebrowColor: "#90A0FF",
     Pose: MeloGenreElectronic,
@@ -1700,8 +1663,6 @@ export const MELO_GENRE_CARDS: Record<MeloGenreKey, MeloCardMeta> = {
   'latin': {
     kind: 'genre',
     key: 'latin',
-    title: "Latin",
-    saying: "Hips don't lie, and neither does this beat.",
     gradient: "linear-gradient(170deg,#FFD9A0,#FF8A5C)",
     eyebrowColor: "#C05030",
     Pose: MeloGenreLatin,
@@ -1709,8 +1670,6 @@ export const MELO_GENRE_CARDS: Record<MeloGenreKey, MeloCardMeta> = {
   'asian': {
     kind: 'genre',
     key: 'asian',
-    title: "Asian",
-    saying: "New scales, familiar warmth.",
     gradient: "linear-gradient(170deg,#FDE6EA,#F7B8C4)",
     eyebrowColor: "#C05070",
     Pose: MeloGenreAsian,
@@ -1718,8 +1677,6 @@ export const MELO_GENRE_CARDS: Record<MeloGenreKey, MeloCardMeta> = {
   'classic': {
     kind: 'genre',
     key: 'classic',
-    title: "Classic",
-    saying: "Timeless notes, always in tune.",
     gradient: "linear-gradient(170deg,#2A2440,#3D3560)",
     eyebrowColor: "#D0B060",
     Pose: MeloGenreClassic,
@@ -1727,8 +1684,6 @@ export const MELO_GENRE_CARDS: Record<MeloGenreKey, MeloCardMeta> = {
   'jazz': {
     kind: 'genre',
     key: 'jazz',
-    title: "Jazz",
-    saying: "Smooth and a little smoky \u2014 let the sax do the talking.",
     gradient: "linear-gradient(170deg,#332757,#251C42)",
     eyebrowColor: "#C0A0E0",
     Pose: MeloGenreJazz,
@@ -1738,8 +1693,6 @@ export const MELO_GENRE_CARDS: Record<MeloGenreKey, MeloCardMeta> = {
 export const MELO_OFFICIAL_CARD: MeloCardMeta = {
   kind: 'official',
   key: 'official',
-  title: "Hi, I'm Melo",
-  saying: "Waving hello. Headphones always around the neck — ready to listen.",
   gradient: "linear-gradient(170deg,#FFE9CF,#FFD9B8)",
   eyebrowColor: "#8A7E96",
   Pose: MeloOfficialPose,
@@ -1762,10 +1715,21 @@ export function getMeloCardMeta(
 type MeloMoodGenreCardProps = {
   meta: MeloCardMeta
   className?: string
+  sayingOverride?: string
 }
 
-export function MeloMoodGenreCard({ meta, className }: MeloMoodGenreCardProps) {
-  const { Pose, title, saying, gradient, eyebrowColor, kind } = meta
+function meloCardCopyKey(meta: MeloCardMeta, field: 'title' | 'saying'): string {
+  if (meta.kind === 'official') return `melo.official.${field}`
+  if (meta.kind === 'mood') return `melo.moods.${meta.key}.${field}`
+  return `melo.genres.${meta.key}.${field}`
+}
+
+export function MeloMoodGenreCard({ meta, className, sayingOverride }: MeloMoodGenreCardProps) {
+  const { t } = useTranslation()
+  const { Pose, gradient, eyebrowColor, kind } = meta
+  const title = t(meloCardCopyKey(meta, 'title'))
+  const saying = sayingOverride ?? t(meloCardCopyKey(meta, 'saying'))
+
   return (
     <div
       className={[
@@ -1787,7 +1751,7 @@ export function MeloMoodGenreCard({ meta, className }: MeloMoodGenreCardProps) {
             className="font-heading text-[0.6875rem] font-semibold uppercase tracking-[0.08em]"
             style={{ color: eyebrowColor }}
           >
-            {kind === 'mood' ? 'Mood' : 'Genre'}
+            {kind === 'mood' ? t('melo.kind.mood') : t('melo.kind.genre')}
           </p>
         )}
         <p className="mt-0.5 font-heading text-lg font-semibold text-ink">{title}</p>

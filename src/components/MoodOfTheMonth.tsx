@@ -36,10 +36,7 @@ export function MoodOfTheMonth() {
     if (!data || isError) return getMeloCardMeta('official')
 
     if (hasNullWeeklyMeloData(data)) {
-      return {
-        ...getMeloCardMeta('mood', 'sad'),
-        saying: t('dashboard.weeklyMeloEmpty'),
-      }
+      return getMeloCardMeta('mood', 'sad')
     }
 
     const resolved = pickMeloCard(
@@ -50,7 +47,7 @@ export function MoodOfTheMonth() {
 
     if (resolved.kind === 'official') return getMeloCardMeta('official')
     return getMeloCardMeta(resolved.kind, resolved.key)
-  }, [bothPrefer, candidates.genre, candidates.mood, data, isError, t])
+  }, [bothPrefer, candidates.genre, candidates.mood, data, isError])
 
   if (isLoading) {
     return (
@@ -73,12 +70,15 @@ export function MoodOfTheMonth() {
     : meta.kind === 'official'
       ? t('dashboard.weeklyMeloOfficial')
       : meta.kind === 'mood'
-        ? t('dashboard.weeklyMeloMood', { mood: meta.title })
-        : t('dashboard.weeklyMeloGenre', { genre: meta.title })
+        ? t('dashboard.weeklyMeloMood', { mood: t(`melo.moods.${meta.key}.title`) })
+        : t('dashboard.weeklyMeloGenre', { genre: t(`melo.genres.${meta.key}.title`) })
 
   return (
     <div className="h-full w-full" aria-label={ariaLabel}>
-      <MeloMoodGenreCard meta={meta} />
+      <MeloMoodGenreCard
+        meta={meta}
+        sayingOverride={weeklyEmpty ? t('dashboard.weeklyMeloEmpty') : undefined}
+      />
     </div>
   )
 }
