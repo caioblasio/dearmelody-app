@@ -621,6 +621,264 @@ Returns all of the authenticated user's favorited music tracks, most recently fa
 
 ---
 
+## Diary Collections
+
+Named, user-owned groupings of the authenticated user's own diary entries (e.g. a playlist-like folder). A collection can hold any number of diary entries; a diary entry can belong to any number of collections.
+
+### `GET /api/diary-collection`
+
+**Auth:** JWT
+
+Returns a paginated list of the authenticated user's collections, most recently created first. Each item is a lightweight summary — use `GET /api/diary-collection/{id}` for the full entry list.
+
+**Query parameters**
+
+| Parameter | Type    | Default | Notes                  |
+| --------- | ------- | ------- | ---------------------- |
+| `limit`   | integer | 30      | Minimum 1, maximum 100 |
+| `offset`  | integer | 0       | Minimum 0              |
+
+**Response `200 OK`**
+
+```json
+[
+  {
+    "id": 1,
+    "title": "Road trip",
+    "description": "Songs from the road",
+    "imageLocation": null,
+    "entryCount": 3
+  }
+]
+```
+
+`imageLocation` is currently always `null` — not settable via any endpoint yet.
+
+---
+
+### `GET /api/diary-collection/{id}`
+
+**Auth:** JWT
+
+Returns a single collection owned by the authenticated user, with its diary entries.
+
+**Path parameters**
+
+| Parameter | Type    | Notes                |
+| --------- | ------- | -------------------- |
+| `id`      | integer | Collection record ID |
+
+**Response `200 OK`**
+
+```json
+{
+  "id": 1,
+  "title": "Road trip",
+  "description": "Songs from the road",
+  "imageLocation": null,
+  "diaryEntries": [
+    {
+      "id": "<uuid>",
+      "title": "My day",
+      "createdAt": "2026-05-01T10:00:00+00:00",
+      "mood": "happy"
+    }
+  ]
+}
+```
+
+Each diary entry is a lightweight summary, not the full shape returned by `GET /api/diary/{id}` — no nested music.
+
+**Response `404 Not Found`** — collection does not exist or is not owned by the authenticated user (the two cases are not distinguished).
+
+```json
+{
+  "error": "Not found"
+}
+```
+
+---
+
+### `POST /api/diary-collection`
+
+**Auth:** JWT
+
+Creates a new, empty collection for the authenticated user. Diary entries are attached afterward via `POST /api/diary-collection/{id}/diary`.
+
+**Request body**
+
+```json
+{
+  "title": "Road trip",
+  "description": "Songs from the road"
+}
+```
+
+| Field         | Type   | Required | Notes                                                    |
+| ------------- | ------ | -------- | -------------------------------------------------------- |
+| `title`       | string | yes      | Must not be blank after sanitization; max 255 characters |
+| `description` | string | no       | Free text, no length limit                               |
+
+**Response `201 Created`**
+
+```json
+{
+  "id": 1
+}
+```
+
+**Response `422 Unprocessable Entity`** — validation failure.
+
+```json
+{
+  "errors": {
+    "title": "This value should not be blank."
+  }
+}
+```
+
+---
+
+### `PATCH /api/diary-collection/{id}`
+
+**Auth:** JWT
+
+Partially updates a collection owned by the authenticated user. Both fields are optional — an omitted or blank field leaves the existing value unchanged. **`description` cannot currently be explicitly cleared back to `null` this way** — only replaced with a new non-blank value.
+
+**Path parameters**
+
+| Parameter | Type    | Notes                |
+| --------- | ------- | -------------------- |
+| `id`      | integer | Collection record ID |
+
+**Request body**
+
+```json
+{
+  "title": "Renamed collection"
+}
+```
+
+| Field         | Type   | Required | Notes                            |
+| ------------- | ------ | -------- | -------------------------------- |
+| `title`       | string | no       | Max 255 characters when provided |
+| `description` | string | no       | Free text when provided          |
+
+**Response `200 OK`**
+
+```json
+{
+  "id": 1
+}
+```
+
+**Response `404 Not Found`** — collection does not exist or is not owned by the authenticated user.
+
+```json
+{
+  "error": "Not found"
+}
+```
+
+**Response `422 Unprocessable Entity`** — validation failure (e.g. `title` over 255 characters).
+
+---
+
+### `DELETE /api/diary-collection/{id}`
+
+**Auth:** JWT
+
+Deletes a collection owned by the authenticated user. Allowed regardless of whether the collection still has diary entries — the association rows are removed, but **the diary entries themselves are untouched**. This is a one-way operation.
+
+**Path parameters**
+
+| Parameter | Type    | Notes                |
+| --------- | ------- | -------------------- |
+| `id`      | integer | Collection record ID |
+
+**Response `204 No Content`** — collection deleted.
+
+**Response `404 Not Found`** — collection does not exist or is not owned by the authenticated user.
+
+```json
+{
+  "error": "Not found"
+}
+```
+
+---
+
+### `POST /api/diary-collection/{id}/diary`
+
+**Auth:** JWT
+
+Adds a diary entry owned by the authenticated user to a collection owned by the authenticated user. **Idempotent** — adding an entry that's already in the collection succeeds without creating a duplicate or erroring.
+
+**Path parameters**
+
+| Parameter | Type    | Notes                |
+| --------- | ------- | -------------------- |
+| `id`      | integer | Collection record ID |
+
+**Request body**
+
+```json
+{
+  "diaryId": "<uuid>"
+}
+```
+
+| Field     | Type          | Required | Notes                                                                           |
+| --------- | ------------- | -------- | ------------------------------------------------------------------------------- |
+| `diaryId` | string (UUID) | yes      | Must be a valid UUID belonging to a diary entry owned by the authenticated user |
+
+**Response `201 Created`**
+
+```json
+{
+  "id": 1
+}
+```
+
+`id` is the collection's own ID.
+
+**Response `404 Not Found`** — the collection does not exist/isn't owned, or the diary entry does not exist/isn't owned by the authenticated user (the cases are not distinguished).
+
+```json
+{
+  "error": "Not found"
+}
+```
+
+**Response `422 Unprocessable Entity`** — `diaryId` missing or not a valid UUID.
+
+---
+
+### `DELETE /api/diary-collection/{id}/diary/{diaryId}`
+
+**Auth:** JWT
+
+Removes a diary entry from a collection owned by the authenticated user. **Idempotent** — removing an entry that isn't in the collection (or doesn't exist/isn't owned) still succeeds, as long as the collection itself is found and owned.
+
+**Path parameters**
+
+| Parameter | Type          | Notes                |
+| --------- | ------------- | -------------------- |
+| `id`      | integer       | Collection record ID |
+| `diaryId` | string (UUID) | Diary entry ID       |
+
+**Response `204 No Content`** — removal succeeded (or the entry wasn't in the collection to begin with).
+
+**Response `404 Not Found`** — the collection itself does not exist or is not owned by the authenticated user.
+
+```json
+{
+  "error": "Not found"
+}
+```
+
+---
+
 ## Metrics
 
 ### `GET /api/metrics/streak`
@@ -802,6 +1060,37 @@ Returns the authenticated user's most frequent curated music style **family** (e
 ```
 
 `style` is the most frequent value; on a tie, whichever style was encountered first wins (not the most recent). Only tracks with `generateStatus: "done"` **and** a matched curated style are counted — tracks still generating, failed, or whose style text didn't match any curated catalog entry are excluded entirely and can't be picked as `style`. If there are no qualifying tracks in the window, this returns `200` with `{"style": null, "counts": {}}` — never a `404`.
+
+---
+
+## Admin
+
+### `GET /api/invites`
+
+**Auth:** JWT, restricted to an allowlist of admin emails (hardcoded in `InviteAdminService::ALLOWED_EMAILS`)
+
+Temporary audit endpoint — lists all invite codes and their redemption status. Not linked from any frontend UI.
+
+**Response `200 OK`**
+
+```json
+[
+  {
+    "code": "ZYW64PXAFYREX4ME",
+    "email": "user@example.com",
+    "usedAt": "2026-07-01 12:34:56"
+  },
+  {
+    "code": "ABCD1234EFGH5678",
+    "email": null,
+    "usedAt": null
+  }
+]
+```
+
+Unredeemed codes first, then redeemed codes oldest-first. `email`/`usedAt` are `null` for unredeemed codes.
+
+**Response `404 Not Found`** — authenticated user's email is not on the allowlist. Deliberately `404`, not `403`, so the endpoint's existence isn't revealed to non-admins.
 
 ---
 
