@@ -56,7 +56,7 @@ export function MobileBottomNav() {
   return (
     <nav aria-label={t('aria.mobileNav')} className="relative md:hidden">
       <div className="border-t border-warm-border bg-card-bg/95 backdrop-blur-md">
-        <div className="flex items-end px-1 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-2.5">
+        <div className="flex items-end px-1 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3.5">
           {LEFT_ITEMS.map((item) => (
             <BottomNavLink key={item.to} {...item} />
           ))}
