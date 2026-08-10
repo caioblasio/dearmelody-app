@@ -8,7 +8,6 @@ import { LoginPage } from '@/pages/Login'
 import { MyMelodiesPage } from '@/pages/MyMelodies'
 import { NewEntryPage } from '@/pages/NewEntry'
 import { ProfilePage } from '@/pages/Profile'
-import { SettingsPage } from '@/pages/Settings'
 import { SharedMelodyPage } from '@/pages/SharedMelody'
 import { SignUpPage } from '@/pages/SignUp'
 import { ProtectedRoute } from './protected-route'
@@ -72,14 +71,9 @@ export const router = createBrowserRouter([
             handle: { title: 'collections.title' },
           },
           {
-            path: '/settings',
-            element: <SettingsPage />,
-            handle: { title: 'settings.title' },
-          },
-          {
             path: '/profile',
             element: <ProfilePage />,
-            handle: { title: 'profile.title' },
+            handle: { title: 'settings.title' },
           },
         ],
       },

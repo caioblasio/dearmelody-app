@@ -14,7 +14,7 @@
     "pastMelodies": "My Diary",
     "collections": "Collections",
     "me": "Me",
-    "settings": "Settings",
+    "settings": "Profile",
     "logout": "Log out"
   },
   "layout": {
@@ -25,7 +25,7 @@
     "mobileNav": "Main navigation",
     "sidebarNav": "Main navigation",
     "profileMenu": "Profile menu",
-    "settings": "Settings",
+    "settings": "Profile",
     "searchMelodies": "Search melodies",
     "recordMemory": "Record a New Memory",
     "hidePassword": "Hide password",
@@ -36,11 +36,24 @@
     "subtitle": "Coming soon — group your diary into life chapters and albums."
   },
   "settings": {
-    "title": "Settings",
-    "subtitle": "Coming soon — manage your account and preferences."
+    "title": "Profile",
+    "subtitle": "Your account and how DearMelody speaks to you.",
+    "profile": "Profile",
+    "preferences": "Preferences",
+    "firstName": "Name",
+    "lastName": "Last name",
+    "email": "Email",
+    "verified": "Verified",
+    "contactSupportToChange": "Contact support to change",
+    "language": "Language",
+    "languageHelp": "Melo writes your lyrics in this language.",
+    "locales": {
+      "en": "English",
+      "pt": "Portuguese"
+    }
   },
   "profile": {
-    "title": "Me"
+    "title": "Profile"
   },
   "authHeader": {
     "about": "About",

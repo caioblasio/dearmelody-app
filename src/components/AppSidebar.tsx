@@ -107,7 +107,7 @@ export function AppSidebar() {
 
           <div className="flex flex-col gap-0.5">
             <NavLink
-              to="/settings"
+              to="/profile"
               className={({ isActive }) => navLinkClass(isActive)}
             >
               <Settings className="size-4 shrink-0" aria-hidden />
