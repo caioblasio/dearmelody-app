@@ -19,7 +19,6 @@ type NavItem = {
 
 const NAV_ITEMS: NavItem[] = [
   { to: '/', labelKey: 'nav.dashboard', icon: Home, end: true },
-  { to: '/new-entry', labelKey: 'nav.newDiaryEntry', icon: PenLine },
   { to: '/melodies', labelKey: 'nav.pastMelodies', icon: BookOpen },
   { to: '/collections', labelKey: 'nav.collections', icon: FolderOpen },
 ]
@@ -31,7 +30,7 @@ function navLinkClass(isActive: boolean, disabled?: boolean) {
       ? 'cursor-not-allowed text-muted/50'
       : isActive
         ? 'bg-chip-bg text-ink'
-        : 'text-muted hover:bg-chip-bg/60 hover:text-ink',
+        : 'text-muted hover:bg-chip-bg/60 hover:text-ink'
   )
 }
 
@@ -46,8 +45,7 @@ export function AppSidebar() {
       .map((letter) => letter!.toUpperCase())
       .join('') || 'DM'
 
-  const displayName =
-    [user?.first_name, user?.last_name].filter(Boolean).join(' ') || 'DearMelody'
+  const displayName = [user?.first_name, user?.last_name].filter(Boolean).join(' ') || 'DearMelody'
 
   return (
     <aside className="sticky top-0 hidden h-screen w-60 shrink-0 flex-col border-r border-warm-border bg-card-bg md:flex">
@@ -106,10 +104,7 @@ export function AppSidebar() {
           </div>
 
           <div className="flex flex-col gap-0.5">
-            <NavLink
-              to="/profile"
-              className={({ isActive }) => navLinkClass(isActive)}
-            >
+            <NavLink to="/profile" className={({ isActive }) => navLinkClass(isActive)}>
               <Settings className="size-4 shrink-0" aria-hidden />
               {t('nav.settings')}
             </NavLink>

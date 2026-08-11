@@ -812,7 +812,7 @@ Deletes a collection owned by the authenticated user. Allowed regardless of whet
 
 **Auth:** JWT
 
-Adds a diary entry owned by the authenticated user to a collection owned by the authenticated user. **Idempotent** — adding an entry that's already in the collection succeeds without creating a duplicate or erroring.
+Adds one or more diary entries owned by the authenticated user to a collection owned by the authenticated user, in a single batched call (one ownership-lookup query + one flush, regardless of how many IDs are sent). **Idempotent per entry** — an entry already in the collection is skipped without creating a duplicate or erroring. **All-or-nothing** — if any requested `diaryId` is not found or not owned, the whole request fails with `404` and nothing is added.
 
 **Path parameters**
 
@@ -824,13 +824,13 @@ Adds a diary entry owned by the authenticated user to a collection owned by the 
 
 ```json
 {
-  "diaryId": "<uuid>"
+  "diaryIds": ["<uuid>", "<uuid>"]
 }
 ```
 
-| Field     | Type          | Required | Notes                                                                           |
-| --------- | ------------- | -------- | ------------------------------------------------------------------------------- |
-| `diaryId` | string (UUID) | yes      | Must be a valid UUID belonging to a diary entry owned by the authenticated user |
+| Field      | Type                   | Required | Notes                                                                                                          |
+| ---------- | ---------------------- | -------- | -------------------------------------------------------------------------------------------------------------- |
+| `diaryIds` | array of string (UUID) | yes      | Non-empty array. Every element must be a valid UUID belonging to a diary entry owned by the authenticated user |
 
 **Response `201 Created`**
 
@@ -842,7 +842,7 @@ Adds a diary entry owned by the authenticated user to a collection owned by the 
 
 `id` is the collection's own ID.
 
-**Response `404 Not Found`** — the collection does not exist/isn't owned, or the diary entry does not exist/isn't owned by the authenticated user (the cases are not distinguished).
+**Response `404 Not Found`** — the collection does not exist/isn't owned, or any diary entry in `diaryIds` does not exist/isn't owned by the authenticated user (the cases are not distinguished; a single bad ID fails the whole request).
 
 ```json
 {
@@ -850,7 +850,7 @@ Adds a diary entry owned by the authenticated user to a collection owned by the 
 }
 ```
 
-**Response `422 Unprocessable Entity`** — `diaryId` missing or not a valid UUID.
+**Response `422 Unprocessable Entity`** — `diaryIds` missing, empty, or containing an element that isn't a valid UUID.
 
 ---
 
