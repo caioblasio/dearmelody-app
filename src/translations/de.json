@@ -32,7 +32,18 @@
   },
   "collections": {
     "title": "Sammlungen",
-    "subtitle": "Demnächst — gruppiere dein Tagebuch in Lebenskapitel und Alben."
+    "subtitle": "Gruppiere dein Tagebuch in Sammlungen, die zu Alben werden.",
+    "newCollection": "Neue Sammlung",
+    "newTitle": "Neue Sammlung",
+    "detailTitle": "Sammlung",
+    "favouritesTitle": "Deine Favoriten",
+    "favouritesDescription": "Melodien und Erinnerungen, die du mit einem Herz markiert hast.",
+    "entryCount_one": "{{count}} Eintrag",
+    "entryCount_other": "{{count}} Einträge",
+    "songCount_one": "{{count}} Song",
+    "songCount_other": "{{count}} Songs",
+    "loadError": "Sammlungen konnten nicht geladen werden. Bitte versuche es erneut.",
+    "empty": "Noch keine Sammlungen. Erstelle eine, um deine Tagebucheinträge zu gruppieren."
   },
   "settings": {
     "title": "Profil",

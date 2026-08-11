@@ -1,11 +1,13 @@
 // router.tsx
 import { createBrowserRouter } from 'react-router-dom'
 import { AppLayout } from '@/components/AppLayout'
+import { CollectionDetailPage } from '@/pages/CollectionDetail'
 import { CollectionsPage } from '@/pages/Collections'
 import { DashboardPage } from '@/pages/Dashboard'
 import { EntryPage } from '@/pages/Entry'
 import { LoginPage } from '@/pages/Login'
 import { MyMelodiesPage } from '@/pages/MyMelodies'
+import { NewCollectionPage } from '@/pages/NewCollection'
 import { NewEntryPage } from '@/pages/NewEntry'
 import { ProfilePage } from '@/pages/Profile'
 import { SharedMelodyPage } from '@/pages/SharedMelody'
@@ -69,6 +71,16 @@ export const router = createBrowserRouter([
             path: '/collections',
             element: <CollectionsPage />,
             handle: { title: 'collections.title' },
+          },
+          {
+            path: '/collections/new',
+            element: <NewCollectionPage />,
+            handle: { title: 'collections.newTitle' },
+          },
+          {
+            path: '/collections/:id',
+            element: <CollectionDetailPage />,
+            handle: { title: 'collections.detailTitle' },
           },
           {
             path: '/profile',

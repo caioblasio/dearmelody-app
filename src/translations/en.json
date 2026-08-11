@@ -32,7 +32,18 @@
   },
   "collections": {
     "title": "Collections",
-    "subtitle": "Coming soon — group your diary into life chapters and albums."
+    "subtitle": "Group your diary into collections that become albums.",
+    "newCollection": "New Collection",
+    "newTitle": "New Collection",
+    "detailTitle": "Collection",
+    "favouritesTitle": "Your favourites",
+    "favouritesDescription": "Melodies and memories you've marked with a heart.",
+    "entryCount_one": "{{count}} entry",
+    "entryCount_other": "{{count}} entries",
+    "songCount_one": "{{count}} song",
+    "songCount_other": "{{count}} songs",
+    "loadError": "Could not load collections. Please try again.",
+    "empty": "No collections yet. Create one to group your diary entries."
   },
   "settings": {
     "title": "Profile",

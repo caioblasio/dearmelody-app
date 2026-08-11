@@ -32,7 +32,18 @@
   },
   "collections": {
     "title": "Coleções",
-    "subtitle": "Em breve — organize seu diário em capítulos da vida e álbuns."
+    "subtitle": "Organize seu diário em coleções que viram álbuns.",
+    "newCollection": "Nova coleção",
+    "newTitle": "Nova coleção",
+    "detailTitle": "Coleção",
+    "favouritesTitle": "Seus favoritos",
+    "favouritesDescription": "Melodias e memórias que você marcou com um coração.",
+    "entryCount_one": "{{count}} entrada",
+    "entryCount_other": "{{count}} entradas",
+    "songCount_one": "{{count}} música",
+    "songCount_other": "{{count}} músicas",
+    "loadError": "Não foi possível carregar as coleções. Tente novamente.",
+    "empty": "Nenhuma coleção ainda. Crie uma para agrupar suas entradas do diário."
   },
   "settings": {
     "title": "Perfil",

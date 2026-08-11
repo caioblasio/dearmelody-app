@@ -6,6 +6,7 @@ import { ApiError } from '@/lib/api-request'
 
 import { favoriteMusic } from './favorite-music'
 import { unfavoriteMusic } from './unfavorite-music'
+import { favoriteMusicQueryKey } from './use-get-favorite-music'
 
 export type ToggleMusicFavoriteInput = {
   musicId: number
@@ -133,6 +134,10 @@ export function useToggleMusicFavorite() {
       if (context?.snapshot) {
         restoreDiaryCaches(queryClient, context.snapshot)
       }
+    },
+
+    onSettled: () => {
+      void queryClient.invalidateQueries({ queryKey: favoriteMusicQueryKey })
     },
   })
 }
