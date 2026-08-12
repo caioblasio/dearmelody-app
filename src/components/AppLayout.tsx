@@ -20,14 +20,19 @@ export { AUTH_SHELL_CLASS }
 export function AuthenticatedAppShell() {
   const entryMatch = useMatch('/melodies/:entryId')
   const shareMatch = useMatch('/melodies/share/:shareToken')
-  const isImmersivePlayerPage = Boolean(entryMatch || shareMatch)
-  const { track } = usePlayer()
+  const collectionMatch = useMatch('/collections/:id')
+  /** Full-bleed PlayerHero shell (entry, share, collection playback) — not list/create. */
+  const isCollectionDetailPage =
+    Boolean(collectionMatch?.params.id) && collectionMatch?.params.id !== 'new'
+  const isImmersivePlayerPage = Boolean(entryMatch || shareMatch || isCollectionDetailPage)
+  const { track, immersiveEntryId } = usePlayer()
   const showGenerationBar = useMelodyGenerationBarVisible()
 
   const isViewingCurrentTrack =
     (entryMatch?.params.entryId && track?.entryId === entryMatch.params.entryId) ||
     (shareMatch?.params.shareToken &&
-      track?.entryId === `share:${shareMatch.params.shareToken}`)
+      track?.entryId === `share:${shareMatch.params.shareToken}`) ||
+    Boolean(track && immersiveEntryId && immersiveEntryId === track.entryId)
 
   const showMiniBar = Boolean(track) && !isViewingCurrentTrack
 

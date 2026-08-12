@@ -64,7 +64,7 @@ function FavoritesCollectionStub() {
   const { t } = useTranslation()
 
   return (
-    <section className="space-y-3">
+    <section className="space-y-3 px-5 py-6 sm:px-8 lg:px-0">
       <Link
         to="/collections"
         className="mb-2 inline-flex items-center gap-1.5 text-sm font-semibold text-coral transition-colors hover:text-coral-light"
@@ -133,7 +133,12 @@ export function CollectionDetailPage() {
   const upNextItems = playable
     .slice(safeIndex + 1)
     .concat(playable.slice(0, safeIndex))
-    .map((item) => ({ id: item.detail.id, title: item.songTitle }))
+    .map((item) => ({
+      id: item.detail.id,
+      title: item.songTitle,
+      entryTitle: item.detail.title,
+      imageLocation: item.detail.musics?.[0]?.imageLocation ?? null,
+    }))
 
   async function selectIndex(nextIndex: number) {
     const item = playable[nextIndex]
