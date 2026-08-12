@@ -13,7 +13,7 @@ import { Alert } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { ApiError } from '@/lib/api-request'
-import { isFavoritesCollectionId } from '@/lib/collections'
+import { collectionEditPath, isFavoritesCollectionId } from '@/lib/collections'
 import { downloadBlob, extensionFromMime, sanitizeDownloadFilename } from '@/lib/download-blob'
 import { usePlayer } from '@/lib/player/use-player'
 
@@ -206,13 +206,23 @@ export function CollectionDetailPage() {
 
   return (
     <div>
-      <Link
-        to="/collections"
-        className="mb-6 hidden items-center gap-1.5 text-sm font-semibold text-coral transition-colors hover:text-coral-light lg:inline-flex"
-      >
-        <ChevronLeft className="size-4 shrink-0" aria-hidden />
-        {t('collections.backToCollections')}
-      </Link>
+      <div className="mb-6 hidden items-center justify-between gap-3 lg:flex">
+        <Link
+          to="/collections"
+          className="inline-flex items-center gap-1.5 text-sm font-semibold text-coral transition-colors hover:text-coral-light"
+        >
+          <ChevronLeft className="size-4 shrink-0" aria-hidden />
+          {t('collections.backToCollections')}
+        </Link>
+        {!isLoading && !isError ? (
+          <Link
+            to={collectionEditPath(numericId)}
+            className="text-sm font-semibold text-coral transition-colors hover:text-coral-light"
+          >
+            {t('collections.editCollection')}
+          </Link>
+        ) : null}
+      </div>
 
       {isLoading && <CollectionDetailSkeleton />}
 
@@ -224,9 +234,17 @@ export function CollectionDetailPage() {
 
       {!isLoading && !isError && isEmptyCollection && (
         <section className="space-y-3 px-5 py-6 sm:px-8 lg:px-0">
-          <h1 className="font-heading text-[2.125rem] font-semibold text-ink sm:text-4xl">
-            {collection?.title ?? t('collections.detailTitle')}
-          </h1>
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <h1 className="font-heading text-[2.125rem] font-semibold text-ink sm:text-4xl">
+              {collection?.title ?? t('collections.detailTitle')}
+            </h1>
+            <Link
+              to={collectionEditPath(numericId)}
+              className="text-sm font-semibold text-coral transition-colors hover:text-coral-light lg:hidden"
+            >
+              {t('collections.editCollection')}
+            </Link>
+          </div>
           {collection?.description ? (
             <p className="max-w-xl text-sm text-muted sm:text-base">{collection.description}</p>
           ) : null}
@@ -238,9 +256,17 @@ export function CollectionDetailPage() {
 
       {!isLoading && !isError && hasNoPlayable && (
         <section className="space-y-3 px-5 py-6 sm:px-8 lg:px-0">
-          <h1 className="font-heading text-[2.125rem] font-semibold text-ink sm:text-4xl">
-            {collection?.title ?? t('collections.detailTitle')}
-          </h1>
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <h1 className="font-heading text-[2.125rem] font-semibold text-ink sm:text-4xl">
+              {collection?.title ?? t('collections.detailTitle')}
+            </h1>
+            <Link
+              to={collectionEditPath(numericId)}
+              className="text-sm font-semibold text-coral transition-colors hover:text-coral-light lg:hidden"
+            >
+              {t('collections.editCollection')}
+            </Link>
+          </div>
           <p className="text-sm text-muted" role="status">
             {t('collections.detailNoPlayable')}
           </p>
@@ -275,7 +301,18 @@ export function CollectionDetailPage() {
             downloadError ? <Alert variant="destructive">{downloadError}</Alert> : null
           }
           belowControls={
-            <CollectionUpNext items={upNextItems} onSelect={(entryId) => void onSelectUpNext(entryId)} />
+            <CollectionUpNext
+              items={upNextItems}
+              onSelect={(entryId) => void onSelectUpNext(entryId)}
+              trailing={
+                <Link
+                  to={collectionEditPath(numericId)}
+                  className="text-sm font-semibold text-player-brown transition-colors hover:text-player-ink lg:hidden"
+                >
+                  {t('collections.editCollection')}
+                </Link>
+              }
+            />
           }
         />
       ) : null}

@@ -5,6 +5,7 @@ import { CollectionDetailPage } from '@/pages/CollectionDetail'
 import { CollectionsPage } from '@/pages/Collections'
 import { DashboardPage } from '@/pages/Dashboard'
 import { EntryPage } from '@/pages/Entry'
+import { EditCollectionPage } from '@/pages/EditCollection'
 import { LoginPage } from '@/pages/Login'
 import { MyMelodiesPage } from '@/pages/MyMelodies'
 import { NewCollectionPage } from '@/pages/NewCollection'
@@ -76,6 +77,11 @@ export const router = createBrowserRouter([
             path: '/collections/new',
             element: <NewCollectionPage />,
             handle: { title: 'collections.newTitle' },
+          },
+          {
+            path: '/collections/:id/edit',
+            element: <EditCollectionPage />,
+            handle: { title: 'collections.editTitle' },
           },
           {
             path: '/collections/:id',

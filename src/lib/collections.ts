@@ -19,3 +19,7 @@ export function isFavoritesCollectionId(id: string | undefined): boolean {
 export function collectionPath(id: CollectionId): string {
   return `/collections/${id}`
 }
+
+export function collectionEditPath(id: number): string {
+  return `/collections/${id}/edit`
+}
