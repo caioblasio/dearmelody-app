@@ -69,6 +69,7 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
   const [volume, setVolumeState] = useState(0.6)
   const [isScrubbing, setIsScrubbing] = useState(false)
   const [scrubTime, setScrubTime] = useState(0)
+  const [immersiveEntryId, setImmersiveEntryId] = useState<string | null>(null)
 
   const displayedTime = isScrubbing ? scrubTime : currentTime
 
@@ -329,6 +330,8 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
       isScrubbing,
       scrubTime,
       displayedTime,
+      immersiveEntryId,
+      setImmersiveEntryId,
       playEntry,
       playFromDetail,
       playFromShare,
@@ -352,6 +355,7 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
       isScrubbing,
       scrubTime,
       displayedTime,
+      immersiveEntryId,
       playEntry,
       playFromDetail,
       playFromShare,

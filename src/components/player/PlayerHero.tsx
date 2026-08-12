@@ -1,5 +1,5 @@
 import { AlertCircle, ChevronLeft, ImageIcon, Mic2 } from 'lucide-react'
-import { useState, type ReactNode } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 import { Link, useMatch } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
@@ -112,6 +112,8 @@ type PlayerHeroProps = {
   toolbar?: ReactNode
   /** Extra content under the controls (e.g. download errors). */
   belowToolbar?: ReactNode
+  /** Content rendered directly under the transport controls (e.g. up-next list). */
+  belowControls?: ReactNode
   className?: string
   /**
    * How lyrics are presented.
@@ -126,12 +128,25 @@ type PlayerHeroProps = {
    * Disable on share so banner / extras can sit below without a full-screen gap.
    */
   fillViewport?: boolean
-  /** Show immersive mobile back control linking to Past Melodies. */
+  /** Show immersive mobile back control. */
   showBackLink?: boolean
+  /** Destination for the back control (default: Past Melodies). */
+  backHref?: string
+  /** Accessible label for the back control. */
+  backAriaLabel?: string
   /** Overrides the default “Now playing · from DATE” eyebrow. */
   eyebrow?: string
   /** Used when there is no `entryDetail` (e.g. public share playback). */
   onActivate?: () => void | Promise<void>
+  /**
+   * - `playOnly`: progress + play (entry page)
+   * - `skip`: progress + prev / play / next (collection details)
+   */
+  transport?: 'playOnly' | 'skip'
+  onPrevious?: () => void
+  onNext?: () => void
+  canPrevious?: boolean
+  canNext?: boolean
 }
 
 export function PlayerHero({
@@ -141,20 +156,34 @@ export function PlayerHero({
   headerActions,
   toolbar,
   belowToolbar,
+  belowControls,
   className,
   lyricsMode = 'below',
   compact = false,
   fillViewport = true,
   showBackLink = false,
+  backHref = '/melodies',
+  backAriaLabel,
   eyebrow,
   onActivate: onActivateProp,
+  transport = 'playOnly',
+  onPrevious,
+  onNext,
+  canPrevious = false,
+  canNext = false,
 }: PlayerHeroProps) {
   const { t, i18n } = useTranslation()
   const prefersReducedMotion = usePrefersReducedMotion()
-  const { track: contextTrack, playFromDetail } = usePlayer()
+  const { track: contextTrack, playFromDetail, setImmersiveEntryId } = usePlayer()
   const entryMatch = useMatch('/melodies/:entryId')
   const shareMatch = useMatch('/melodies/share/:shareToken')
   const showGenerationBar = useMelodyGenerationBarVisible()
+
+  useEffect(() => {
+    if (!entryDetail?.id) return
+    setImmersiveEntryId(entryDetail.id)
+    return () => setImmersiveEntryId(null)
+  }, [entryDetail?.id, setImmersiveEntryId])
 
   const track = trackProp ?? (entryDetail ? null : contextTrack)
   const primaryMusic = entryDetail?.musics?.[0] ?? null
@@ -184,8 +213,9 @@ export function PlayerHero({
   const canFlipToLyrics =
     lyricsMode === 'flip' && Boolean(lyricsText) && !musicLoading && !musicFailed
 
-  /** Mini bar shows when another track is playing (not this entry / share). */
+  /** Mini bar shows when another track is playing (not this entry / share / hero detail). */
   const isViewingCurrentTrack =
+    Boolean(entryDetail?.id && contextTrack?.entryId === entryDetail.id) ||
     (entryMatch?.params.entryId && contextTrack?.entryId === entryMatch.params.entryId) ||
     (shareMatch?.params.shareToken &&
       contextTrack?.entryId === `share:${shareMatch.params.shareToken}`)
@@ -332,13 +362,15 @@ export function PlayerHero({
         {showBackLink ? (
           <div className="mb-4 flex items-center justify-between lg:hidden">
             <Link
-              to="/melodies"
+              to={backHref}
               className="inline-flex size-10 items-center justify-center rounded-full text-player-ink transition-colors hover:bg-player-ink/10"
-              aria-label={t('entry.backAria')}
+              aria-label={backAriaLabel ?? t('entry.backAria')}
             >
               <ChevronLeft className="size-6" aria-hidden />
             </Link>
-            {recordedDate ? (
+            {eyebrow ? (
+              <p className="label-caps truncate text-player-brown">{eyebrow}</p>
+            ) : recordedDate ? (
               <p className="label-caps text-player-brown">{t('player.nowPlaying')}</p>
             ) : (
               <span />
@@ -347,7 +379,7 @@ export function PlayerHero({
           </div>
         ) : null}
 
-        {eyebrow ? (
+        {eyebrow && !showBackLink ? (
           <p className="mb-6 label-caps text-player-brown lg:hidden">{eyebrow}</p>
         ) : null}
 
@@ -425,13 +457,20 @@ export function PlayerHero({
                 </div>
               </div>
             ) : musicReady && entryId ? (
-              <PlayerControls
-                variant={variant}
-                transport="playOnly"
-                trailingActions={trailingActions}
-                entryId={entryId}
-                onActivate={canActivate ? handleActivate : undefined}
-              />
+              <>
+                <PlayerControls
+                  variant={variant}
+                  transport={transport}
+                  trailingActions={trailingActions}
+                  entryId={entryId}
+                  onActivate={canActivate ? handleActivate : undefined}
+                  onPrevious={onPrevious}
+                  onNext={onNext}
+                  canPrevious={canPrevious}
+                  canNext={canNext}
+                />
+                {belowControls}
+              </>
             ) : null}
 
             {/* Desktop entry snippet sits under controls in the right column on lg;

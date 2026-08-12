@@ -8,15 +8,13 @@ import { isViewingPlayerTrack, playerTrackHref } from '@/lib/player/player-track
 /** Mobile mini player strip — sits above the bottom nav in AppLayout. */
 export function GlobalPlayerMiniBar() {
   const { t } = useTranslation()
-  const { track, isPlaying, isLoading, togglePlay, stop } = usePlayer()
+  const { track, isPlaying, isLoading, togglePlay, stop, immersiveEntryId } = usePlayer()
 
   const entryMatch = useMatch('/melodies/:entryId')
   const shareMatch = useMatch('/melodies/share/:shareToken')
-  const isOnCurrentTrackPage = isViewingPlayerTrack(
-    track,
-    entryMatch?.params.entryId,
-    shareMatch?.params.shareToken
-  )
+  const isOnCurrentTrackPage =
+    isViewingPlayerTrack(track, entryMatch?.params.entryId, shareMatch?.params.shareToken) ||
+    Boolean(track && immersiveEntryId && immersiveEntryId === track.entryId)
 
   if (!track || isOnCurrentTrackPage) {
     return null

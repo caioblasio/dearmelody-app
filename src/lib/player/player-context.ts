@@ -30,6 +30,9 @@ export type PlayerContextValue = {
   isScrubbing: boolean
   scrubTime: number
   displayedTime: number
+  /** Entry id currently shown in a full PlayerHero (entry or collection details). */
+  immersiveEntryId: string | null
+  setImmersiveEntryId: (entryId: string | null) => void
   playEntry: (entryId: string) => Promise<void>
   playFromDetail: (detail: DiaryEntryDetail) => Promise<void>
   playFromShare: (share: MusicShare, token: string) => Promise<void>

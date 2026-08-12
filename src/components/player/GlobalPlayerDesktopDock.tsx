@@ -14,15 +14,13 @@ type GlobalPlayerDesktopDockProps = {
 /** Desktop floating dock: mini player (left) + new-entry FAB (right). */
 export function GlobalPlayerDesktopDock({ showNewEntryFab = true }: GlobalPlayerDesktopDockProps) {
   const { t } = useTranslation()
-  const { track, isPlaying, isLoading, togglePlay, stop } = usePlayer()
+  const { track, isPlaying, isLoading, togglePlay, stop, immersiveEntryId } = usePlayer()
 
   const entryMatch = useMatch('/melodies/:entryId')
   const shareMatch = useMatch('/melodies/share/:shareToken')
-  const isOnCurrentTrackPage = isViewingPlayerTrack(
-    track,
-    entryMatch?.params.entryId,
-    shareMatch?.params.shareToken
-  )
+  const isOnCurrentTrackPage =
+    isViewingPlayerTrack(track, entryMatch?.params.entryId, shareMatch?.params.shareToken) ||
+    Boolean(track && immersiveEntryId && immersiveEntryId === track.entryId)
 
   const showMiniPlayer = Boolean(track) && !isOnCurrentTrackPage
 

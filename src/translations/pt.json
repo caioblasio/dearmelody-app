@@ -69,7 +69,14 @@
     "removeEntryAria": "Remover {{title}} da coleção",
     "createCollection": "Criar coleção",
     "createPending": "Criando…",
-    "createError": "Não foi possível criar a coleção. Tente novamente."
+    "createError": "Não foi possível criar a coleção. Tente novamente.",
+    "detailLoading": "Carregando coleção",
+    "detailLoadError": "Não foi possível carregar esta coleção. Tente novamente.",
+    "detailNotFound": "Coleção não encontrada.",
+    "detailEmpty": "Esta coleção ainda não tem entradas.",
+    "detailNoPlayable": "Nenhuma entrada desta coleção tem uma melodia pronta ainda.",
+    "upNext": "A seguir",
+    "upNextAria": "Músicas a seguir nesta coleção"
   },
   "settings": {
     "title": "Perfil",

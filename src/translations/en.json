@@ -69,7 +69,14 @@
     "removeEntryAria": "Remove {{title}} from collection",
     "createCollection": "Create collection",
     "createPending": "Creating…",
-    "createError": "Could not create the collection. Please try again."
+    "createError": "Could not create the collection. Please try again.",
+    "detailLoading": "Loading collection",
+    "detailLoadError": "Could not load this collection. Please try again.",
+    "detailNotFound": "Collection not found.",
+    "detailEmpty": "This collection has no entries yet.",
+    "detailNoPlayable": "None of the entries in this collection have a ready melody yet.",
+    "upNext": "Up next",
+    "upNextAria": "Songs up next in this collection"
   },
   "settings": {
     "title": "Profile",

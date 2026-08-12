@@ -20,13 +20,18 @@ type PlayerControlsProps = {
   /**
    * - `full`: shuffle / prev / play / next / repeat (kept for a future full player)
    * - `playOnly`: progress + play button; optional trailing actions (share, download, cover)
+   * - `skip`: progress + prev / play / next + optional trailing actions (collection player)
    */
-  transport?: 'full' | 'playOnly'
-  /** Rendered to the right of the play button when `transport="playOnly"`. */
+  transport?: 'full' | 'playOnly' | 'skip'
+  /** Rendered to the right of the play button when `transport` is `playOnly` or `skip`. */
   trailingActions?: ReactNode
   /** When set, play activates this entry if it is not already the current track. */
   entryId?: string
   onActivate?: () => void | Promise<void>
+  onPrevious?: () => void
+  onNext?: () => void
+  canPrevious?: boolean
+  canNext?: boolean
 }
 
 export function PlayerControls({
@@ -37,6 +42,10 @@ export function PlayerControls({
   trailingActions,
   entryId,
   onActivate,
+  onPrevious,
+  onNext,
+  canPrevious = false,
+  canNext = false,
 }: PlayerControlsProps) {
   const { t } = useTranslation()
   const {
@@ -60,6 +69,8 @@ export function PlayerControls({
   const showDuration = isActiveTrack ? duration : 0
   const showTime = isActiveTrack ? displayedTime : 0
   const isPlayOnly = transport === 'playOnly'
+  const isSkip = transport === 'skip'
+  const isCompactTransport = isPlayOnly || isSkip
 
   async function handlePlayClick() {
     if (entryId && !isCurrentEntry(entryId)) {
@@ -70,13 +81,13 @@ export function PlayerControls({
   }
 
   const transportBtnClass = isWarm
-    ? 'inline-flex size-9 items-center justify-center rounded-full text-player-ink/70 transition-colors hover:bg-player-ink/10 hover:text-player-ink'
-    : 'inline-flex size-9 items-center justify-center rounded-full text-muted transition-colors hover:bg-black/5 hover:text-coral'
+    ? 'inline-flex size-9 items-center justify-center rounded-full text-player-ink/70 transition-colors hover:bg-player-ink/10 hover:text-player-ink disabled:pointer-events-none disabled:opacity-30'
+    : 'inline-flex size-9 items-center justify-center rounded-full text-muted transition-colors hover:bg-black/5 hover:text-coral disabled:pointer-events-none disabled:opacity-30'
 
   const playBtnClass = isWarm
     ? cn(
         'inline-flex items-center justify-center rounded-full bg-player-ink text-butter shadow-lg transition-transform hover:scale-105 active:scale-95 disabled:opacity-70',
-        isPlayOnly ? 'size-14' : 'size-[4.625rem]'
+        isCompactTransport ? 'size-14' : 'size-[4.625rem]'
       )
     : 'inline-flex size-11 items-center justify-center rounded-full btn-coral-gradient text-on-primary shadow-md transition-transform hover:scale-105 active:scale-95 disabled:opacity-70'
 
@@ -101,9 +112,9 @@ export function PlayerControls({
       {isLoading && isActiveTrack ? (
         <Loader2 className="size-5 animate-spin" aria-hidden />
       ) : showPlaying ? (
-        <Pause className={cn(isPlayOnly ? 'size-5' : 'size-6')} aria-hidden />
+        <Pause className={cn(isCompactTransport ? 'size-5' : 'size-6')} aria-hidden />
       ) : (
-        <Play className={cn('translate-x-0.5', isPlayOnly ? 'size-5' : 'size-6')} aria-hidden />
+        <Play className={cn('translate-x-0.5', isCompactTransport ? 'size-5' : 'size-6')} aria-hidden />
       )}
     </button>
   )
@@ -136,7 +147,34 @@ export function PlayerControls({
         </div>
       </div>
 
-      {isPlayOnly ? (
+      {isSkip ? (
+        <div className="flex shrink-0 items-center justify-between gap-3">
+          <div className="flex items-center gap-1">
+            <button
+              type="button"
+              aria-label={t('entry.player.previous')}
+              className={transportBtnClass}
+              disabled={!canPrevious}
+              onClick={onPrevious}
+            >
+              <SkipBack className="size-4" aria-hidden />
+            </button>
+            {playButton}
+            <button
+              type="button"
+              aria-label={t('entry.player.next')}
+              className={transportBtnClass}
+              disabled={!canNext}
+              onClick={onNext}
+            >
+              <SkipForward className="size-4" aria-hidden />
+            </button>
+          </div>
+          {trailingActions ? (
+            <div className="flex flex-wrap items-center justify-end gap-2">{trailingActions}</div>
+          ) : null}
+        </div>
+      ) : isPlayOnly ? (
         <div className="flex shrink-0 items-center justify-between gap-3">
           {playButton}
           {trailingActions ? (
@@ -209,7 +247,7 @@ export function PlayerControls({
         </div>
       )}
 
-      {isPlayOnly && error && isActiveTrack ? (
+      {isCompactTransport && error && isActiveTrack ? (
         <p className="text-center text-sm font-medium text-error" role="alert">
           {error}
         </p>
