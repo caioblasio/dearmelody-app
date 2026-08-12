@@ -1,0 +1,23 @@
+{
+  "name": "Dear Melody",
+  "short_name": "Dear Melody",
+  "description": "Dear Melody turns your journal entries into songs. Write your story, hear how it feels.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ff9a6b",
+  "theme_color": "#fff6ec",
+  "icons": [
+    {
+      "src": "/melo-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/melo-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
