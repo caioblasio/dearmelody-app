@@ -8,14 +8,15 @@ import { collectionQueryKey } from './use-get-collection'
 
 type AddCollectionDiaryVariables = {
   id: number
-  diaryId: string
+  diaryIds: string[]
 }
 
 export function useAddCollectionDiary() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: ({ id, diaryId }: AddCollectionDiaryVariables) => addCollectionDiary(id, diaryId),
+    mutationFn: ({ id, diaryIds }: AddCollectionDiaryVariables) =>
+      addCollectionDiary(id, diaryIds),
     onSuccess: (_data: AddCollectionDiaryResponse, { id }) => {
       void queryClient.invalidateQueries({ queryKey: ['collections'] })
       void queryClient.invalidateQueries({ queryKey: collectionQueryKey(id) })

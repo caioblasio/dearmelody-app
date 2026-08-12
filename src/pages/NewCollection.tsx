@@ -1,35 +1,76 @@
 import { ChevronLeft } from 'lucide-react'
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useCallback, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
+import { useAddCollectionDiary } from '@/api/collections/use-add-collection-diary'
+import { useCreateCollection } from '@/api/collections/use-create-collection'
 import { CollectionCard } from '@/components/collections/CollectionCard'
+import { CollectionEntryPicker } from '@/components/collections/CollectionEntryPicker'
+import { Alert } from '@/components/ui/alert'
+import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import type { CollectionCardData } from '@/lib/collections'
+import { collectionPath, type CollectionCardData } from '@/lib/collections'
 
 const PREVIEW_COLLECTION_ID = -1
 
 export function NewCollectionPage() {
   const { t } = useTranslation()
+  const navigate = useNavigate()
 
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [previewTitle, setPreviewTitle] = useState('')
   const [previewDescription, setPreviewDescription] = useState('')
+  const [selectedIds, setSelectedIds] = useState<string[]>([])
+  const [submitError, setSubmitError] = useState<string | null>(null)
+
+  const createCollection = useCreateCollection()
+  const addCollectionDiary = useAddCollectionDiary()
+
+  const isSubmitting = createCollection.isPending || addCollectionDiary.isPending
+  const trimmedTitle = title.trim()
 
   const syncPreview = () => {
     setPreviewTitle(title)
     setPreviewDescription(description)
   }
 
+  const handleToggleEntry = useCallback((id: string) => {
+    setSelectedIds((current) =>
+      current.includes(id) ? current.filter((entryId) => entryId !== id) : [...current, id],
+    )
+  }, [])
+
   const previewCollection: CollectionCardData = {
     id: PREVIEW_COLLECTION_ID,
     title: previewTitle.trim() || t('collections.untitledPreview'),
     description: previewDescription.trim() || null,
     imageLocation: null,
-    entryCount: 0,
+    entryCount: selectedIds.length,
+  }
+
+  async function handleCreate() {
+    if (!trimmedTitle || isSubmitting) return
+
+    setSubmitError(null)
+
+    try {
+      const { id } = await createCollection.mutateAsync({
+        title: trimmedTitle,
+        ...(description.trim() ? { description: description.trim() } : {}),
+      })
+
+      if (selectedIds.length > 0) {
+        await addCollectionDiary.mutateAsync({ id, diaryIds: selectedIds })
+      }
+
+      navigate(collectionPath(id))
+    } catch {
+      setSubmitError(t('collections.createError'))
+    }
   }
 
   return (
@@ -98,8 +139,20 @@ export function NewCollectionPage() {
         </aside>
       </div>
 
-      {/* Entry selector — full width; implemented in a follow-up plan */}
-      <div className="w-full" />
+      <CollectionEntryPicker selectedIds={selectedIds} onToggle={handleToggleEntry} />
+
+      {submitError ? <Alert variant="destructive">{submitError}</Alert> : null}
+
+      <div className="flex justify-end border-t border-warm-border pt-6">
+        <Button
+          type="button"
+          onClick={() => void handleCreate()}
+          disabled={!trimmedTitle || isSubmitting}
+          className="min-w-[10rem] rounded-full"
+        >
+          {isSubmitting ? t('collections.createPending') : t('collections.createCollection')}
+        </Button>
+      </div>
     </section>
   )
 }

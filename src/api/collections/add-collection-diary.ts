@@ -6,11 +6,11 @@ export type AddCollectionDiaryResponse = {
 
 export async function addCollectionDiary(
   id: number,
-  diaryId: string,
+  diaryIds: string[],
 ): Promise<AddCollectionDiaryResponse> {
   return apiRequest<AddCollectionDiaryResponse>(`/api/diary-collection/${id}/diary`, {
     method: 'POST',
-    body: { diaryId },
+    body: { diaryIds },
     auth: true,
   })
 }
