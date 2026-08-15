@@ -180,10 +180,11 @@ export function PlayerHero({
   const showGenerationBar = useMelodyGenerationBarVisible()
 
   useEffect(() => {
-    if (!entryDetail?.id) return
-    setImmersiveEntryId(entryDetail.id)
+    const immersiveId = entryDetail?.id ?? trackProp?.entryId
+    if (!immersiveId) return
+    setImmersiveEntryId(immersiveId)
     return () => setImmersiveEntryId(null)
-  }, [entryDetail?.id, setImmersiveEntryId])
+  }, [entryDetail?.id, trackProp?.entryId, setImmersiveEntryId])
 
   const track = trackProp ?? (entryDetail ? null : contextTrack)
   const primaryMusic = entryDetail?.musics?.[0] ?? null
@@ -207,7 +208,7 @@ export function PlayerHero({
   const displayMusicTitle = primaryMusic?.title ?? track?.title ?? entryTitle
   const imageLocation = primaryMusic?.imageLocation ?? track?.imageLocation ?? null
   const lyricsText = (primaryMusic?.lyrics ?? track?.lyrics)?.trim() ?? ''
-  const styles = primaryMusic?.styles ?? []
+  const styles = primaryMusic?.styles ?? track?.styles ?? []
   const entryBody = entryDetail?.entry?.trim() ?? ''
   const entryId = entryDetail?.id ?? track?.entryId
   const canFlipToLyrics =
@@ -216,6 +217,7 @@ export function PlayerHero({
   /** Mini bar shows when another track is playing (not this entry / share / hero detail). */
   const isViewingCurrentTrack =
     Boolean(entryDetail?.id && contextTrack?.entryId === entryDetail.id) ||
+    Boolean(trackProp?.entryId && contextTrack?.entryId === trackProp.entryId) ||
     (entryMatch?.params.entryId && contextTrack?.entryId === entryMatch.params.entryId) ||
     (shareMatch?.params.shareToken &&
       contextTrack?.entryId === `share:${shareMatch.params.shareToken}`)

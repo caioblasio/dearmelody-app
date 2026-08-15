@@ -9,7 +9,7 @@ import {
 import { useQueryClient } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 
-import type { DiaryEntryDetail } from '@/api/diary/diary-entry-detail'
+import type { DiaryEntryDetail, DiaryMusicTrack } from '@/api/diary/diary-entry-detail'
 import { getDiaryEntry } from '@/api/diary/get-diary-entry'
 import { getMusicShareStream } from '@/api/music/get-music-share-stream'
 import { getMusicStream } from '@/api/music/get-music-stream'
@@ -20,6 +20,7 @@ import {
   PlayerContext,
   trackAudioKey,
   trackFromDetail,
+  trackFromMusicTrack,
   trackFromShare,
   type PlayerContextValue,
   type PlayerTrack,
@@ -214,6 +215,18 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
     [startTrack, t],
   )
 
+  const playFromMusicTrack = useCallback(
+    async (music: DiaryMusicTrack) => {
+      const next = trackFromMusicTrack(music)
+      if (!next) {
+        setError(t('entry.player.loadError'))
+        return
+      }
+      await startTrack(next)
+    },
+    [startTrack, t],
+  )
+
   const playFromShare = useCallback(
     async (share: MusicShare, token: string) => {
       await startTrack(trackFromShare(share, token))
@@ -334,6 +347,7 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
       setImmersiveEntryId,
       playEntry,
       playFromDetail,
+      playFromMusicTrack,
       playFromShare,
       togglePlay,
       seek,
@@ -358,6 +372,7 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
       immersiveEntryId,
       playEntry,
       playFromDetail,
+      playFromMusicTrack,
       playFromShare,
       togglePlay,
       seek,

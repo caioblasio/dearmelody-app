@@ -4,7 +4,6 @@ import type { DashboardMetricsResponse } from '@/api/dashboard/dashboard-metrics
 import type { DiaryEntryDetail, DiaryMusicTrack } from '@/api/diary/diary-entry-detail'
 import type { GenerateStatus } from '@/api/diary/generate-status'
 import type { DiaryListItem, DiaryMusicSummary } from '@/api/diary/diary-list-item'
-import type { MusicSummary } from '@/api/music/music-summary'
 import { formatLocalDateYmd } from '@/lib/diary-date-range'
 import { buildDashboardMetricsMock } from '@/mocks/dashboard-metrics-mock'
 import { PAST_MELODIES_MOCK } from '@/mocks/past-melodies-mock'
@@ -297,20 +296,11 @@ export const handlers = [
   }),
   http.get('/api/music/favorites', async () => {
     await delay(300)
-    const favorites: MusicSummary[] = ALL_DIARY_MOCK.flatMap((entry) => {
+    const favorites: DiaryMusicTrack[] = ALL_DIARY_MOCK.flatMap((entry) => {
       if (!entry.music || !favoritedMusicIds.has(entry.music.id)) return []
-      const music = withFavoriteState(entry.music)
-      return [
-        {
-          id: music.id,
-          title: music.title,
-          imageLocation: music.imageLocation,
-          generateStatus: music.generateStatus,
-          styles: music.styles,
-          isFavorited: true,
-          shareToken: music.shareToken,
-        } satisfies MusicSummary,
-      ]
+      const music = diaryListItemToDetail(entry).musics?.[0]
+      if (!music) return []
+      return [{ ...music, isFavorited: true }]
     })
     return HttpResponse.json(favorites)
   }),

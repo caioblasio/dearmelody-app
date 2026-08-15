@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient, type QueryClient } from '@tanstack/react-query'
 
-import type { DiaryEntryDetail } from '@/api/diary/diary-entry-detail'
+import type { DiaryEntryDetail, DiaryMusicTrack } from '@/api/diary/diary-entry-detail'
 import type { DiaryListItem } from '@/api/diary/diary-list-item'
 import { ApiError } from '@/lib/api-request'
 
@@ -125,14 +125,24 @@ export function useToggleMusicFavorite() {
 
     onMutate: async ({ musicId, isFavorited }) => {
       await queryClient.cancelQueries({ queryKey: ['diary'] })
+      await queryClient.cancelQueries({ queryKey: favoriteMusicQueryKey })
       const snapshot = snapshotDiaryCaches(queryClient)
+      const favoritesSnapshot = queryClient.getQueryData<DiaryMusicTrack[]>(favoriteMusicQueryKey)
       applyFavoritedToCaches(queryClient, musicId, isFavorited)
-      return { snapshot }
+      if (!isFavorited) {
+        queryClient.setQueryData<DiaryMusicTrack[]>(favoriteMusicQueryKey, (prev) =>
+          prev?.filter((track) => track.id !== musicId),
+        )
+      }
+      return { snapshot, favoritesSnapshot }
     },
 
     onError: (_error, _variables, context) => {
       if (context?.snapshot) {
         restoreDiaryCaches(queryClient, context.snapshot)
+      }
+      if (context && 'favoritesSnapshot' in context) {
+        queryClient.setQueryData(favoriteMusicQueryKey, context.favoritesSnapshot)
       }
     },
 

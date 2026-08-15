@@ -608,16 +608,19 @@ Returns all of the authenticated user's favorited music tracks, most recently fa
   {
     "id": 1,
     "title": "Song Title",
+    "service": "suno",
     "imageLocation": "https://...",
+    "lyrics": "Verse 1 ...",
     "generateStatus": "done",
     "styles": ["pop", "upbeat"],
+    "createdAt": "2026-05-01T10:05:00+00:00",
     "isFavorited": true,
     "shareToken": null
   }
 ]
 ```
 
-`isFavorited` is always `true` here — every row returned is by definition a favorite of the authenticated user. `shareToken` is the token minted by `POST /api/music/{id}/share`, or `null` if the track hasn't been made public.
+Same per-music shape as the `musics` entries in `GET /api/diary/{id}` above, including `lyrics` with structure markers (e.g. `[intro]`, `[verse]`, `[chorus]`) stripped. `isFavorited` is always `true` here — every row returned is by definition a favorite of the authenticated user. `shareToken` is the token minted by `POST /api/music/{id}/share`, or `null` if the track hasn't been made public.
 
 ---
 

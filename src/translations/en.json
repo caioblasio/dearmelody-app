@@ -91,6 +91,8 @@
     "detailNotFound": "Collection not found.",
     "detailEmpty": "This collection has no entries yet.",
     "detailNoPlayable": "None of the entries in this collection have a ready melody yet.",
+    "favouritesEmpty": "You haven't favourited any melodies yet.",
+    "favouritesNoPlayable": "None of your favourites have a ready melody yet.",
     "upNext": "Up next",
     "upNextAria": "Songs up next in this collection"
   },

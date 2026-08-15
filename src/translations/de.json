@@ -91,6 +91,8 @@
     "detailNotFound": "Sammlung nicht gefunden.",
     "detailEmpty": "Diese Sammlung hat noch keine Einträge.",
     "detailNoPlayable": "Keiner der Einträge in dieser Sammlung hat bisher eine fertige Melodie.",
+    "favouritesEmpty": "Du hast noch keine Melodien als Favoriten markiert.",
+    "favouritesNoPlayable": "Keine deiner Favoriten hat bisher eine fertige Melodie.",
     "upNext": "Als Nächstes",
     "upNextAria": "Nächste Songs in dieser Sammlung"
   },

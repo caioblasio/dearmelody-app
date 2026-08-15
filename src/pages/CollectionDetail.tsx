@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 
 import { useCollectionPlayableEntries } from '@/api/collections/use-collection-playable-entries'
 import { getMusic } from '@/api/music/get-music'
+import { useGetFavoriteMusic } from '@/api/music/use-get-favorite-music'
 import { CollectionUpNext } from '@/components/collections/CollectionUpNext'
 import { MusicFavoriteButton } from '@/components/MusicFavoriteButton'
 import { MusicShareButton } from '@/components/MusicShareButton'
@@ -15,6 +16,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { ApiError } from '@/lib/api-request'
 import { collectionEditPath, isFavoritesCollectionId } from '@/lib/collections'
 import { downloadBlob, extensionFromMime, sanitizeDownloadFilename } from '@/lib/download-blob'
+import { trackFromMusicTrack } from '@/lib/player/player-context'
 import { usePlayer } from '@/lib/player/use-player'
 
 function CollectionDetailSkeleton() {
@@ -60,39 +62,39 @@ function CollectionDetailSkeleton() {
   )
 }
 
-function FavoritesCollectionStub() {
-  const { t } = useTranslation()
-
-  return (
-    <section className="space-y-3 px-5 py-6 sm:px-8 lg:px-0">
-      <Link
-        to="/collections"
-        className="mb-2 inline-flex items-center gap-1.5 text-sm font-semibold text-coral transition-colors hover:text-coral-light"
-      >
-        <ChevronLeft className="size-4 shrink-0" aria-hidden />
-        {t('collections.backToCollections')}
-      </Link>
-      <header className="space-y-2">
-        <h1 className="font-heading text-[2.125rem] font-semibold text-ink sm:text-4xl">
-          {t('collections.favouritesTitle')}
-        </h1>
-        <p className="max-w-xl text-sm text-muted sm:text-base">
-          {t('collections.favouritesDescription')}
-        </p>
-      </header>
-    </section>
-  )
-}
-
 export function CollectionDetailPage() {
   const { t } = useTranslation()
   const { id } = useParams<{ id: string }>()
   const isFavorites = isFavoritesCollectionId(id)
   const numericId = !isFavorites && id != null && /^\d+$/.test(id) ? Number(id) : undefined
+  const editPath = !isFavorites && numericId != null ? collectionEditPath(numericId) : null
 
-  const { collection, playable, isLoading, isError, isEmptyCollection, hasNoPlayable } =
-    useCollectionPlayableEntries(numericId)
-  const { playFromDetail } = usePlayer()
+  const collectionState = useCollectionPlayableEntries(numericId)
+  const favoritesQuery = useGetFavoriteMusic(isFavorites)
+  const { playFromDetail, playFromMusicTrack } = usePlayer()
+
+  const favoritesPlayable = (favoritesQuery.data ?? []).filter(
+    (music) => music.generateStatus === 'done',
+  )
+  const playable = isFavorites ? [] : collectionState.playable
+  const playableCount = isFavorites ? favoritesPlayable.length : playable.length
+  const isLoading = isFavorites ? favoritesQuery.isLoading : collectionState.isLoading
+  const isError = isFavorites ? favoritesQuery.isError : collectionState.isError
+  const isEmpty = isFavorites
+    ? favoritesQuery.isSuccess && (favoritesQuery.data?.length ?? 0) === 0
+    : collectionState.isEmptyCollection
+  const hasNoPlayable = isFavorites
+    ? favoritesQuery.isSuccess &&
+      (favoritesQuery.data?.length ?? 0) > 0 &&
+      favoritesPlayable.length === 0
+    : collectionState.hasNoPlayable
+
+  const pageTitle = isFavorites
+    ? t('collections.favouritesTitle')
+    : (collectionState.collection?.title ?? t('collections.detailTitle'))
+  const pageDescription = isFavorites
+    ? t('collections.favouritesDescription')
+    : collectionState.collection?.description
 
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isDownloading, setIsDownloading] = useState(false)
@@ -101,23 +103,19 @@ export function CollectionDetailPage() {
   useEffect(() => {
     setCurrentIndex(0)
     setDownloadError(null)
-  }, [numericId])
+  }, [numericId, isFavorites])
 
   useEffect(() => {
-    if (playable.length === 0) {
+    if (playableCount === 0) {
       setCurrentIndex(0)
       return
     }
-    if (currentIndex >= playable.length) {
-      setCurrentIndex(playable.length - 1)
+    if (currentIndex >= playableCount) {
+      setCurrentIndex(playableCount - 1)
     }
-  }, [playable.length, currentIndex])
+  }, [playableCount, currentIndex])
 
-  if (isFavorites) {
-    return <FavoritesCollectionStub />
-  }
-
-  if (id == null || numericId == null) {
+  if (!isFavorites && (id == null || numericId == null)) {
     return (
       <p className="px-5 py-6 text-sm text-muted sm:px-8 lg:px-0" role="status">
         {t('collections.detailNotFound')}
@@ -125,22 +123,44 @@ export function CollectionDetailPage() {
     )
   }
 
-  const safeIndex = Math.min(currentIndex, Math.max(playable.length - 1, 0))
-  const current = playable[safeIndex] ?? null
-  const currentDetail = current?.detail ?? null
+  const safeIndex = Math.min(currentIndex, Math.max(playableCount - 1, 0))
+  const currentEntry = isFavorites ? null : (playable[safeIndex] ?? null)
+  const currentDetail = currentEntry?.detail ?? null
   const primaryMusic = currentDetail?.musics?.[0] ?? null
+  const favoriteCurrent = isFavorites ? (favoritesPlayable[safeIndex] ?? null) : null
+  const favoriteTrack = favoriteCurrent ? trackFromMusicTrack(favoriteCurrent) : null
+  const currentMusic = favoriteCurrent ?? primaryMusic
 
-  const upNextItems = playable
-    .slice(safeIndex + 1)
-    .concat(playable.slice(0, safeIndex))
-    .map((item) => ({
-      id: item.detail.id,
-      title: item.songTitle,
-      entryTitle: item.detail.title,
-      imageLocation: item.detail.musics?.[0]?.imageLocation ?? null,
-    }))
+  const upNextItems = isFavorites
+    ? favoritesPlayable
+        .slice(safeIndex + 1)
+        .concat(favoritesPlayable.slice(0, safeIndex))
+        .map((music) => ({
+          id: String(music.id),
+          title: music.title,
+          entryTitle: music.title,
+          imageLocation: music.imageLocation,
+        }))
+    : playable
+        .slice(safeIndex + 1)
+        .concat(playable.slice(0, safeIndex))
+        .map((item) => ({
+          id: item.detail.id,
+          title: item.songTitle,
+          entryTitle: item.detail.title,
+          imageLocation: item.detail.musics?.[0]?.imageLocation ?? null,
+        }))
 
   async function selectIndex(nextIndex: number) {
+    if (isFavorites) {
+      const music = favoritesPlayable[nextIndex]
+      if (!music) return
+      setCurrentIndex(nextIndex)
+      setDownloadError(null)
+      await playFromMusicTrack(music)
+      return
+    }
+
     const item = playable[nextIndex]
     if (!item) return
     setCurrentIndex(nextIndex)
@@ -154,24 +174,26 @@ export function CollectionDetailPage() {
   }
 
   async function onNext() {
-    if (safeIndex >= playable.length - 1) return
+    if (safeIndex >= playableCount - 1) return
     await selectIndex(safeIndex + 1)
   }
 
-  async function onSelectUpNext(entryId: string) {
-    const nextIndex = playable.findIndex((item) => item.detail.id === entryId)
+  async function onSelectUpNext(itemId: string) {
+    const nextIndex = isFavorites
+      ? favoritesPlayable.findIndex((music) => String(music.id) === itemId)
+      : playable.findIndex((item) => item.detail.id === itemId)
     if (nextIndex < 0) return
     await selectIndex(nextIndex)
   }
 
   async function onDownload() {
-    if (!primaryMusic || !currentDetail || isDownloading) return
+    if (!currentMusic || isDownloading) return
 
     setIsDownloading(true)
     setDownloadError(null)
     try {
-      const blob = await getMusic(primaryMusic.id)
-      const filename = `${sanitizeDownloadFilename(primaryMusic.title || currentDetail.title || 'melody')}.${extensionFromMime(blob.type)}`
+      const blob = await getMusic(currentMusic.id)
+      const filename = `${sanitizeDownloadFilename(currentMusic.title || currentDetail?.title || 'melody')}.${extensionFromMime(blob.type)}`
       downloadBlob(blob, filename)
     } catch (err) {
       setDownloadError(err instanceof ApiError ? t('entry.downloadError') : t('entry.error'))
@@ -180,13 +202,22 @@ export function CollectionDetailPage() {
     }
   }
 
+  const editLink = editPath ? (
+    <Link
+      to={editPath}
+      className="text-sm font-semibold text-coral transition-colors hover:text-coral-light"
+    >
+      {t('collections.editCollection')}
+    </Link>
+  ) : null
+
   const toolbar =
-    currentDetail && primaryMusic ? (
+    currentMusic ? (
       <>
         <MusicShareButton
-          musicId={primaryMusic.id}
-          shareToken={primaryMusic.shareToken}
-          title={primaryMusic.title || currentDetail.title}
+          musicId={currentMusic.id}
+          shareToken={currentMusic.shareToken}
+          title={currentMusic.title || currentDetail?.title || ''}
         />
         <Button
           type="button"
@@ -204,6 +235,14 @@ export function CollectionDetailPage() {
       </>
     ) : null
 
+  const favoriteButton = currentMusic ? (
+    <MusicFavoriteButton
+      musicId={currentMusic.id}
+      isFavorited={currentMusic.isFavorited}
+      variant="hero"
+    />
+  ) : null
+
   return (
     <div>
       <div className="mb-6 hidden items-center justify-between gap-3 lg:flex">
@@ -214,14 +253,7 @@ export function CollectionDetailPage() {
           <ChevronLeft className="size-4 shrink-0" aria-hidden />
           {t('collections.backToCollections')}
         </Link>
-        {!isLoading && !isError ? (
-          <Link
-            to={collectionEditPath(numericId)}
-            className="text-sm font-semibold text-coral transition-colors hover:text-coral-light"
-          >
-            {t('collections.editCollection')}
-          </Link>
-        ) : null}
+        {!isLoading && !isError ? editLink : null}
       </div>
 
       {isLoading && <CollectionDetailSkeleton />}
@@ -232,24 +264,19 @@ export function CollectionDetailPage() {
         </div>
       )}
 
-      {!isLoading && !isError && isEmptyCollection && (
+      {!isLoading && !isError && isEmpty && (
         <section className="space-y-3 px-5 py-6 sm:px-8 lg:px-0">
           <div className="flex flex-wrap items-start justify-between gap-3">
             <h1 className="font-heading text-[2.125rem] font-semibold text-ink sm:text-4xl">
-              {collection?.title ?? t('collections.detailTitle')}
+              {pageTitle}
             </h1>
-            <Link
-              to={collectionEditPath(numericId)}
-              className="text-sm font-semibold text-coral transition-colors hover:text-coral-light lg:hidden"
-            >
-              {t('collections.editCollection')}
-            </Link>
+            {editLink ? <span className="lg:hidden">{editLink}</span> : null}
           </div>
-          {collection?.description ? (
-            <p className="max-w-xl text-sm text-muted sm:text-base">{collection.description}</p>
+          {pageDescription ? (
+            <p className="max-w-xl text-sm text-muted sm:text-base">{pageDescription}</p>
           ) : null}
           <p className="text-sm text-muted" role="status">
-            {t('collections.detailEmpty')}
+            {isFavorites ? t('collections.favouritesEmpty') : t('collections.detailEmpty')}
           </p>
         </section>
       )}
@@ -258,20 +285,44 @@ export function CollectionDetailPage() {
         <section className="space-y-3 px-5 py-6 sm:px-8 lg:px-0">
           <div className="flex flex-wrap items-start justify-between gap-3">
             <h1 className="font-heading text-[2.125rem] font-semibold text-ink sm:text-4xl">
-              {collection?.title ?? t('collections.detailTitle')}
+              {pageTitle}
             </h1>
-            <Link
-              to={collectionEditPath(numericId)}
-              className="text-sm font-semibold text-coral transition-colors hover:text-coral-light lg:hidden"
-            >
-              {t('collections.editCollection')}
-            </Link>
+            {editLink ? <span className="lg:hidden">{editLink}</span> : null}
           </div>
           <p className="text-sm text-muted" role="status">
-            {t('collections.detailNoPlayable')}
+            {isFavorites ? t('collections.favouritesNoPlayable') : t('collections.detailNoPlayable')}
           </p>
         </section>
       )}
+
+      {!isLoading && !isError && favoriteTrack && favoriteCurrent ? (
+        <PlayerHero
+          variant="warm"
+          track={favoriteTrack}
+          lyricsMode="flip"
+          showBackLink
+          backHref="/collections"
+          backAriaLabel={t('collections.backAria')}
+          eyebrow={pageTitle}
+          transport="skip"
+          canPrevious={safeIndex > 0}
+          canNext={safeIndex < playableCount - 1}
+          onPrevious={() => void onPrevious()}
+          onNext={() => void onNext()}
+          onActivate={() => playFromMusicTrack(favoriteCurrent)}
+          headerActions={favoriteButton}
+          toolbar={toolbar}
+          belowToolbar={
+            downloadError ? <Alert variant="destructive">{downloadError}</Alert> : null
+          }
+          belowControls={
+            <CollectionUpNext
+              items={upNextItems}
+              onSelect={(itemId) => void onSelectUpNext(itemId)}
+            />
+          }
+        />
+      ) : null}
 
       {!isLoading && !isError && currentDetail ? (
         <PlayerHero
@@ -281,21 +332,13 @@ export function CollectionDetailPage() {
           showBackLink
           backHref="/collections"
           backAriaLabel={t('collections.backAria')}
-          eyebrow={collection?.title}
+          eyebrow={collectionState.collection?.title}
           transport="skip"
           canPrevious={safeIndex > 0}
-          canNext={safeIndex < playable.length - 1}
+          canNext={safeIndex < playableCount - 1}
           onPrevious={() => void onPrevious()}
           onNext={() => void onNext()}
-          headerActions={
-            primaryMusic ? (
-              <MusicFavoriteButton
-                musicId={primaryMusic.id}
-                isFavorited={primaryMusic.isFavorited}
-                variant="hero"
-              />
-            ) : null
-          }
+          headerActions={favoriteButton}
           toolbar={toolbar}
           belowToolbar={
             downloadError ? <Alert variant="destructive">{downloadError}</Alert> : null
@@ -303,14 +346,16 @@ export function CollectionDetailPage() {
           belowControls={
             <CollectionUpNext
               items={upNextItems}
-              onSelect={(entryId) => void onSelectUpNext(entryId)}
+              onSelect={(itemId) => void onSelectUpNext(itemId)}
               trailing={
-                <Link
-                  to={collectionEditPath(numericId)}
-                  className="text-sm font-semibold text-player-brown transition-colors hover:text-player-ink lg:hidden"
-                >
-                  {t('collections.editCollection')}
-                </Link>
+                editPath ? (
+                  <Link
+                    to={editPath}
+                    className="text-sm font-semibold text-player-brown transition-colors hover:text-player-ink lg:hidden"
+                  >
+                    {t('collections.editCollection')}
+                  </Link>
+                ) : null
               }
             />
           }

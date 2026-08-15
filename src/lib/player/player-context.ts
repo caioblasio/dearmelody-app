@@ -1,6 +1,6 @@
 import { createContext } from 'react'
 
-import type { DiaryEntryDetail } from '@/api/diary/diary-entry-detail'
+import type { DiaryEntryDetail, DiaryMusicTrack } from '@/api/diary/diary-entry-detail'
 import type { MusicShare } from '@/api/music/music-share'
 
 export type PlayerTrack = {
@@ -15,6 +15,7 @@ export type PlayerTrack = {
   lyrics: string | null
   mood: string | null
   createdAt: string
+  styles?: string[]
 }
 
 export type PlayerContextValue = {
@@ -35,6 +36,7 @@ export type PlayerContextValue = {
   setImmersiveEntryId: (entryId: string | null) => void
   playEntry: (entryId: string) => Promise<void>
   playFromDetail: (detail: DiaryEntryDetail) => Promise<void>
+  playFromMusicTrack: (music: DiaryMusicTrack) => Promise<void>
   playFromShare: (share: MusicShare, token: string) => Promise<void>
   togglePlay: () => Promise<void>
   seek: (time: number) => Promise<void>
@@ -65,6 +67,23 @@ export function trackFromDetail(detail: DiaryEntryDetail): PlayerTrack | null {
     lyrics: music.lyrics,
     mood: detail.mood,
     createdAt: detail.createdAt,
+    styles: music.styles,
+  }
+}
+
+export function trackFromMusicTrack(music: DiaryMusicTrack): PlayerTrack | null {
+  if (music.generateStatus !== 'done') return null
+
+  return {
+    entryId: `music:${music.id}`,
+    musicId: music.id,
+    title: music.title,
+    entryTitle: music.title,
+    imageLocation: music.imageLocation,
+    lyrics: music.lyrics,
+    mood: null,
+    createdAt: music.createdAt,
+    styles: music.styles,
   }
 }
 
