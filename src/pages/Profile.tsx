@@ -1,5 +1,6 @@
 import { ChevronDown, ChevronRight } from 'lucide-react'
 import type { ReactNode } from 'react'
+import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
 import { useUserInfo } from '@/api/user/use-user-info'
@@ -165,6 +166,21 @@ export function ProfilePage() {
                   <ChevronRight className="size-4 text-muted" aria-hidden />
                 </ItemActions>
               </a>
+            </Item>
+
+            <ItemSeparator className="mx-6 w-auto bg-warm-border" />
+
+            <Item asChild className="items-center gap-4 px-6 py-5">
+              <Link to="/feedback">
+                <ItemContent>
+                  <ItemTitle className="text-[1.0625rem] font-semibold text-ink">
+                    {t('settings.sendFeedback')}
+                  </ItemTitle>
+                </ItemContent>
+                <ItemActions>
+                  <ChevronRight className="size-4 text-muted" aria-hidden />
+                </ItemActions>
+              </Link>
             </Item>
           </ItemGroup>
         </section>

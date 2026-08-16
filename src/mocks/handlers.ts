@@ -227,6 +227,29 @@ export const handlers = [
     }
     return HttpResponse.json({ id: '22222222-2222-4222-8222-222222222203' }, { status: 201 })
   }),
+  http.post('/api/feedback', async ({ request }) => {
+    const body = (await request.json()) as {
+      title?: string
+      message?: string
+      type?: string | null
+    }
+    await delay(500)
+    const errors: Record<string, string> = {}
+    if (!body.title?.trim()) {
+      errors.title = 'This value should not be blank.'
+    }
+    if (!body.message?.trim()) {
+      errors.message = 'This value should not be blank.'
+    }
+    const allowedTypes = new Set(['feedback', 'bug', 'help', 'feature_request'])
+    if (body.type != null && body.type !== '' && !allowedTypes.has(body.type)) {
+      errors.type = 'The value you selected is not a valid choice.'
+    }
+    if (Object.keys(errors).length > 0) {
+      return HttpResponse.json({ errors }, { status: 422 })
+    }
+    return HttpResponse.json({ id: 1 }, { status: 201 })
+  }),
   http.get('/api/diary', async ({ request }) => {
     await delay(400)
     const url = new URL(request.url)

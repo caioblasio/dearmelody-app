@@ -107,6 +107,7 @@
     "verified": "Verifiziert",
     "contactSupportToChange": "Support kontaktieren, um zu ändern",
     "contactSupport": "Support kontaktieren",
+    "sendFeedback": "Hilf, DearMelody besser zu machen",
     "language": "Sprache",
     "languageHelp": "Melo schreibt deine Texte in dieser Sprache.",
     "locales": {
@@ -114,6 +115,27 @@
       "pt": "Portugiesisch",
       "de": "Deutsch"
     }
+  },
+  "feedback": {
+    "title": "Hilf, DearMelody besser zu machen",
+    "subtitle": "Teile einen Bug, eine Idee oder etwas anderes — wir lesen jede Nachricht.",
+    "backToProfile": "Zurück zum Profil",
+    "titleLabel": "Titel",
+    "titlePlaceholder": "Kurze Zusammenfassung",
+    "messageLabel": "Nachricht",
+    "messagePlaceholder": "Beschreibe das Problem oder die Idee…",
+    "typeLabel": "Typ",
+    "typeNone": "Kein Typ",
+    "types": {
+      "feedback": "Feedback",
+      "bug": "Bug",
+      "help": "Hilfe",
+      "feature_request": "Feature-Wunsch"
+    },
+    "send": "Senden",
+    "sending": "Wird gesendet…",
+    "success": "Danke — wir haben deine Nachricht erhalten.",
+    "error": "Feedback konnte nicht gesendet werden. Bitte versuche es erneut."
   },
   "profile": {
     "title": "Profil"

@@ -1066,11 +1066,57 @@ Returns the authenticated user's most frequent curated music style **family** (e
 
 ---
 
+## Feedback
+
+### `POST /api/feedback`
+
+**Auth:** JWT
+
+Submits a feedback entry for the authenticated user. `status` is always set to `"new"` server-side and cannot be passed in the request. See `GET /api/admin/feedback` / `PATCH /api/admin/feedback/{id}` under **Admin** below for listing/editing feedback (admin-only).
+
+**Request body**
+
+```json
+{
+  "title": "Can't play song on Safari",
+  "message": "The player never starts, no error shown.",
+  "type": "bug"
+}
+```
+
+| Field     | Type   | Required | Notes                                                                            |
+| --------- | ------ | -------- | -------------------------------------------------------------------------------- |
+| `title`   | string | yes      | Must not be blank after sanitization; max 255 characters                         |
+| `message` | string | yes      | Must not be blank after sanitization                                             |
+| `type`    | string | no       | One of `feedback`, `bug`, `help`, `feature_request`. Omit or `null` for no type. |
+
+**Response `201 Created`**
+
+```json
+{
+  "id": 1
+}
+```
+
+**Response `422 Unprocessable Entity`** — validation failure (blank `title`/`message`, or `type` not one of the allowed values).
+
+```json
+{
+  "errors": {
+    "title": "This value should not be blank."
+  }
+}
+```
+
+---
+
 ## Admin
 
-### `GET /api/invites`
+All admin endpoints share the same gate: **JWT, restricted to an allowlist of admin emails** (hardcoded in `AdminAccessService::ALLOWED_EMAILS`). Non-admin authenticated users get `404 Not Found`, not `403` — deliberately, so the endpoint's existence isn't revealed to non-admins.
 
-**Auth:** JWT, restricted to an allowlist of admin emails (hardcoded in `InviteAdminService::ALLOWED_EMAILS`)
+### `GET /api/admin/invites`
+
+**Auth:** JWT, admin allowlist
 
 Temporary audit endpoint — lists all invite codes and their redemption status. Not linked from any frontend UI.
 
@@ -1093,7 +1139,100 @@ Temporary audit endpoint — lists all invite codes and their redemption status.
 
 Unredeemed codes first, then redeemed codes oldest-first. `email`/`usedAt` are `null` for unredeemed codes.
 
-**Response `404 Not Found`** — authenticated user's email is not on the allowlist. Deliberately `404`, not `403`, so the endpoint's existence isn't revealed to non-admins.
+**Response `404 Not Found`** — authenticated user's email is not on the allowlist.
+
+---
+
+### `GET /api/admin/feedback`
+
+**Auth:** JWT, admin allowlist
+
+Returns a paginated list of all users' feedback submissions, most recently created first, optionally filtered by status, type, and/or submitter email.
+
+**Query parameters**
+
+| Parameter | Type    | Default | Notes                                                                                   |
+| --------- | ------- | ------- | --------------------------------------------------------------------------------------- |
+| `limit`   | integer | 30      | Minimum 1, maximum 100                                                                  |
+| `offset`  | integer | 0       | Minimum 0                                                                               |
+| `status`  | string  | —       | Optional. One of `new`, `in_progress`, `solved`. Empty string is ignored.               |
+| `type`    | string  | —       | Optional. One of `feedback`, `bug`, `help`, `feature_request`. Empty string is ignored. |
+| `email`   | string  | —       | Optional. Exact match against the submitting user's email.                              |
+
+All filter parameters are optional and combine with `AND` logic. Omitting a parameter applies no filter for that field.
+
+**Response `200 OK`**
+
+```json
+[
+  {
+    "id": 1,
+    "title": "Can't play song on Safari",
+    "message": "The player never starts, no error shown.",
+    "status": "new",
+    "type": "bug",
+    "userEmail": "user@example.com",
+    "userFirstName": "Ada"
+  }
+]
+```
+
+**Response `404 Not Found`** — authenticated user's email is not on the allowlist.
+
+**Response `422 Unprocessable Entity`** — invalid filter value (e.g. `status` not one of the allowed values, or `email` not a valid email address).
+
+```json
+{
+  "errors": {
+    "status": "The value you selected is not a valid choice."
+  }
+}
+```
+
+---
+
+### `PATCH /api/admin/feedback/{id}`
+
+**Auth:** JWT, admin allowlist
+
+Partially updates a feedback row's `status` and/or `type` only — `title`, `message`, and the submitting user cannot be changed via this endpoint. Both fields are optional; an omitted field leaves the existing value unchanged, and omitting both is a valid no-op.
+
+**Path parameters**
+
+| Parameter | Type    | Notes              |
+| --------- | ------- | ------------------ |
+| `id`      | integer | Feedback record ID |
+
+**Request body**
+
+```json
+{
+  "status": "in_progress"
+}
+```
+
+| Field    | Type   | Required | Notes                                               |
+| -------- | ------ | -------- | --------------------------------------------------- |
+| `status` | string | no       | One of `new`, `in_progress`, `solved`               |
+| `type`   | string | no       | One of `feedback`, `bug`, `help`, `feature_request` |
+
+**Response `200 OK`**
+
+```json
+{
+  "id": 1
+}
+```
+
+**Response `404 Not Found`** — authenticated user's email is not on the allowlist, or the feedback record does not exist (the two cases are not distinguished).
+
+```json
+{
+  "error": "Not found"
+}
+```
+
+**Response `422 Unprocessable Entity`** — `status`/`type` not one of the allowed values.
 
 ---
 

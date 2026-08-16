@@ -107,6 +107,7 @@
     "verified": "Verificado",
     "contactSupportToChange": "Fale com o suporte para alterar",
     "contactSupport": "Falar com o suporte",
+    "sendFeedback": "Ajude a melhorar o DearMelody",
     "language": "Idioma",
     "languageHelp": "O Melo escreve suas letras neste idioma.",
     "locales": {
@@ -114,6 +115,27 @@
       "pt": "Português",
       "de": "Alemão"
     }
+  },
+  "feedback": {
+    "title": "Ajude a melhorar o DearMelody",
+    "subtitle": "Compartilhe um bug, ideia ou qualquer outra coisa — lemos todas as mensagens.",
+    "backToProfile": "Voltar ao Perfil",
+    "titleLabel": "Título",
+    "titlePlaceholder": "Resumo breve",
+    "messageLabel": "Mensagem",
+    "messagePlaceholder": "Descreva o problema ou a ideia…",
+    "typeLabel": "Tipo",
+    "typeNone": "Sem tipo",
+    "types": {
+      "feedback": "Feedback",
+      "bug": "Bug",
+      "help": "Ajuda",
+      "feature_request": "Pedido de funcionalidade"
+    },
+    "send": "Enviar",
+    "sending": "Enviando…",
+    "success": "Obrigado — recebemos sua mensagem.",
+    "error": "Não foi possível enviar o feedback. Tente novamente."
   },
   "profile": {
     "title": "Perfil"

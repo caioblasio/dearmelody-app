@@ -10,6 +10,7 @@ import { LoginPage } from '@/pages/Login'
 import { MyMelodiesPage } from '@/pages/MyMelodies'
 import { NewCollectionPage } from '@/pages/NewCollection'
 import { NewEntryPage } from '@/pages/NewEntry'
+import { FeedbackPage } from '@/pages/Feedback'
 import { ProfilePage } from '@/pages/Profile'
 import { SharedMelodyPage } from '@/pages/SharedMelody'
 import { SignUpPage } from '@/pages/SignUp'
@@ -92,6 +93,11 @@ export const router = createBrowserRouter([
             path: '/profile',
             element: <ProfilePage />,
             handle: { title: 'settings.title' },
+          },
+          {
+            path: '/feedback',
+            element: <FeedbackPage />,
+            handle: { title: 'feedback.title' },
           },
         ],
       },

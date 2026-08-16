@@ -107,6 +107,7 @@
     "verified": "Verified",
     "contactSupportToChange": "Contact support to change",
     "contactSupport": "Contact Support",
+    "sendFeedback": "Help make DearMelody better",
     "language": "Language",
     "languageHelp": "Melo writes your lyrics in this language.",
     "locales": {
@@ -114,6 +115,27 @@
       "pt": "Portuguese",
       "de": "German"
     }
+  },
+  "feedback": {
+    "title": "Help to make DearMelody better",
+    "subtitle": "Share a bug, idea, or anything else — we read every message.",
+    "backToProfile": "Back to Profile",
+    "titleLabel": "Title",
+    "titlePlaceholder": "Brief summary",
+    "messageLabel": "Message",
+    "messagePlaceholder": "Describe the problem or idea…",
+    "typeLabel": "Type",
+    "typeNone": "No type",
+    "types": {
+      "feedback": "Feedback",
+      "bug": "Bug",
+      "help": "Help",
+      "feature_request": "Feature request"
+    },
+    "send": "Send",
+    "sending": "Sending…",
+    "success": "Thanks — we got your message.",
+    "error": "Could not send feedback. Please try again."
   },
   "profile": {
     "title": "Profile"
