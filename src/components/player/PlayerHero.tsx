@@ -67,7 +67,7 @@ function StyleChips({
 }) {
   const chips: { key: string; label: string; mood?: boolean }[] = []
   if (moodLabel) chips.push({ key: 'mood', label: moodLabel, mood: true })
-  for (const style of styles) {
+  for (const style of styles.slice(0, 2)) {
     const label = style.charAt(0).toUpperCase() + style.slice(1)
     chips.push({ key: style, label })
   }
