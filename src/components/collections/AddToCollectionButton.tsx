@@ -225,7 +225,9 @@ export function AddToCollectionButton({
               aria-label={label}
             >
               <Icon className="size-4" aria-hidden />
-              <span className="hidden sm:inline">{label}</span>
+              <span className="hidden sm:inline-flex min-w-0 max-w-[9rem] truncate">
+                {label}
+              </span>
             </Button>
           </DrawerTrigger>
           <DrawerContent>
@@ -251,7 +253,9 @@ export function AddToCollectionButton({
               aria-label={label}
             >
               <Icon className="size-4" aria-hidden />
-              <span className="hidden sm:inline">{label}</span>
+              <span className="hidden sm:inline-flex min-w-0 max-w-[9rem] truncate">
+                {label}
+              </span>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-64 p-1">

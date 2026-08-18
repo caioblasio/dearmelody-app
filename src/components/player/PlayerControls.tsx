@@ -19,11 +19,11 @@ type PlayerControlsProps = {
   showVolume?: boolean
   /**
    * - `full`: shuffle / prev / play / next / repeat (kept for a future full player)
-   * - `playOnly`: progress + play button; optional trailing actions (share, download, cover)
-   * - `skip`: progress + prev / play / next + optional trailing actions (collection player)
+   * - `playOnly`: actions above progress; play button centered below
+   * - `skip`: actions above progress; prev / play / next centered below
    */
   transport?: 'full' | 'playOnly' | 'skip'
-  /** Rendered to the right of the play button when `transport` is `playOnly` or `skip`. */
+  /** Share / download / lyrics — rendered above the progress bar when `transport` is `playOnly` or `skip`. */
   trailingActions?: ReactNode
   /** When set, play activates this entry if it is not already the current track. */
   entryId?: string
@@ -68,9 +68,8 @@ export function PlayerControls({
   const showPlaying = isActiveTrack && isPlaying
   const showDuration = isActiveTrack ? duration : 0
   const showTime = isActiveTrack ? displayedTime : 0
-  const isPlayOnly = transport === 'playOnly'
   const isSkip = transport === 'skip'
-  const isCompactTransport = isPlayOnly || isSkip
+  const isCompactTransport = transport === 'playOnly' || isSkip
 
   async function handlePlayClick() {
     if (entryId && !isCurrentEntry(entryId)) {
@@ -119,37 +118,43 @@ export function PlayerControls({
     </button>
   )
 
-  return (
-    <>
-      <div className="shrink-0 space-y-2">
-        <Slider
-          min={0}
-          max={Math.max(showDuration, 1)}
-          step={0.1}
-          value={[showTime]}
-          onValueChange={(value) => {
-            if (!isActiveTrack) return
-            beginScrub(value[0] ?? 0)
-          }}
-          onValueCommit={(value) => {
-            if (!isActiveTrack) {
-              void onActivate?.()
-              return
-            }
-            void seek(value[0] ?? 0)
-          }}
-          disabled={isLoading && isActiveTrack}
-          aria-label={t('entry.player.progress')}
-        />
-        <div className={cn('flex justify-between', timeClass)}>
-          <span>{formatDurationMmSs(showTime)}</span>
-          <span>{formatDurationMmSs(showDuration)}</span>
-        </div>
+  const progressBar = (
+    <div className="shrink-0 space-y-2">
+      <Slider
+        min={0}
+        max={Math.max(showDuration, 1)}
+        step={0.1}
+        value={[showTime]}
+        onValueChange={(value) => {
+          if (!isActiveTrack) return
+          beginScrub(value[0] ?? 0)
+        }}
+        onValueCommit={(value) => {
+          if (!isActiveTrack) {
+            void onActivate?.()
+            return
+          }
+          void seek(value[0] ?? 0)
+        }}
+        disabled={isLoading && isActiveTrack}
+        aria-label={t('entry.player.progress')}
+      />
+      <div className={cn('flex justify-between', timeClass)}>
+        <span>{formatDurationMmSs(showTime)}</span>
+        <span>{formatDurationMmSs(showDuration)}</span>
       </div>
+    </div>
+  )
 
-      {isSkip ? (
-        <div className="flex shrink-0 items-center justify-between gap-3">
-          <div className="flex items-center gap-1">
+  if (isCompactTransport) {
+    return (
+      <div className="flex shrink-0 flex-col gap-3">
+        {trailingActions ? (
+          <div className="mb-2 flex flex-wrap items-center justify-start gap-2">{trailingActions}</div>
+        ) : null}
+        {progressBar}
+        {isSkip ? (
+          <div className="flex items-center justify-center gap-1">
             <button
               type="button"
               aria-label={t('entry.player.previous')}
@@ -170,88 +175,84 @@ export function PlayerControls({
               <SkipForward className="size-4" aria-hidden />
             </button>
           </div>
-          {trailingActions ? (
-            <div className="flex flex-wrap items-center justify-end gap-2">{trailingActions}</div>
-          ) : null}
-        </div>
-      ) : isPlayOnly ? (
-        <div className="flex shrink-0 items-center justify-between gap-3">
+        ) : (
+          <div className="flex items-center justify-center">{playButton}</div>
+        )}
+        {error && isActiveTrack ? (
+          <p className="text-center text-sm font-medium text-error" role="alert">
+            {error}
+          </p>
+        ) : null}
+      </div>
+    )
+  }
+
+  return (
+    <>
+      {progressBar}
+      <div
+        className={cn(
+          'flex shrink-0 flex-col gap-3 border border-warm-border p-3 backdrop-blur-sm lg:rounded-2xl lg:p-4',
+          controlsClassName
+        )}
+      >
+        {error && isActiveTrack ? (
+          <p className="text-center text-sm font-medium text-error" role="alert">
+            {error}
+          </p>
+        ) : null}
+
+        <div className="flex flex-wrap items-center justify-center gap-1 sm:gap-2 lg:justify-between">
+          <button
+            type="button"
+            aria-label={t('entry.player.shuffle')}
+            className={transportBtnClass}
+            disabled
+          >
+            <Shuffle className="size-4" aria-hidden />
+          </button>
+          <button
+            type="button"
+            aria-label={t('entry.player.previous')}
+            className={transportBtnClass}
+            disabled
+          >
+            <SkipBack className="size-4" aria-hidden />
+          </button>
           {playButton}
-          {trailingActions ? (
-            <div className="flex flex-wrap items-center justify-end gap-2">{trailingActions}</div>
-          ) : null}
+          <button
+            type="button"
+            aria-label={t('entry.player.next')}
+            className={transportBtnClass}
+            disabled
+          >
+            <SkipForward className="size-4" aria-hidden />
+          </button>
+          <button
+            type="button"
+            aria-label={t('entry.player.repeat')}
+            className={transportBtnClass}
+            disabled
+          >
+            <Repeat className="size-4" aria-hidden />
+          </button>
         </div>
-      ) : (
-        <div
-          className={cn(
-            'flex shrink-0 flex-col gap-3 border border-warm-border p-3 backdrop-blur-sm lg:rounded-2xl lg:p-4',
-            controlsClassName
-          )}
-        >
-          {error && isActiveTrack ? (
-            <p className="text-center text-sm font-medium text-error" role="alert">
-              {error}
-            </p>
-          ) : null}
 
-          <div className="flex flex-wrap items-center justify-center gap-1 sm:gap-2 lg:justify-between">
-            <button
-              type="button"
-              aria-label={t('entry.player.shuffle')}
-              className={transportBtnClass}
-              disabled
-            >
-              <Shuffle className="size-4" aria-hidden />
-            </button>
-            <button
-              type="button"
-              aria-label={t('entry.player.previous')}
-              className={transportBtnClass}
-              disabled
-            >
-              <SkipBack className="size-4" aria-hidden />
-            </button>
-            {playButton}
-            <button
-              type="button"
-              aria-label={t('entry.player.next')}
-              className={transportBtnClass}
-              disabled
-            >
-              <SkipForward className="size-4" aria-hidden />
-            </button>
-            <button
-              type="button"
-              aria-label={t('entry.player.repeat')}
-              className={transportBtnClass}
-              disabled
-            >
-              <Repeat className="size-4" aria-hidden />
-            </button>
+        {shouldShowVolume ? (
+          <div className="flex items-center justify-center gap-2 text-muted sm:justify-between">
+            <Volume2 className="size-4 shrink-0 opacity-70" aria-hidden />
+            <Slider
+              min={0}
+              max={1}
+              step={0.01}
+              value={[volume]}
+              onValueChange={(value) => setVolume(value[0] ?? 0)}
+              aria-label={t('entry.player.volume')}
+              className="min-w-0 max-w-[12rem] flex-1 lg:max-w-none"
+            />
           </div>
-
-          {shouldShowVolume ? (
-            <div className="flex items-center justify-center gap-2 text-muted sm:justify-between">
-              <Volume2 className="size-4 shrink-0 opacity-70" aria-hidden />
-              <Slider
-                min={0}
-                max={1}
-                step={0.01}
-                value={[volume]}
-                onValueChange={(value) => setVolume(value[0] ?? 0)}
-                aria-label={t('entry.player.volume')}
-                className="min-w-0 max-w-[12rem] flex-1 lg:max-w-none"
-              />
-            </div>
-          ) : null}
-        </div>
-      )}
-
-      {isCompactTransport && error && isActiveTrack ? (
-        <p className="text-center text-sm font-medium text-error" role="alert">
-          {error}
-        </p>
-      ) : null}
+        ) : null}
+      </div>
     </>
   )
 }

@@ -108,7 +108,7 @@ type PlayerHeroProps = {
   track?: PlayerTrack
   /** Optional actions rendered next to the mood pill (favorite, etc.). */
   headerActions?: ReactNode
-  /** Share / download buttons — placed under the progress bar on the right. */
+  /** Share / download buttons — placed above the progress bar. */
   toolbar?: ReactNode
   /** Extra content under the controls (e.g. download errors). */
   belowToolbar?: ReactNode
@@ -449,13 +449,13 @@ export function PlayerHero({
                 aria-busy="true"
                 aria-label={t('entry.generationLoading')}
               >
+                <div className="mb-2 flex justify-start gap-2">
+                  <Skeleton className="h-8 w-20 rounded-full bg-player-ink/15" />
+                  <Skeleton className="h-8 w-20 rounded-full bg-player-ink/15" />
+                </div>
                 <Skeleton className="h-1 w-full bg-player-ink/20" />
-                <div className="flex items-center justify-between gap-3">
+                <div className="flex justify-center">
                   <Skeleton className="size-14 rounded-full bg-player-ink/30" />
-                  <div className="flex gap-2">
-                    <Skeleton className="h-8 w-20 rounded-full bg-player-ink/15" />
-                    <Skeleton className="h-8 w-20 rounded-full bg-player-ink/15" />
-                  </div>
                 </div>
               </div>
             ) : musicReady && entryId ? (
