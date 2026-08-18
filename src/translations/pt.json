@@ -183,7 +183,8 @@
     "errors": {
       "lockedOut": "Muitas tentativas. Aguarde um pouco antes de tentar de novo.",
       "invalidCredentials": "E-mail ou senha incorretos.",
-      "generic": "Algo deu errado. Tente novamente."
+      "generic": "Algo deu errado. Tente novamente.",
+      "google": "O login com Google não funcionou. Tente de novo ou entre com e-mail."
     },
     "validation": {
       "email": "Digite um endereço de e-mail válido.",

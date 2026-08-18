@@ -6,6 +6,7 @@ import { CollectionsPage } from '@/pages/Collections'
 import { DashboardPage } from '@/pages/Dashboard'
 import { EntryPage } from '@/pages/Entry'
 import { EditCollectionPage } from '@/pages/EditCollection'
+import { AuthCallbackPage } from '@/pages/AuthCallback'
 import { LoginPage } from '@/pages/Login'
 import { MyMelodiesPage } from '@/pages/MyMelodies'
 import { NewCollectionPage } from '@/pages/NewCollection'
@@ -19,6 +20,10 @@ import { PublicRoute } from './public-route'
 import { SharedMelodyRoute } from './shared-melody-route'
 
 export const router = createBrowserRouter([
+  {
+    path: '/auth/callback',
+    element: <AuthCallbackPage />,
+  },
   {
     element: <PublicRoute />,
     children: [

@@ -56,6 +56,7 @@ export function SignUpPage() {
     register,
     control,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm<SignUpFormValues>({
     resolver: zodResolver(signUpSchema),
@@ -70,6 +71,8 @@ export function SignUpPage() {
   })
 
   const passwordRegister = register('password')
+  const inviteCodeValue = watch('inviteCode')
+  const agreeValue = watch('agree')
 
   const registerMutation = useRegister({
     onSuccess: () => {
@@ -309,7 +312,18 @@ export function SignUpPage() {
         </div>
       </div>
 
-      <SocialLoginButtons labelKey="social.googleSignUp" />
+      <SocialLoginButtons
+        labelKey="social.googleSignUp"
+        inviteCode={inviteCodeValue}
+        onBeforeNavigate={() => {
+          if (!agreeValue) {
+            setFormError(t('signup.errors.mustAgree'))
+            return false
+          }
+          setFormError(null)
+          return true
+        }}
+      />
 
       <p className="mt-6 text-center text-[15px] text-muted">
         {t('signup.ctaLead')}{' '}

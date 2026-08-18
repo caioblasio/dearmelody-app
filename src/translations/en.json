@@ -183,7 +183,8 @@
     "errors": {
       "lockedOut": "Too many attempts. Please wait before trying again.",
       "invalidCredentials": "Incorrect email or password.",
-      "generic": "Something went wrong. Please try again."
+      "generic": "Something went wrong. Please try again.",
+      "google": "Google sign-in didn't work. Please try again, or log in with email."
     },
     "validation": {
       "email": "Please enter a valid email address.",

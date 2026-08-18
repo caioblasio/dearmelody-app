@@ -7,13 +7,13 @@ import { getToken } from '@/lib/auth'
 
 export function ProtectedRoute() {
   const { t } = useTranslation()
-  const { data: user, isLoading } = useUserInfo()
+  const { data: user, isPending } = useUserInfo()
 
   if (!getToken()) {
     return <Navigate to="/login" replace />
   }
 
-  if (isLoading) {
+  if (isPending) {
     return (
       <div className="flex min-h-screen items-center justify-center px-6">
         <ComposingCompactIconLoader title={t('common.loading')} />

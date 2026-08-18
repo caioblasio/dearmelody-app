@@ -183,7 +183,8 @@
     "errors": {
       "lockedOut": "Zu viele Versuche. Bitte warte, bevor du es erneut versuchst.",
       "invalidCredentials": "Falsche E-Mail oder Passwort.",
-      "generic": "Etwas ist schiefgelaufen. Bitte versuche es erneut."
+      "generic": "Etwas ist schiefgelaufen. Bitte versuche es erneut.",
+      "google": "Die Anmeldung mit Google hat nicht funktioniert. Bitte versuche es erneut oder melde dich mit E-Mail an."
     },
     "validation": {
       "email": "Bitte gib eine gültige E-Mail-Adresse ein.",

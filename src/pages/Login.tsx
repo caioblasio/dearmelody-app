@@ -1,7 +1,7 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useLayoutEffect } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { z } from 'zod'
 import { Eye, EyeOff } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
@@ -32,18 +32,32 @@ type LoginFormValues = {
 
 type LoginLocationState = {
   registered?: boolean
+  googleAuthError?: boolean
 }
 
 export function LoginPage() {
   const navigate = useNavigate()
   const location = useLocation()
+  const [searchParams, setSearchParams] = useSearchParams()
   const { t } = useTranslation()
   const loginSchema = useMemo(() => createLoginSchema(t), [t])
   const locationState = location.state as LoginLocationState | null
 
   const [showPassword, setShowPassword] = useState(false)
-  const [authError, setAuthError] = useState<string | null>(null)
+  const [authError, setAuthError] = useState<string | null>(() => {
+    if (locationState?.googleAuthError || searchParams.get('error')) {
+      return t('login.errors.google')
+    }
+    return null
+  })
   const [showRegisteredBanner] = useState(() => Boolean(locationState?.registered))
+
+  useLayoutEffect(() => {
+    if (!searchParams.has('error')) return
+    const next = new URLSearchParams(searchParams)
+    next.delete('error')
+    setSearchParams(next, { replace: true })
+  }, [searchParams, setSearchParams])
 
   const {
     register,
