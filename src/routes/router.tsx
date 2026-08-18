@@ -11,10 +11,12 @@ import { LoginPage } from '@/pages/Login'
 import { MyMelodiesPage } from '@/pages/MyMelodies'
 import { NewCollectionPage } from '@/pages/NewCollection'
 import { NewEntryPage } from '@/pages/NewEntry'
+import { AdminPage } from '@/pages/Admin'
 import { FeedbackPage } from '@/pages/Feedback'
 import { ProfilePage } from '@/pages/Profile'
 import { SharedMelodyPage } from '@/pages/SharedMelody'
 import { SignUpPage } from '@/pages/SignUp'
+import { AdminRoute } from './admin-route'
 import { ProtectedRoute } from './protected-route'
 import { PublicRoute } from './public-route'
 import { SharedMelodyRoute } from './shared-melody-route'
@@ -103,6 +105,17 @@ export const router = createBrowserRouter([
             path: '/feedback',
             element: <FeedbackPage />,
             handle: { title: 'feedback.title' },
+          },
+          {
+            path: '/admin',
+            element: <AdminRoute />,
+            children: [
+              {
+                index: true,
+                element: <AdminPage />,
+                handle: { title: 'admin.title' },
+              },
+            ],
           },
         ],
       },

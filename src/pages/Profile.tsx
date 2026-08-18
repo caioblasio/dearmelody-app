@@ -22,6 +22,7 @@ import {
   ItemTitle,
 } from '@/components/ui/item'
 import { setAppLocale } from '@/i18n/config'
+import { isAdminEmail } from '@/lib/admin'
 import { normalizeLocale, SUPPORTED_LOCALES, type AppLocale } from '@/lib/locale'
 import { SUPPORT_WHATSAPP_URL } from '@/lib/support'
 import { cn } from '@/lib/utils'
@@ -46,6 +47,7 @@ export function ProfilePage() {
   const initial = (user?.first_name?.[0] ?? '?').toUpperCase()
 
   const locale: AppLocale = normalizeLocale(i18n.language) ?? 'en'
+  const showAdmin = isAdminEmail(user?.email)
 
   return (
     <section className="space-y-8">
@@ -182,6 +184,24 @@ export function ProfilePage() {
                 </ItemActions>
               </Link>
             </Item>
+
+            {showAdmin ? (
+              <>
+                <ItemSeparator className="mx-6 w-auto bg-warm-border md:hidden" />
+                <Item asChild className="items-center gap-4 px-6 py-5 md:hidden">
+                  <Link to="/admin">
+                    <ItemContent>
+                      <ItemTitle className="text-[1.0625rem] font-semibold text-ink">
+                        {t('settings.admin')}
+                      </ItemTitle>
+                    </ItemContent>
+                    <ItemActions>
+                      <ChevronRight className="size-4 text-muted" aria-hidden />
+                    </ItemActions>
+                  </Link>
+                </Item>
+              </>
+            ) : null}
           </ItemGroup>
         </section>
       </div>

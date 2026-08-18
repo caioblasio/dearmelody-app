@@ -14,6 +14,7 @@
     "collections": "Collections",
     "me": "Me",
     "settings": "Profile",
+    "admin": "Admin",
     "logout": "Log out"
   },
   "layout": {
@@ -108,6 +109,7 @@
     "contactSupportToChange": "Contact support to change",
     "contactSupport": "Contact Support",
     "sendFeedback": "Help make DearMelody better",
+    "admin": "Admin",
     "language": "Language",
     "languageHelp": "Melo writes your lyrics in this language.",
     "locales": {
@@ -115,6 +117,27 @@
       "pt": "Portuguese",
       "de": "German"
     }
+  },
+  "admin": {
+    "title": "Invites",
+    "subtitle": "Invite codes and who has redeemed them.",
+    "available": "Available",
+    "redeemed": "Redeemed",
+    "availableCount": "{{count}} available",
+    "redeemedCount": "{{count}} redeemed",
+    "code": "Code",
+    "status": "Status",
+    "email": "Email",
+    "usedAt": "Used at",
+    "actions": "Actions",
+    "copyLink": "Copy link",
+    "copied": "Copied",
+    "loadError": "Could not load invites. Please try again.",
+    "empty": "No invite codes yet.",
+    "emptyFiltered": "No invites match this filter.",
+    "filterAria": "Filter invites",
+    "filterAll": "All",
+    "emDash": "—"
   },
   "feedback": {
     "title": "Help to make DearMelody better",

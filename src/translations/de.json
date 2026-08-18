@@ -14,6 +14,7 @@
     "collections": "Sammlungen",
     "me": "Ich",
     "settings": "Profil",
+    "admin": "Admin",
     "logout": "Abmelden"
   },
   "layout": {
@@ -108,6 +109,7 @@
     "contactSupportToChange": "Support kontaktieren, um zu ändern",
     "contactSupport": "Support kontaktieren",
     "sendFeedback": "Hilf, DearMelody besser zu machen",
+    "admin": "Admin",
     "language": "Sprache",
     "languageHelp": "Melo schreibt deine Texte in dieser Sprache.",
     "locales": {
@@ -115,6 +117,27 @@
       "pt": "Portugiesisch",
       "de": "Deutsch"
     }
+  },
+  "admin": {
+    "title": "Einladungen",
+    "subtitle": "Einladungscodes und wer sie eingelöst hat.",
+    "available": "Verfügbar",
+    "redeemed": "Eingelöst",
+    "availableCount": "{{count}} verfügbar",
+    "redeemedCount": "{{count}} eingelöst",
+    "code": "Code",
+    "status": "Status",
+    "email": "E-Mail",
+    "usedAt": "Eingelöst am",
+    "actions": "Aktionen",
+    "copyLink": "Link kopieren",
+    "copied": "Kopiert",
+    "loadError": "Einladungen konnten nicht geladen werden. Bitte versuche es erneut.",
+    "empty": "Noch keine Einladungscodes.",
+    "emptyFiltered": "Keine Einladungen entsprechen diesem Filter.",
+    "filterAria": "Einladungen filtern",
+    "filterAll": "Alle",
+    "emDash": "—"
   },
   "feedback": {
     "title": "Hilf, DearMelody besser zu machen",

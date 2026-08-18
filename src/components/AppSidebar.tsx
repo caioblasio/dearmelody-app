@@ -1,4 +1,4 @@
-import { BookOpen, FolderOpen, Home, LogOut, PenLine, Settings } from 'lucide-react'
+import { BookOpen, FolderOpen, Home, LogOut, Settings, Shield } from 'lucide-react'
 import { NavLink } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import type { LucideIcon } from 'lucide-react'
@@ -6,6 +6,7 @@ import type { LucideIcon } from 'lucide-react'
 import logo from '@/assets/logo.svg'
 import { DearMelodyWordmark } from '@/components/DearMelodyWordmark'
 import { useUserInfo } from '@/api/user/use-user-info'
+import { isAdminEmail } from '@/lib/admin'
 import { logout } from '@/lib/auth'
 import { useMelodyGeneration } from '@/lib/melody-generation/use-melody-generation'
 import { cn } from '@/lib/utils'
@@ -46,6 +47,7 @@ export function AppSidebar() {
       .join('') || 'DM'
 
   const displayName = [user?.first_name, user?.last_name].filter(Boolean).join(' ') || 'DearMelody'
+  const showAdmin = isAdminEmail(user?.email)
 
   return (
     <aside className="sticky top-0 hidden h-screen w-60 shrink-0 flex-col border-r border-warm-border bg-card-bg md:flex">
@@ -108,6 +110,12 @@ export function AppSidebar() {
               <Settings className="size-4 shrink-0" aria-hidden />
               {t('nav.settings')}
             </NavLink>
+            {showAdmin ? (
+              <NavLink to="/admin" className={({ isActive }) => navLinkClass(isActive)}>
+                <Shield className="size-4 shrink-0" aria-hidden />
+                {t('nav.admin')}
+              </NavLink>
+            ) : null}
             <button
               type="button"
               onClick={() => void logout()}
