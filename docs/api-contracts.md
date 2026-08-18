@@ -659,6 +659,51 @@ Returns a paginated list of the authenticated user's collections, most recently 
 
 ---
 
+### `GET /api/diary/{diaryId}/collection`
+
+**Auth:** JWT
+
+Returns a paginated list of the authenticated user's collections that contain the given diary entry. Same summary shape and pagination as `GET /api/diary-collection` above, just filtered to one diary.
+
+**Path parameters**
+
+| Parameter | Type          | Notes          |
+| --------- | ------------- | -------------- |
+| `diaryId` | string (UUID) | Diary entry ID |
+
+**Query parameters**
+
+| Parameter | Type    | Default | Notes                  |
+| --------- | ------- | ------- | ---------------------- |
+| `limit`   | integer | 30      | Minimum 1, maximum 100 |
+| `offset`  | integer | 0       | Minimum 0              |
+
+**Response `200 OK`**
+
+```json
+[
+  {
+    "id": 1,
+    "title": "Road trip",
+    "description": "Songs from the road",
+    "imageLocation": null,
+    "entryCount": 3
+  }
+]
+```
+
+`entryCount` is each collection's total entry count, not the count filtered to `diaryId`. Empty array if the diary isn't in any collection.
+
+**Response `404 Not Found`** — diary does not exist or is not owned by the authenticated user.
+
+```json
+{
+  "error": "Not found"
+}
+```
+
+---
+
 ### `GET /api/diary-collection/{id}`
 
 **Auth:** JWT

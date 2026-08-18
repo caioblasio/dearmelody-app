@@ -435,6 +435,13 @@
     "download": "Herunterladen",
     "downloadError": "Dieser Track konnte nicht heruntergeladen werden. Bitte versuche es erneut.",
     "downloading": "Wird heruntergeladen…",
+    "addToCollection": "Zur Sammlung",
+    "addedToCollection": "In Sammlungen",
+    "addToCollectionTitle": "Zur Sammlung hinzufügen",
+    "addToCollectionEmpty": "Noch keine Sammlungen. Erstelle eine, um diesen Eintrag zu gruppieren.",
+    "addToCollectionError": "Sammlungen konnten nicht geladen werden. Bitte versuche es erneut.",
+    "addToCollectionAria": "Zu {{title}} hinzufügen",
+    "removeFromCollectionAria": "Aus {{title}} entfernen",
     "snippet": {
       "fromEntry": "Aus deinem Eintrag:",
       "readBehind": "Den Eintrag hinter diesem Song lesen",

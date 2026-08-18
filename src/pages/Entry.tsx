@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { getMusicDisplayState, isMusicContentLoading } from '@/api/diary/generate-status'
 import { getMusic } from '@/api/music/get-music'
 import { useGetDiaryEntry } from '@/api/diary/use-get-diary-entry'
+import { AddToCollectionButton } from '@/components/collections/AddToCollectionButton'
 import { ComposingHeroLoaderCalm } from '@/components/loading/composing-loaders'
 import { MusicFavoriteButton } from '@/components/MusicFavoriteButton'
 import { MusicShareButton } from '@/components/MusicShareButton'
@@ -62,6 +63,7 @@ function EntryPageSkeleton() {
                 <Skeleton className="h-8 w-10 rounded-full bg-player-ink/15 sm:w-20" />
                 <Skeleton className="h-8 w-10 rounded-full bg-player-ink/15 sm:w-20" />
                 <Skeleton className="h-8 w-10 rounded-full bg-player-ink/15 sm:w-20" />
+                <Skeleton className="h-8 w-10 rounded-full bg-player-ink/15 sm:w-28" />
               </div>
             </div>
           </div>
@@ -129,6 +131,7 @@ export function EntryPage() {
             {isDownloading ? t('entry.downloading') : t('entry.download')}
           </span>
         </Button>
+        <AddToCollectionButton diaryId={data.id} disabled={musicLoading} />
       </>
     )
 

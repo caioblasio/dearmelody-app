@@ -435,6 +435,13 @@
     "download": "Baixar",
     "downloadError": "Não foi possível baixar esta faixa. Tente novamente.",
     "downloading": "Baixando…",
+    "addToCollection": "Adicionar à coleção",
+    "addedToCollection": "Nas coleções",
+    "addToCollectionTitle": "Adicionar à coleção",
+    "addToCollectionEmpty": "Ainda não há coleções. Crie uma para agrupar esta entrada.",
+    "addToCollectionError": "Não foi possível carregar as coleções. Tente novamente.",
+    "addToCollectionAria": "Adicionar a {{title}}",
+    "removeFromCollectionAria": "Remover de {{title}}",
     "snippet": {
       "fromEntry": "Da sua entrada:",
       "readBehind": "Leia a entrada por trás desta música",

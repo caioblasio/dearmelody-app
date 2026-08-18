@@ -435,6 +435,13 @@
     "download": "Download",
     "downloadError": "Could not download this track. Please try again.",
     "downloading": "Downloading…",
+    "addToCollection": "Add to collection",
+    "addedToCollection": "In collections",
+    "addToCollectionTitle": "Add to collection",
+    "addToCollectionEmpty": "No collections yet. Create one to group this entry.",
+    "addToCollectionError": "Could not load collections. Please try again.",
+    "addToCollectionAria": "Add to {{title}}",
+    "removeFromCollectionAria": "Remove from {{title}}",
     "snippet": {
       "fromEntry": "From your entry:",
       "readBehind": "Read the entry behind this song",
