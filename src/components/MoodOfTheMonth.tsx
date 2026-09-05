@@ -36,7 +36,7 @@ export function MoodOfTheMonth() {
     if (!data || isError) return getMeloCardMeta('official')
 
     if (hasNullWeeklyMeloData(data)) {
-      return getMeloCardMeta('mood', 'sad')
+      return getMeloCardMeta('official')
     }
 
     const resolved = pickMeloCard(
