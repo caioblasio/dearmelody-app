@@ -5,6 +5,13 @@
   "common": {
     "loading": "Wird geladen..."
   },
+  "notFound": {
+    "documentTitle": "Seite nicht gefunden · Dear Melody",
+    "code": "404",
+    "headline": "Diese Seite ist abhandengekommen",
+    "body": "Melo hat überall gesucht — sogar unter den Kopfhörern. Lass uns dich zurückbringen.",
+    "cta": "Zurück nach Hause"
+  },
   "nav": {
     "home": "Start",
     "dashboard": "Übersicht",

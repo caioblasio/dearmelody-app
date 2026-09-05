@@ -14,6 +14,7 @@ import { NewEntryPage } from '@/pages/NewEntry'
 import { AdminPage } from '@/pages/Admin'
 import { FeedbackPage } from '@/pages/Feedback'
 import { ProfilePage } from '@/pages/Profile'
+import { NotFoundPage } from '@/pages/NotFound'
 import { SharedMelodyPage } from '@/pages/SharedMelody'
 import { SignUpPage } from '@/pages/SignUp'
 import { AdminRoute } from './admin-route'
@@ -23,101 +24,111 @@ import { SharedMelodyRoute } from './shared-melody-route'
 
 export const router = createBrowserRouter([
   {
-    path: '/auth/callback',
-    element: <AuthCallbackPage />,
-  },
-  {
-    element: <PublicRoute />,
+    // Unmatched URLs throw a navigational 404; this replaces RR's default error screen.
+    errorElement: <NotFoundPage />,
     children: [
       {
-        path: '/login',
-        element: <LoginPage />,
+        path: '/auth/callback',
+        element: <AuthCallbackPage />,
       },
       {
-        path: '/signup',
-        element: <SignUpPage />,
-      },
-    ],
-  },
-  {
-    path: '/melodies/share/:shareToken',
-    element: <SharedMelodyRoute />,
-    children: [
-      {
-        index: true,
-        element: <SharedMelodyPage />,
-        handle: { title: 'shareMelody.documentTitle' },
-      },
-    ],
-  },
-  {
-    element: <ProtectedRoute />,
-    children: [
-      {
-        element: <AppLayout />,
+        element: <PublicRoute />,
         children: [
           {
-            path: '/',
-            element: <DashboardPage />,
-            handle: { title: 'dashboard.title' },
+            path: '/login',
+            element: <LoginPage />,
           },
           {
-            path: '/new-entry',
-            element: <NewEntryPage />,
-            handle: { title: 'newEntry.title' },
+            path: '/signup',
+            element: <SignUpPage />,
           },
+        ],
+      },
+      {
+        path: '/melodies/share/:shareToken',
+        element: <SharedMelodyRoute />,
+        children: [
           {
-            path: '/melodies/:entryId',
-            element: <EntryPage />,
-            handle: { title: 'entry.documentTitle' },
+            index: true,
+            element: <SharedMelodyPage />,
+            handle: { title: 'shareMelody.documentTitle' },
           },
+        ],
+      },
+      {
+        element: <ProtectedRoute />,
+        children: [
           {
-            path: '/melodies',
-            element: <MyMelodiesPage />,
-            handle: { title: 'pastMelodies.title' },
-          },
-          {
-            path: '/collections',
-            element: <CollectionsPage />,
-            handle: { title: 'collections.title' },
-          },
-          {
-            path: '/collections/new',
-            element: <NewCollectionPage />,
-            handle: { title: 'collections.newTitle' },
-          },
-          {
-            path: '/collections/:id/edit',
-            element: <EditCollectionPage />,
-            handle: { title: 'collections.editTitle' },
-          },
-          {
-            path: '/collections/:id',
-            element: <CollectionDetailPage />,
-            handle: { title: 'collections.detailTitle' },
-          },
-          {
-            path: '/profile',
-            element: <ProfilePage />,
-            handle: { title: 'settings.title' },
-          },
-          {
-            path: '/feedback',
-            element: <FeedbackPage />,
-            handle: { title: 'feedback.title' },
-          },
-          {
-            path: '/admin',
-            element: <AdminRoute />,
+            element: <AppLayout />,
             children: [
               {
-                index: true,
-                element: <AdminPage />,
-                handle: { title: 'admin.title' },
+                path: '/',
+                element: <DashboardPage />,
+                handle: { title: 'dashboard.title' },
+              },
+              {
+                path: '/new-entry',
+                element: <NewEntryPage />,
+                handle: { title: 'newEntry.title' },
+              },
+              {
+                path: '/melodies/:entryId',
+                element: <EntryPage />,
+                handle: { title: 'entry.documentTitle' },
+              },
+              {
+                path: '/melodies',
+                element: <MyMelodiesPage />,
+                handle: { title: 'pastMelodies.title' },
+              },
+              {
+                path: '/collections',
+                element: <CollectionsPage />,
+                handle: { title: 'collections.title' },
+              },
+              {
+                path: '/collections/new',
+                element: <NewCollectionPage />,
+                handle: { title: 'collections.newTitle' },
+              },
+              {
+                path: '/collections/:id/edit',
+                element: <EditCollectionPage />,
+                handle: { title: 'collections.editTitle' },
+              },
+              {
+                path: '/collections/:id',
+                element: <CollectionDetailPage />,
+                handle: { title: 'collections.detailTitle' },
+              },
+              {
+                path: '/profile',
+                element: <ProfilePage />,
+                handle: { title: 'settings.title' },
+              },
+              {
+                path: '/feedback',
+                element: <FeedbackPage />,
+                handle: { title: 'feedback.title' },
+              },
+              {
+                path: '/admin',
+                element: <AdminRoute />,
+                children: [
+                  {
+                    index: true,
+                    element: <AdminPage />,
+                    handle: { title: 'admin.title' },
+                  },
+                ],
               },
             ],
           },
         ],
+      },
+      {
+        path: '*',
+        element: <NotFoundPage />,
       },
     ],
   },

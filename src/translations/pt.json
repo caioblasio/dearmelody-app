@@ -5,6 +5,13 @@
   "common": {
     "loading": "Carregando..."
   },
+  "notFound": {
+    "documentTitle": "Página não encontrada · Dear Melody",
+    "code": "404",
+    "headline": "Esta página saiu passear",
+    "body": "O Melo procurou em todo lugar — até debaixo dos fones. Vamos te levar de volta.",
+    "cta": "Voltar para casa"
+  },
   "nav": {
     "home": "Início",
     "dashboard": "Painel",

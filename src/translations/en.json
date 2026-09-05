@@ -5,6 +5,13 @@
   "common": {
     "loading": "Loading..."
   },
+  "notFound": {
+    "documentTitle": "Page not found · Dear Melody",
+    "code": "404",
+    "headline": "This page wandered off",
+    "body": "Melo looked everywhere — even under the headphones. Let's get you back.",
+    "cta": "Back home"
+  },
   "nav": {
     "home": "Home",
     "dashboard": "Dashboard",
