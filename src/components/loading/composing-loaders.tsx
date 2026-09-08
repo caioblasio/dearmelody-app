@@ -32,8 +32,8 @@ function MeloMascot() {
 
 export function ComposingHeroLoaderCalm({
   className,
-  title = 'Composing your melody',
-  subtitle = "Turning today's entry into a song. Usually about 30 seconds.",
+  title = 'Hang on, your song is being composed',
+  subtitle = 'It takes up to 5 min to be ready',
 }: {
   className?: string
   title?: string

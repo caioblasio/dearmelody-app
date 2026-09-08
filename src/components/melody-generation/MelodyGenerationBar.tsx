@@ -39,13 +39,18 @@ export function MelodyGenerationBar({
         role="status"
         aria-live="polite"
       >
-        <ComposingButtonLoaderLight
-          className={cn(
-            'pointer-events-none w-full max-w-md',
-            variant === 'desktop' && 'shadow-[0_12px_26px_rgba(255,122,89,0.32)]',
-          )}
-          label={t('melodyGeneration.composing')}
-        />
+        <div className="flex w-full max-w-md flex-col items-center gap-1">
+          <ComposingButtonLoaderLight
+            className={cn(
+              'pointer-events-none w-full',
+              variant === 'desktop' && 'shadow-[0_12px_26px_rgba(255,122,89,0.32)]',
+            )}
+            label={t('melodyGeneration.composing')}
+          />
+          <p className="px-2 text-center text-xs text-muted">
+            {t('melodyGeneration.composingSubtitle')}
+          </p>
+        </div>
       </div>
     )
   }

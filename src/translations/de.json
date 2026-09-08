@@ -501,8 +501,8 @@
     "showCover": "Cover"
   },
   "melodyGeneration": {
-    "composing": "Deine Melodie wird komponiert",
-    "composingSubtitle": "Aus dem heutigen Eintrag wird ein Song. Meistens etwa 30 Sekunden.",
+    "composing": "Einen Moment, dein Song wird komponiert",
+    "composingSubtitle": "Es dauert bis zu 5 Min., bis er fertig ist",
     "drumming": "Deine Melodie wird eingetrommelt",
     "drummingSubtitle": "Eine etwas peppigere Wartezeit — Melo legt den Beat, während es gerendert wird.",
     "readyCta": "Deine Melodie ist fertig — tippe, um sie zu sehen",

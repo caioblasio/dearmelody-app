@@ -501,8 +501,8 @@
     "showCover": "Capa"
   },
   "melodyGeneration": {
-    "composing": "Compondo sua melodia",
-    "composingSubtitle": "Transformando a entrada de hoje em uma música. Geralmente leva cerca de 30 segundos.",
+    "composing": "Aguarde, sua música está sendo composta",
+    "composingSubtitle": "Leva até 5 min para ficar pronta",
     "drumming": "Batendo o ritmo da sua melodia",
     "drummingSubtitle": "Uma espera mais animada — o Melo marca o beat enquanto renderiza.",
     "readyCta": "Sua melodia está pronta — clique para ver",

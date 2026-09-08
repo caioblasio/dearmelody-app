@@ -3,17 +3,11 @@ import { useQuery } from '@tanstack/react-query'
 import { useMatch } from 'react-router-dom'
 
 import type { DiaryEntryDetail } from '@/api/diary/diary-entry-detail'
-import {
-  getMusicDisplayState,
-  musicReadyRefetchInterval,
-} from '@/api/diary/generate-status'
+import { getMusicDisplayState, musicReadyRefetchInterval } from '@/api/diary/generate-status'
 import { getDiaryEntry } from '@/api/diary/get-diary-entry'
 import { diaryEntryQueryKey } from '@/api/diary/use-get-diary-entry'
 
-import {
-  MelodyGenerationContext,
-  type MelodyGenerationPhase,
-} from './melody-generation-context'
+import { MelodyGenerationContext, type MelodyGenerationPhase } from './melody-generation-context'
 
 export function MelodyGenerationProvider({ children }: { children: ReactNode }) {
   const [entryId, setEntryId] = useState<string | null>(null)
@@ -62,7 +56,7 @@ export function MelodyGenerationProvider({ children }: { children: ReactNode }) 
         setPhase('idle')
       },
     }),
-    [entryId, phase],
+    [entryId, phase]
   )
 
   return (
