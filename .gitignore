@@ -26,3 +26,18 @@ dist-ssr
 
 # AI
 claude-design
+
+# Capacitor / Android
+android
+android/app/build
+android/build
+android/.gradle
+android/local.properties
+android/captures
+android/.idea
+android/*.iml
+android/app/*.iml
+*.apk
+*.aab
+*.ap_
+*.dex
